@@ -2,6 +2,7 @@ package com.tiji.media.widgets;
 
 
 import com.tiji.media.ApiCalls;
+import com.tiji.media.MediaClient;
 import com.tiji.media.SongData;
 import io.github.cottonmc.cotton.gui.widget.WSlider;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
@@ -21,18 +22,18 @@ public class progressWidget extends WSlider {
     }
 
     public InputResult onMouseUp(int x, int y, int button) {
-        if (SongData.Id.isEmpty()) return InputResult.PROCESSED;
+        if (MediaClient.currentlyPlaying.Id.isEmpty()) return InputResult.PROCESSED;
 
         if (button == 0) {
             double progress = getValue() / 300d;
-            ApiCalls.setPlaybackLoc((int) Math.round(progress * SongData.duration));
+            ApiCalls.setPlaybackLoc((int) Math.round(progress * MediaClient.currentlyPlaying.duration));
             allowUpdateProgress = true;
         }
         return super.onMouseUp(x, y, button);
     }
 
     public InputResult onMouseDown(int x, int y, int button) {
-        if (SongData.Id.isEmpty()) return InputResult.PROCESSED;
+        if (MediaClient.currentlyPlaying.Id.isEmpty()) return InputResult.PROCESSED;
 
         if (button == 0) {
             allowUpdateProgress = false;

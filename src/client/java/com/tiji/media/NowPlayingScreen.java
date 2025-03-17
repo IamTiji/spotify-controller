@@ -34,8 +34,8 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         root.add(albumCover, 100, 10, 100, 100);
 
         root.add(new clickableSprite(Identifier.of("media", "ui/attribution.png")).setOnClick(() -> {
-            if (SongData.songURI == null) return;
-            Util.getOperatingSystem().open(SongData.songURI);
+            if (MediaClient.currentlyPlaying.songURI == null) return;
+            Util.getOperatingSystem().open(MediaClient.currentlyPlaying.songURI);
         }), 270, 10);
 
         songName = songName.setHorizontalAlignment(HorizontalAlignment.CENTER);
@@ -47,11 +47,11 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         root.add(new borderlessButtonWidget(Text.literal("⏮")).setOnClick(ApiCalls::previousTrack), 120, 150, 20, 20);
 
         playPauseButton.setOnClick(() -> {
-            if (SongData.Id.isEmpty()) return;
+            if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
 
-            SongData.isPlaying =! SongData.isPlaying;
-            ApiCalls.playPause(SongData.isPlaying);
-            playPauseButton.setLabel(Text.of(SongData.isPlaying ? "⏸" : "⏹"));});
+            MediaClient.currentlyPlaying.isPlaying =! MediaClient.currentlyPlaying.isPlaying;
+            ApiCalls.playPause(MediaClient.currentlyPlaying.isPlaying);
+            playPauseButton.setLabel(Text.of(MediaClient.currentlyPlaying.isPlaying ? "⏸" : "⏹"));});
 
         root.add(playPauseButton, 140, 150, 20, 20);
 
@@ -71,26 +71,26 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         setRootPanel(root);
     }
     public void updateStatus() {
-        if (SongData.Id.isEmpty()) return;
+        if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
 
         if (progressBar.allowUpdateProgress) {
-            if (SongData.progressValue == null) Media.LOGGER.warn("Progress value is null");
-            else progressBar.setValue((int) Math.round(SongData.progressValue * 300));
+            if (MediaClient.currentlyPlaying.progressValue == null) Media.LOGGER.warn("Progress value is null");
+            else progressBar.setValue((int) Math.round(MediaClient.currentlyPlaying.progressValue * 300));
         }
-        currentTimeLabel.setText(Text.of(SongData.progressLabel));
-        playPauseButton.setLabel(Text.of(SongData.isPlaying ? "⏸" : "⏹"));
+        currentTimeLabel.setText(Text.of(MediaClient.currentlyPlaying.progressLabel));
+        playPauseButton.setLabel(Text.of(MediaClient.currentlyPlaying.isPlaying ? "⏸" : "⏹"));
     }
     public void updateNowPlaying() {
-        if (SongData.Id.isEmpty()) {
+        if (MediaClient.currentlyPlaying.Id.isEmpty()) {
             nothingPlaying();
             return;
         }
 
-        Media.LOGGER.info(SongData.tostring());
+        Media.LOGGER.info(MediaClient.currentlyPlaying.toString());
 
-        songName.setText(Text.of(SongData.title));
-        artistName.setText(Text.of(SongData.artist));
-        durationLabel.setText(Text.of(SongData.durationLabel));
+        songName.setText(Text.of(MediaClient.currentlyPlaying.title));
+        artistName.setText(Text.of(MediaClient.currentlyPlaying.artist));
+        durationLabel.setText(Text.of(MediaClient.currentlyPlaying.durationLabel));
         updateCoverImage();
         updateStatus();
     }
@@ -103,6 +103,6 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         currentTimeLabel.setText(Text.translatable("ui.media.unknown_time"));
     }
     public void updateCoverImage() {
-        albumCover.setImage(SongData.coverImage);
+        albumCover.setImage(MediaClient.currentlyPlaying.coverImage);
     }
 }

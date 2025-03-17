@@ -5,18 +5,18 @@ import net.minecraft.util.Identifier;
 import java.net.URI;
 
 public class SongData {
-    public static String title;
-    public static String artist;
-    public static Identifier coverImage = Identifier.of("media", "ui/nothing.png"); // Avoid NullPointerException
-    public static String progressLabel;
-    public static String durationLabel;
-    public static Double progressValue;
-    public static Integer duration;
-    public static boolean isPlaying = false;
-    public static String Id = "";
-    public static URI songURI;
+    public String title;
+    public String artist;
+    public Identifier coverImage = Identifier.of("media", "ui/nothing.png"); // Avoid NullPointerException
+    public String progressLabel;
+    public String durationLabel;
+    public Double progressValue;
+    public Integer duration;
+    public boolean isPlaying = false;
+    public String Id = "";
+    public URI songURI;
 
-    public static String tostring() {
+    public String toString() {
         return "songData{" +
                 "title='" + title + '\'' +
                 ", artist='" + artist + '\'' +

@@ -17,6 +17,7 @@ public class MediaClient implements ClientModInitializer {
 	private static final KeyBinding SETUP_KEY = new KeyBinding("key.media.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
 	public static int tickCount = 0;
 	public static NowPlayingScreen nowPlayingScreen = null;
+	public static SongData currentlyPlaying = new SongData();
 
 	public void onInitializeClient(){
 		CONFIG.generate();
@@ -50,7 +51,7 @@ public class MediaClient implements ClientModInitializer {
 					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
 						nowPlayingScreen.updateCoverImage();
 						if (CONFIG.shouldShowToasts()) {
-							new SongToast(SongData.coverImage, SongData.artist, SongData.title).show(MinecraftClient.getInstance().getToastManager());
+							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
 						}
 					});
 				}

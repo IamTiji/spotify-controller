@@ -127,27 +127,27 @@ public class SongDataExtractor {
     }
     public static void reloadData(boolean forceFullReload, Runnable onNoUpdate, Runnable onDataUpdate, Runnable onImageLoad) {
         ApiCalls.getNowPlayingTrack(data -> {
-            boolean isSongDifferent = !getId(data).equals(SongData.Id);
+            boolean isSongDifferent = !getId(data).equals(MediaClient.currentlyPlaying.Id);
 
-            SongData.progressLabel = getProgressLabel(data);
-            SongData.isPlaying = isPlaying(data);
-            SongData.progressValue = getDuration(data);
+            MediaClient.currentlyPlaying.progressLabel = getProgressLabel(data);
+            MediaClient.currentlyPlaying.isPlaying = isPlaying(data);
+            MediaClient.currentlyPlaying.progressValue = getDuration(data);
 
             if (isSongDifferent || forceFullReload) {
-                SongData.title = (isExplicit(data) ? "\uD83C\uDD74 " : "") + getName(data);
-                SongData.artist = getArtist(data);
-                SongData.durationLabel = getDurationLabel(data);
-                SongData.Id = getId(data);
-                SongData.duration = getMaxDuration(data);
-                SongData.songURI = getSpotifyLink(data);
+                MediaClient.currentlyPlaying.title = (isExplicit(data) ? "\uD83C\uDD74 " : "") + getName(data);
+                MediaClient.currentlyPlaying.artist = getArtist(data);
+                MediaClient.currentlyPlaying.durationLabel = getDurationLabel(data);
+                MediaClient.currentlyPlaying.Id = getId(data);
+                MediaClient.currentlyPlaying.duration = getMaxDuration(data);
+                MediaClient.currentlyPlaying.songURI = getSpotifyLink(data);
 
-                if (!SongData.coverImage.getPath().equals("ui/nothing.png")) {
+                if (!MediaClient.currentlyPlaying.coverImage.getPath().equals("ui/nothing.png")) {
                     //MinecraftClient.getInstance().getTextureManager().destroyTexture(SongData.coverImage);        //Deleted line as they are used on toasts. Will be re-visited
-                    SongData.coverImage = Identifier.of("media", "ui/nothing.png");
+                    MediaClient.currentlyPlaying.coverImage = Identifier.of("media", "ui/nothing.png");
                 }
                 CompletableFuture<Identifier> ImageIOFuture = CompletableFuture.supplyAsync(() -> getAlbumCover(data));
                 ImageIOFuture.thenAccept(id -> {
-                    SongData.coverImage = id;
+                    MediaClient.currentlyPlaying.coverImage = id;
                     onImageLoad.run();
                 });
             }
