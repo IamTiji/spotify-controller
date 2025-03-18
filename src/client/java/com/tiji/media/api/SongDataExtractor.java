@@ -1,6 +1,7 @@
-package com.tiji.media;
+package com.tiji.media.api;
 
 import com.google.gson.JsonObject;
+import com.tiji.media.MediaClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;

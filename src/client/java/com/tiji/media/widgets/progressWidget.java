@@ -1,9 +1,8 @@
 package com.tiji.media.widgets;
 
 
-import com.tiji.media.ApiCalls;
+import com.tiji.media.api.ApiCalls;
 import com.tiji.media.MediaClient;
-import com.tiji.media.SongData;
 import io.github.cottonmc.cotton.gui.widget.WSlider;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;

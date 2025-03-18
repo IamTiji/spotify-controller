@@ -1,5 +1,10 @@
 package com.tiji.media;
 
+import com.tiji.media.api.ApiCalls;
+import com.tiji.media.api.SongData;
+import com.tiji.media.api.SongDataExtractor;
+import com.tiji.media.ui.NowPlayingScreen;
+import com.tiji.media.ui.SetupScreen;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;

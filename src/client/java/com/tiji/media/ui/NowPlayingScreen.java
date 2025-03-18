@@ -1,5 +1,8 @@
-package com.tiji.media;
+package com.tiji.media.ui;
 
+import com.tiji.media.Media;
+import com.tiji.media.MediaClient;
+import com.tiji.media.api.ApiCalls;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
@@ -90,7 +93,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
 
         Media.LOGGER.info(MediaClient.currentlyPlaying.toString());
 
-        songName.setText(Text.of(MediaClient.currentlyPlaying.title));
+        songName.setText(MediaClient.currentlyPlaying.title);
         artistName.setText(Text.of(MediaClient.currentlyPlaying.artist));
         durationLabel.setText(Text.of(MediaClient.currentlyPlaying.durationLabel));
         updateCoverImage();

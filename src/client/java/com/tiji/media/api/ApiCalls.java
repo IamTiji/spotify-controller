@@ -1,8 +1,11 @@
-package com.tiji.media;
+package com.tiji.media.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.tiji.media.Media;
+import com.tiji.media.MediaClient;
+import com.tiji.media.WebGuideServer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;

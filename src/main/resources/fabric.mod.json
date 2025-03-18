@@ -17,7 +17,9 @@
 		"client": [
 			"com.tiji.media.MediaClient"
 		],
-		"modmenu": [ "com.tiji.media.ModMenuApiImpl" ]
+		"modmenu": [
+          "com.tiji.media.ui.ModMenuApiImpl"
+        ]
 	},
 	"depends": {
 		"fabricloader": ">=0.16.9",
