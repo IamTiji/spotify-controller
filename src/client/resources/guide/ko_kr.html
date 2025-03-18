@@ -54,7 +54,7 @@
             xmlHttp2.open("GET", "http://localhost:25566/id?code=" + document.getElementById('clientid').value, true);
             xmlHttp2.send(null);
 
-            url = "https://accounts.spotify.com/authorize?response_type=code&client_id=" + document.getElementById('clientid').value + "&redirect_uri=http://localhost:25566/callback&show_dialog=true&scope=user-read-playback-state%20user-modify-playback-state%20user-read-currently-playing";
+            url = "https://accounts.spotify.com/authorize?response_type=code&client_id=" + document.getElementById('clientid').value + "&redirect_uri=http://localhost:25566/callback&show_dialog=true&scope=user-read-playback-state%20user-modify-playback-state%20user-read-currently-playing%20user-library-modify";
             window.location.href = url; }
     </script>
 </head>

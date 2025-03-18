@@ -26,8 +26,6 @@ public class ApiCalls {
                 body -> {
                     JsonObject data = new Gson().fromJson(body.body(), JsonObject.class);
 
-                    if (!data.get("scope").getAsString().equals("user-modify-playback-state user-read-playback-state user-read-currently-playing")) return; // Authorization is modified
-
                     MediaClient.CONFIG.authToken(data.get("access_token").getAsString());
                     MediaClient.CONFIG.refreshToken(data.get("refresh_token").getAsString());
                     MediaClient.CONFIG.lastRefresh(System.currentTimeMillis());
