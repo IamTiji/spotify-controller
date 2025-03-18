@@ -1,6 +1,7 @@
 package com.tiji.media;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.SystemToast;
@@ -88,6 +89,30 @@ public class ApiCalls {
             String name = new Gson().fromJson(body.body(), JsonObject.class).get("display_name").getAsString();
             consumer.accept(name);
         }, "GET");
+    }
+    public static void setShuffle(boolean state) {
+        call("https://api.spotify.com/v1/me/player/shuffle?state=" + (state ? "true" : "false"),
+                getAuthorizationCode(),
+                null,
+                body -> {},
+                "PUT"
+        );
+    }
+    public static void setRepeat(boolean state) {
+        call("https://api.spotify.com/v1/me/player/repeat?state=" + (state ? "context" : "off"),
+                getAuthorizationCode(),
+                null,
+                body -> {},
+                "PUT"
+        );
+    }
+    public static void getSearch(String query, Consumer<JsonArray> consumer) {
+        call("https://api.spotify.com/v1/search?q=" + query + "&type=track",
+                getAuthorizationCode(),
+                null,
+                body -> consumer.accept(new Gson().fromJson(body.body(), JsonObject.class).getAsJsonObject("tracks").getAsJsonArray("items")),
+                "GET"
+        );
     }
     private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method) {
         HttpClient client = HttpClient.newHttpClient();
