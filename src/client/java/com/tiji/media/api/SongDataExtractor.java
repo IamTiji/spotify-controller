@@ -24,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 public class SongDataExtractor {
     private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
     private static final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
+    private static final Style DEFAULT = Style.EMPTY.withFont(Identifier.ofVanilla("default"));
 
     public static String getName(JsonObject trackObj) {
         return trackObj.getAsJsonObject("item").get("name").getAsString();
@@ -151,7 +152,7 @@ public class SongDataExtractor {
     public static SongData getDataFor(JsonObject data, @Nullable Runnable onImageLoad) {
         SongData song = new SongData();
 
-        song.title = Text.literal(isExplicit(data) ? "9 " : "").setStyle(ICON).append(getName(data));
+        song.title = Text.literal(isExplicit(data) ? "9 " : "").setStyle(ICON).append(Text.literal(getName(data)).setStyle(DEFAULT));
         song.artist = getArtist(data);
         song.durationLabel = getDurationLabel(data);
         song.Id = getId(data);
