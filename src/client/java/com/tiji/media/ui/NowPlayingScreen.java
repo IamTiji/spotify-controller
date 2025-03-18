@@ -64,10 +64,9 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         playPauseButton.setOnClick(() -> {
             if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
 
-            MediaClient.isPlaying =! MediaClient.isPlaying;
+            MediaClient.isPlaying = !MediaClient.isPlaying;
             ApiCalls.playPause(MediaClient.isPlaying);
-            playPauseButton.setLabel(Text.literal(MediaClient.isPlaying ? "2" : "3").setStyle(ICON));});
-
+        });
         root.add(playPauseButton, 140, 150, 20, 20);
 
         root.add(new borderlessButtonWidget(Text.literal("1").setStyle(ICON)).setOnClick(ApiCalls::nextTrack), 160, 150, 20, 20);
