@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -134,22 +135,7 @@ public class SongDataExtractor {
             MediaClient.progressValue = getDuration(data);
 
             if (isSongDifferent || forceFullReload) {
-                MediaClient.currentlyPlaying.title = (isExplicit(data) ? "\uD83C\uDD74 " : "") + getName(data);
-                MediaClient.currentlyPlaying.artist = getArtist(data);
-                MediaClient.currentlyPlaying.durationLabel = getDurationLabel(data);
-                MediaClient.currentlyPlaying.Id = getId(data);
-                MediaClient.currentlyPlaying.duration = getMaxDuration(data);
-                MediaClient.currentlyPlaying.songURI = getSpotifyLink(data);
-
-                if (!MediaClient.currentlyPlaying.coverImage.getPath().equals("ui/nothing.png")) {
-                    //MinecraftClient.getInstance().getTextureManager().destroyTexture(SongData.coverImage);        //Deleted line as they are used on toasts. Will be re-visited
-                    MediaClient.currentlyPlaying.coverImage = Identifier.of("media", "ui/nothing.png");
-                }
-                CompletableFuture<Identifier> ImageIOFuture = CompletableFuture.supplyAsync(() -> getAlbumCover(data));
-                ImageIOFuture.thenAccept(id -> {
-                    MediaClient.currentlyPlaying.coverImage = id;
-                    onImageLoad.run();
-                });
+                MediaClient.currentlyPlaying = getDataFor(data, onImageLoad);
             }
             if (isSongDifferent || forceFullReload) {
                 onDataUpdate.run();
@@ -157,5 +143,30 @@ public class SongDataExtractor {
                 onNoUpdate.run();
             }
         });
+    }
+    public static SongData getDataFor(JsonObject data, @Nullable Runnable onImageLoad) {
+        SongData song = new SongData();
+
+        song.title = (isExplicit(data) ? "\uD83C\uDD74 " : "") + getName(data);
+        song.artist = getArtist(data);
+        song.durationLabel = getDurationLabel(data);
+        song.Id = getId(data);
+        song.duration = getMaxDuration(data);
+        song.songURI = getSpotifyLink(data);
+
+        if (!song.coverImage.getPath().equals("ui/nothing.png")) {
+            //MinecraftClient.getInstance().getTextureManager().destroyTexture(SongData.coverImage);        //Deleted line as they are used on toasts. Will be re-visited
+            song.coverImage = Identifier.of("media", "ui/nothing.png");
+        }
+
+        CompletableFuture<Identifier> ImageIOFuture = CompletableFuture.supplyAsync(() -> getAlbumCover(data));
+        ImageIOFuture.thenAccept(id -> {
+            song.coverImage = id;
+            if (onImageLoad != null) {
+                onImageLoad.run();
+            }
+        });
+
+        return song;
     }
 }
