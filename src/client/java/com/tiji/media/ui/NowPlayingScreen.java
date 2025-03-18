@@ -5,6 +5,7 @@ import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -18,12 +19,14 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         }
     }
 
+    private static final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
+
     public WLabel songName = new WLabel(Text.translatable("ui.media.nothing_playing"));
     public WLabel artistName = new WLabel(Text.translatable("ui.media.unknown_artist"));
     public progressWidget progressBar = new progressWidget(0, 100, Axis.HORIZONTAL);
     public WLabel durationLabel = new WLabel(Text.translatable("ui.media.unknown_duration"));
     public WLabel currentTimeLabel = new WLabel(Text.translatable("ui.media.unknown_time"));
-    public borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Text.literal("⏸"));
+    public borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Text.literal("2").setStyle(ICON));
     public WSprite albumCover = new WSprite(Identifier.of("media", "ui/nothing.png"));
 
     public NowPlayingScreen() {
@@ -44,18 +47,18 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         artistName = artistName.setHorizontalAlignment(HorizontalAlignment.CENTER);
         root.add(artistName, 100, 135, 100, 20);
 
-        root.add(new borderlessButtonWidget(Text.literal("⏮")).setOnClick(ApiCalls::previousTrack), 120, 150, 20, 20);
+        root.add(new borderlessButtonWidget(Text.literal("0").setStyle(ICON)).setOnClick(ApiCalls::previousTrack), 120, 150, 20, 20);
 
         playPauseButton.setOnClick(() -> {
             if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
 
             MediaClient.isPlaying =! MediaClient.isPlaying;
             ApiCalls.playPause(MediaClient.isPlaying);
-            playPauseButton.setLabel(Text.of(MediaClient.isPlaying ? "⏸" : "⏹"));});
+            playPauseButton.setLabel(Text.literal(MediaClient.isPlaying ? "2" : "3").setStyle(ICON));});
 
         root.add(playPauseButton, 140, 150, 20, 20);
 
-        root.add(new borderlessButtonWidget(Text.literal("⏭")).setOnClick(ApiCalls::nextTrack), 160, 150, 20, 20);
+        root.add(new borderlessButtonWidget(Text.literal("1").setStyle(ICON)).setOnClick(ApiCalls::nextTrack), 160, 150, 20, 20);
 
         currentTimeLabel = currentTimeLabel.setHorizontalAlignment(HorizontalAlignment.LEFT);
         root.add(currentTimeLabel, 10, 160, 60, 20);
@@ -77,7 +80,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
             progressBar.setValue((int) Math.round(MediaClient.progressValue * 300));
         }
         currentTimeLabel.setText(Text.of(MediaClient.progressLabel));
-        playPauseButton.setLabel(Text.of(MediaClient.isPlaying ? "⏸" : "⏹"));
+        playPauseButton.setLabel(Text.literal(MediaClient.isPlaying ? "2" : "3").setStyle(ICON));
     }
     public void updateNowPlaying() {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) {

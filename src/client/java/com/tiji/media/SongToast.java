@@ -5,18 +5,19 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
+import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 public class SongToast implements Toast {
     private final Identifier cover;
     private final String artist;
-    private final String title;
+    private final Text title;
     private Long startTime;
 
     private static final Identifier TEXTURE = Identifier.of("media", "ui/toast.png");
 
-    public SongToast(Identifier cover, String artist, String title) {
+    public SongToast(Identifier cover, String artist, Text title) {
         this.cover = cover;
         this.artist = artist;
         this.title = title;

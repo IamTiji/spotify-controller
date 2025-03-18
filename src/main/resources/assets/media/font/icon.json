@@ -1,0 +1,14 @@
+{
+    "providers": [
+      {
+        "type": "bitmap",
+        "file": "media:font/icons.png",
+        "height": 8,
+        "ascent": 8,
+        "chars": [
+          "01234567",
+          "89      "
+        ]
+      }
+    ]
+  }
