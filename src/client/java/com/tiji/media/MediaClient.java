@@ -18,6 +18,9 @@ public class MediaClient implements ClientModInitializer {
 	public static int tickCount = 0;
 	public static NowPlayingScreen nowPlayingScreen = null;
 	public static SongData currentlyPlaying = new SongData();
+	public static String progressLabel;
+	public static boolean isPlaying;
+	public static double progressValue;
 
 	public void onInitializeClient(){
 		CONFIG.generate();

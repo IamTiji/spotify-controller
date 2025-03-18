@@ -129,9 +129,9 @@ public class SongDataExtractor {
         ApiCalls.getNowPlayingTrack(data -> {
             boolean isSongDifferent = !getId(data).equals(MediaClient.currentlyPlaying.Id);
 
-            MediaClient.currentlyPlaying.progressLabel = getProgressLabel(data);
-            MediaClient.currentlyPlaying.isPlaying = isPlaying(data);
-            MediaClient.currentlyPlaying.progressValue = getDuration(data);
+            MediaClient.progressLabel = getProgressLabel(data);
+            MediaClient.isPlaying = isPlaying(data);
+            MediaClient.progressValue = getDuration(data);
 
             if (isSongDifferent || forceFullReload) {
                 MediaClient.currentlyPlaying.title = (isExplicit(data) ? "\uD83C\uDD74 " : "") + getName(data);

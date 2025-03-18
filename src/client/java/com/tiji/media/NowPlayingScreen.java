@@ -49,9 +49,9 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         playPauseButton.setOnClick(() -> {
             if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
 
-            MediaClient.currentlyPlaying.isPlaying =! MediaClient.currentlyPlaying.isPlaying;
-            ApiCalls.playPause(MediaClient.currentlyPlaying.isPlaying);
-            playPauseButton.setLabel(Text.of(MediaClient.currentlyPlaying.isPlaying ? "⏸" : "⏹"));});
+            MediaClient.isPlaying =! MediaClient.isPlaying;
+            ApiCalls.playPause(MediaClient.isPlaying);
+            playPauseButton.setLabel(Text.of(MediaClient.isPlaying ? "⏸" : "⏹"));});
 
         root.add(playPauseButton, 140, 150, 20, 20);
 
@@ -74,11 +74,10 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
 
         if (progressBar.allowUpdateProgress) {
-            if (MediaClient.currentlyPlaying.progressValue == null) Media.LOGGER.warn("Progress value is null");
-            else progressBar.setValue((int) Math.round(MediaClient.currentlyPlaying.progressValue * 300));
+            progressBar.setValue((int) Math.round(MediaClient.progressValue * 300));
         }
-        currentTimeLabel.setText(Text.of(MediaClient.currentlyPlaying.progressLabel));
-        playPauseButton.setLabel(Text.of(MediaClient.currentlyPlaying.isPlaying ? "⏸" : "⏹"));
+        currentTimeLabel.setText(Text.of(MediaClient.progressLabel));
+        playPauseButton.setLabel(Text.of(MediaClient.isPlaying ? "⏸" : "⏹"));
     }
     public void updateNowPlaying() {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) {
