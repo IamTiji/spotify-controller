@@ -131,6 +131,12 @@ public class SongDataExtractor {
     public static boolean isExplicit(JsonObject trackObj) {
         return trackObj.get("item").getAsJsonObject().get("explicit").getAsBoolean();
     }
+    public static boolean getShuffleState(JsonObject trackObj) {
+        return trackObj.get("shuffle_state").getAsBoolean();
+    }
+    public static String getRepeatState(JsonObject trackObj) {
+        return trackObj.get("repeat_state").getAsString();
+    }
     public static void reloadData(boolean forceFullReload, Runnable onNoUpdate, Runnable onDataUpdate, Runnable onImageLoad) {
         ApiCalls.getNowPlayingTrack(data -> {
             boolean isSongDifferent = !getId(data).equals(MediaClient.currentlyPlaying.Id);
@@ -138,6 +144,8 @@ public class SongDataExtractor {
             MediaClient.progressLabel = getProgressLabel(data);
             MediaClient.isPlaying = isPlaying(data);
             MediaClient.progressValue = getDuration(data);
+            MediaClient.repeat = getRepeatState(data);
+            MediaClient.shuffle = getShuffleState(data);
 
             if (isSongDifferent || forceFullReload) {
                 MediaClient.currentlyPlaying = getDataFor(data, onImageLoad);

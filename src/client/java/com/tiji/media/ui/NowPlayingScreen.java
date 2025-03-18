@@ -3,6 +3,7 @@ package com.tiji.media.ui;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
+import com.tiji.media.repeatMode;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
@@ -31,6 +32,8 @@ public class NowPlayingScreen extends LightweightGuiDescription {
     public WLabel currentTimeLabel = new WLabel(Text.translatable("ui.media.unknown_time"));
     public borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Text.literal("2").setStyle(ICON));
     public WSprite albumCover = new WSprite(Identifier.of("media", "ui/nothing.png"));
+    public borderlessButtonWidget repeat = new borderlessButtonWidget(repeatMode.getAsText(MediaClient.repeat));
+    public borderlessButtonWidget shuffle = new borderlessButtonWidget(Text.literal("4").setStyle(ICON));
 
     public NowPlayingScreen() {
         WPlainPanel root = new RootPanel();
@@ -50,6 +53,12 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         artistName = artistName.setHorizontalAlignment(HorizontalAlignment.CENTER);
         root.add(artistName, 100, 135, 100, 20);
 
+        shuffle.setOnClick(() -> {
+            MediaClient.shuffle = !MediaClient.shuffle;
+            ApiCalls.setShuffle(MediaClient.shuffle);
+        });
+        root.add(shuffle, 100, 150, 20, 20);
+
         root.add(new borderlessButtonWidget(Text.literal("0").setStyle(ICON)).setOnClick(ApiCalls::previousTrack), 120, 150, 20, 20);
 
         playPauseButton.setOnClick(() -> {
@@ -62,6 +71,12 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         root.add(playPauseButton, 140, 150, 20, 20);
 
         root.add(new borderlessButtonWidget(Text.literal("1").setStyle(ICON)).setOnClick(ApiCalls::nextTrack), 160, 150, 20, 20);
+
+        repeat.setOnClick(() -> {
+            MediaClient.repeat = repeatMode.getNextMode(MediaClient.repeat);
+            ApiCalls.setRepeat(MediaClient.repeat);
+        });
+        root.add(repeat, 180, 150, 20, 20);
 
         currentTimeLabel = currentTimeLabel.setHorizontalAlignment(HorizontalAlignment.LEFT);
         root.add(currentTimeLabel, 10, 160, 60, 20);
@@ -84,6 +99,8 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         }
         currentTimeLabel.setText(Text.of(MediaClient.progressLabel));
         playPauseButton.setLabel(Text.literal(MediaClient.isPlaying ? "2" : "3").setStyle(ICON));
+        repeat.setLabel(repeatMode.getAsText(MediaClient.repeat));
+        shuffle.setLabel(Text.literal(MediaClient.shuffle ? "5" : "4").setStyle(ICON));
     }
     public void updateNowPlaying() {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) {

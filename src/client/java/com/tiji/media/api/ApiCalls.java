@@ -101,8 +101,8 @@ public class ApiCalls {
                 "PUT"
         );
     }
-    public static void setRepeat(boolean state) {
-        call("https://api.spotify.com/v1/me/player/repeat?state=" + (state ? "context" : "off"),
+    public static void setRepeat(String state) {
+        call("https://api.spotify.com/v1/me/player/repeat?state=" + state,
                 getAuthorizationCode(),
                 null,
                 body -> {},
