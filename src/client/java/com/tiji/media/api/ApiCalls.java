@@ -13,9 +13,11 @@ import net.minecraft.text.Text;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -125,10 +127,12 @@ public class ApiCalls {
         );
     }
     public static void getSearch(String query, Consumer<JsonArray> consumer) {
-        call("https://api.spotify.com/v1/search?q=" + query + "&type=track",
+        call("https://api.spotify.com/v1/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8) + "&type=track",
                 getAuthorizationCode(),
                 null,
-                body -> consumer.accept(new Gson().fromJson(body.body(), JsonObject.class).getAsJsonObject("tracks").getAsJsonArray("items")),
+                body -> consumer.accept(new Gson().fromJson(body.body(), JsonObject.class)
+                        .getAsJsonObject("tracks")
+                        .getAsJsonArray("items")),
                 "GET"
         );
     }
