@@ -34,6 +34,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
     public WSprite albumCover = new WSprite(Identifier.of("media", "ui/nothing.png"));
     public borderlessButtonWidget repeat = new borderlessButtonWidget(repeatMode.getAsText(MediaClient.repeat));
     public borderlessButtonWidget shuffle = new borderlessButtonWidget(Text.literal("4").setStyle(ICON));
+    public borderlessButtonWidget like = new borderlessButtonWidget(Text.literal("b").setStyle(ICON));
 
     public NowPlayingScreen() {
         WPlainPanel root = new RootPanel();
@@ -77,6 +78,12 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         });
         root.add(repeat, 180, 150, 20, 20);
 
+        like.setOnClick(() -> {
+            MediaClient.isLiked = !MediaClient.isLiked;
+            ApiCalls.toggleLikeSong(MediaClient.currentlyPlaying.Id, MediaClient.isLiked);
+        });
+        root.add(like, 200, 150, 20, 20);
+
         currentTimeLabel = currentTimeLabel.setHorizontalAlignment(HorizontalAlignment.LEFT);
         root.add(currentTimeLabel, 10, 160, 60, 20);
 
@@ -100,6 +107,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         playPauseButton.setLabel(Text.literal(MediaClient.isPlaying ? "2" : "3").setStyle(ICON));
         repeat.setLabel(repeatMode.getAsText(MediaClient.repeat));
         shuffle.setLabel(Text.literal(MediaClient.shuffle ? "5" : "4").setStyle(ICON));
+        like.setLabel(Text.literal(MediaClient.isLiked ? "b" : "a").setStyle(ICON));
     }
     public void updateNowPlaying() {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) {

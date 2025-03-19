@@ -3,11 +3,11 @@
       {
         "type": "bitmap",
         "file": "media:font/icons.png",
-        "height": 8,
-        "ascent": 7,
+        "height": 16,
+        "ascent": 12,
         "chars": [
           "01234567",
-          "89      "
+          "89abcde "
         ]
       }
     ]

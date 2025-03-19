@@ -3,6 +3,7 @@ package com.tiji.media.api;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.WebGuideServer;
@@ -107,6 +108,22 @@ public class ApiCalls {
                 "PUT"
         );
     }
+    public static void isSongLiked(String trackId, Consumer<Boolean> consumer) {
+        call("https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId,
+                getAuthorizationCode(),
+                null,
+                body -> consumer.accept(new Gson().fromJson(body.body(), JsonArray.class).get(0).getAsBoolean()),
+                "GET"
+        );
+    }
+    public static void toggleLikeSong(String trackId, boolean state) {
+        call("https://api.spotify.com/v1/me/tracks?ids=" + trackId,
+                getAuthorizationCode(),
+                null,
+                body -> {},
+                state ? "PUT" : "DELETE"
+        );
+    }
     public static void getSearch(String query, Consumer<JsonArray> consumer) {
         call("https://api.spotify.com/v1/search?q=" + query + "&type=track",
                 getAuthorizationCode(),
@@ -127,6 +144,7 @@ public class ApiCalls {
             case "GET" -> request.GET();
             case "POST" -> request.POST(HttpRequest.BodyPublishers.ofString(""));
             case "PUT" -> request.PUT(HttpRequest.BodyPublishers.ofString(""));
+            case "DELETE" -> request.DELETE();
             default -> request;
         };
 
@@ -136,19 +154,29 @@ public class ApiCalls {
                     return null;
                 })
                 .thenAccept(stringHttpResponse -> {
-                    String body = stringHttpResponse.body();
-                    JsonObject data = new Gson().fromJson(body, JsonObject.class);
+                    try {
+                        String body = stringHttpResponse.body();
+                        try {
+                            if (!body.isEmpty()) {
+                                JsonObject data = new Gson().fromJson(body, JsonObject.class);
 
-                    if (data.has("reason")) {
-                        if (data.get("reason").getAsString().equals("PREMIUM_REQUIRED")){
-                            MinecraftClient.getInstance().getToastManager().add(
-                                    new SystemToast(new SystemToast.Type(), Text.translatable("ui.media.premium_required.title"), Text.translatable("ui.media.premium_required.message"))
-                            );
+                                if (data.has("reason")) {
+                                    if (data.get("reason").getAsString().equals("PREMIUM_REQUIRED")) {
+                                        MinecraftClient.getInstance().getToastManager().add(
+                                                new SystemToast(new SystemToast.Type(), Text.translatable("ui.media.premium_required.title"), Text.translatable("ui.media.premium_required.message"))
+                                        );
+                                    }
+                                }
+                            }
+                        } catch (JsonSyntaxException e) {}
+                        if (stringHttpResponse.statusCode() >= 400) {
+                            Media.LOGGER.error("Failed to call API: {} (Status: {})", body, stringHttpResponse.statusCode());
+                            consumer.accept(null);
+                            return;
                         }
-                    }
-                    try{
                         consumer.accept(stringHttpResponse);
-                    }catch (Exception e){
+                    }
+                    catch (Exception e){
                         Media.LOGGER.error("Failed to consume API response: ");
                         e.printStackTrace();
                     }

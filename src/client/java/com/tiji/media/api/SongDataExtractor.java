@@ -38,7 +38,7 @@ public class SongDataExtractor {
         return artists.toString();
     }
     public static String getId(JsonObject trackObj) {
-        return trackObj.getAsJsonObject("item").get("id").getAsString().toLowerCase();
+        return trackObj.getAsJsonObject("item").get("id").getAsString();
     }
     public static URI getSpotifyLink(JsonObject trackObj) {
         return URI.create(
@@ -48,7 +48,7 @@ public class SongDataExtractor {
     @SuppressWarnings("deprecation") // It will be re-visited
     public static Identifier getAlbumCover(JsonObject trackObj) {
         try {
-            Identifier id = Identifier.of("media", getId(trackObj));
+            Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
 
             if (loadedCover.contains(id)) {
                 return id;
@@ -150,6 +150,10 @@ public class SongDataExtractor {
             if (isSongDifferent || forceFullReload) {
                 MediaClient.currentlyPlaying = getDataFor(data, onImageLoad);
             }
+
+            ApiCalls.isSongLiked(MediaClient.currentlyPlaying.Id, isLiked -> {
+                MediaClient.isLiked = isLiked;
+            });
             if (isSongDifferent || forceFullReload) {
                 onDataUpdate.run();
             }else{

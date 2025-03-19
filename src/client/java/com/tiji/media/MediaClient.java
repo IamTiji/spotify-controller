@@ -30,6 +30,7 @@ public class MediaClient implements ClientModInitializer {
 
 	public static String repeat;
 	public static boolean shuffle;
+	public static boolean isLiked;
 
 	public void onInitializeClient(){
 		CONFIG.generate();
