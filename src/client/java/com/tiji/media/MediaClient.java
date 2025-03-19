@@ -60,14 +60,12 @@ public class MediaClient implements ClientModInitializer {
 				}
 			}
 			if (!isNotSetup() && tickCount % 10 == 0){
-				if (nowPlayingScreen != null) {
-					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
-						nowPlayingScreen.updateCoverImage();
-						if (CONFIG.shouldShowToasts()) {
-							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
-						}
-					});
-				}
+				SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
+					nowPlayingScreen.updateCoverImage();
+					if (CONFIG.shouldShowToasts()) {
+						new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
+					}
+				});
 				if (CONFIG.lastRefresh() + 1.8e+6 < System.currentTimeMillis()) {
 					ApiCalls.refreshAccessToken();
 				}
