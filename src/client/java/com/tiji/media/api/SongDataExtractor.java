@@ -27,22 +27,22 @@ public class SongDataExtractor {
     private static final Style DEFAULT = Style.EMPTY.withFont(Identifier.ofVanilla("default"));
 
     public static String getName(JsonObject trackObj) {
-        return trackObj.getAsJsonObject("item").get("name").getAsString();
+        return trackObj.get("name").getAsString();
     }
     public static String getArtist(JsonObject trackObj) {
         StringBuilder artists = new StringBuilder();
-        for (var artist : trackObj.getAsJsonObject("item").getAsJsonArray("artists")) {
+        for (var artist : trackObj.getAsJsonArray("artists")) {
             artists.append(artist.getAsJsonObject().get("name").getAsString()).append(", ");
         }
         artists.setLength(artists.length() - 2); // Remove trailing comma and space
         return artists.toString();
     }
     public static String getId(JsonObject trackObj) {
-        return trackObj.getAsJsonObject("item").get("id").getAsString();
+        return trackObj.get("id").getAsString();
     }
     public static URI getSpotifyLink(JsonObject trackObj) {
         return URI.create(
-                trackObj.getAsJsonObject("item").getAsJsonObject("external_urls").get("spotify").getAsString()
+                trackObj.getAsJsonObject("external_urls").get("spotify").getAsString()
         );
     }
     @SuppressWarnings("deprecation") // It will be re-visited
@@ -58,22 +58,18 @@ public class SongDataExtractor {
 
             int wantedSize = 100 * MinecraftClient.getInstance().options.getGuiScale().getValue();
             int closest = Integer.MAX_VALUE;
-            String closestUrl = trackObj.getAsJsonObject("item")
-                    .getAsJsonObject("album")
+            String closestUrl = trackObj.getAsJsonObject("album")
                     .getAsJsonArray("images").get(0)
                     .getAsJsonObject().get("url").getAsString();
 
-            for (int i = 0; i < trackObj.getAsJsonObject("item")
-                    .getAsJsonObject("album")
+            for (int i = 0; i < trackObj.getAsJsonObject("album")
                     .getAsJsonArray("images").size(); i++) {
-                int size = trackObj.getAsJsonObject("item")
-                        .getAsJsonObject("album")
+                int size = trackObj.getAsJsonObject("album")
                         .getAsJsonArray("images").get(i)
                         .getAsJsonObject().get("height").getAsInt();
                 if (closest > size && size >= wantedSize) {
                     closest = size;
-                    closestUrl = trackObj.getAsJsonObject("item")
-                            .getAsJsonObject("album")
+                    closestUrl = trackObj.getAsJsonObject("album")
                             .getAsJsonArray("images").get(i)
                             .getAsJsonObject().get("url").getAsString();
                 }
@@ -103,7 +99,7 @@ public class SongDataExtractor {
                         .get("duration_ms").getAsDouble();
     }
     public static String getDurationLabel(JsonObject trackObj) {
-        int duration = trackObj.getAsJsonObject("item").get("duration_ms").getAsInt();
+        int duration = trackObj.get("duration_ms").getAsInt();
 
         duration /= 1000;
 
@@ -126,10 +122,10 @@ public class SongDataExtractor {
         return trackObj.get("is_playing").getAsBoolean();
     }
     public static int getMaxDuration(JsonObject trackObj) {
-        return trackObj.getAsJsonObject("item").get("duration_ms").getAsInt();
+        return trackObj.get("duration_ms").getAsInt();
     }
     public static boolean isExplicit(JsonObject trackObj) {
-        return trackObj.get("item").getAsJsonObject().get("explicit").getAsBoolean();
+        return trackObj.get("explicit").getAsBoolean();
     }
     public static boolean getShuffleState(JsonObject trackObj) {
         return trackObj.get("shuffle_state").getAsBoolean();
@@ -139,7 +135,8 @@ public class SongDataExtractor {
     }
     public static void reloadData(boolean forceFullReload, Runnable onNoUpdate, Runnable onDataUpdate, Runnable onImageLoad) {
         ApiCalls.getNowPlayingTrack(data -> {
-            boolean isSongDifferent = !getId(data).equals(MediaClient.currentlyPlaying.Id);
+            if (data == null) return;
+            boolean isSongDifferent = !getId(data.getAsJsonObject("item")).equals(MediaClient.currentlyPlaying.Id);
 
             MediaClient.progressLabel = getProgressLabel(data);
             MediaClient.isPlaying = isPlaying(data);
@@ -148,7 +145,7 @@ public class SongDataExtractor {
             MediaClient.shuffle = getShuffleState(data);
 
             if (isSongDifferent || forceFullReload) {
-                MediaClient.currentlyPlaying = getDataFor(data, onImageLoad);
+                MediaClient.currentlyPlaying = getDataFor(data.getAsJsonObject("item"), onImageLoad);
             }
 
             ApiCalls.isSongLiked(MediaClient.currentlyPlaying.Id, isLiked -> {

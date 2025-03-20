@@ -114,7 +114,9 @@ public class ApiCalls {
         call("https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId,
                 getAuthorizationCode(),
                 null,
-                body -> consumer.accept(new Gson().fromJson(body.body(), JsonArray.class).get(0).getAsBoolean()),
+                body -> {
+                    consumer.accept(new Gson().fromJson(body.body(), JsonArray.class).get(0).getAsBoolean());
+                },
                 "GET"
         );
     }
@@ -136,7 +138,24 @@ public class ApiCalls {
                 "GET"
         );
     }
-    private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method) {
+    public static void setPlayingSong(String trackId) {
+        call("https://api.spotify.com/v1/me/player/play",
+                getAuthorizationCode(),
+                null,
+                body -> {},
+                "PUT",
+                "{\"uris\": [\"spotify:track:" + trackId + "\"]}"
+        );
+    }
+    public static void addSongToQueue(String trackId){
+        call("https://api.spotify.com/v1/me/player/queue?uri=spotify:track:" + trackId,
+                getAuthorizationCode(),
+                null,
+                body -> {},
+                "POST"
+        );
+    }
+    private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method, String requestBody) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder request = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
@@ -144,10 +163,12 @@ public class ApiCalls {
                 .header("Authorization", Authorization);
         if (ContentType != null) request.header("Content-Type", ContentType);
 
+        HttpRequest.BodyPublisher publisher = HttpRequest.BodyPublishers.ofString(requestBody);
+
         request = switch (method) {
             case "GET" -> request.GET();
-            case "POST" -> request.POST(HttpRequest.BodyPublishers.ofString(""));
-            case "PUT" -> request.PUT(HttpRequest.BodyPublishers.ofString(""));
+            case "POST" -> request.POST(publisher);
+            case "PUT" -> request.PUT(publisher);
             case "DELETE" -> request.DELETE();
             default -> request;
         };
@@ -159,10 +180,10 @@ public class ApiCalls {
                 })
                 .thenAccept(stringHttpResponse -> {
                     try {
-                        String body = stringHttpResponse.body();
+                        String responseBody = stringHttpResponse.body();
                         try {
-                            if (!body.isEmpty()) {
-                                JsonObject data = new Gson().fromJson(body, JsonObject.class);
+                            if (!responseBody.isEmpty()) {
+                                JsonObject data = new Gson().fromJson(responseBody, JsonObject.class);
 
                                 if (data.has("reason")) {
                                     if (data.get("reason").getAsString().equals("PREMIUM_REQUIRED")) {
@@ -174,7 +195,7 @@ public class ApiCalls {
                             }
                         } catch (JsonSyntaxException e) {}
                         if (stringHttpResponse.statusCode() >= 400) {
-                            Media.LOGGER.error("Failed to call API: {} (Status: {})", body, stringHttpResponse.statusCode());
+                            Media.LOGGER.error("Failed to call API: {} (Status: {})", responseBody, stringHttpResponse.statusCode());
                             consumer.accept(null);
                             return;
                         }
@@ -185,6 +206,9 @@ public class ApiCalls {
                         e.printStackTrace();
                     }
                 });
+    }
+    private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method) {
+        call(endpoint, Authorization, ContentType, consumer, method, "");
     }
     private static String getAuthorizationHeader() {
         String clientId = MediaClient.CONFIG.clientId();

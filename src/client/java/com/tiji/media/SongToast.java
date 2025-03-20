@@ -29,6 +29,9 @@ public class SongToast implements Toast {
 
     @Override
     public Visibility getVisibility() {
+        if (this.startTime == null) {
+            return Visibility.SHOW;
+        }
         return System.currentTimeMillis() - this.startTime > 3000 ? Visibility.HIDE : Visibility.SHOW;
     }
 

@@ -24,13 +24,15 @@ public class MediaClient implements ClientModInitializer {
 
 	public static SongData currentlyPlaying = new SongData();
 
-	public static String progressLabel;
-	public static boolean isPlaying;
-	public static double progressValue;
+	public static String progressLabel = "00:00";
+	public static boolean isPlaying = false;
+	public static double progressValue = 0;
 
-	public static String repeat;
-	public static boolean shuffle;
-	public static boolean isLiked;
+	public static String repeat = "off";
+	public static boolean shuffle = false;
+	public static boolean isLiked = false;
+
+	public static boolean isStarted = false;
 
 	public void onInitializeClient(){
 		CONFIG.generate();
@@ -47,6 +49,7 @@ public class MediaClient implements ClientModInitializer {
 		}
 		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> {
 			SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
+			isStarted = true;
 		});
 		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
 			while (SETUP_KEY.wasPressed()) {
@@ -60,12 +63,17 @@ public class MediaClient implements ClientModInitializer {
 				}
 			}
 			if (!isNotSetup() && tickCount % 10 == 0){
-				SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
-					nowPlayingScreen.updateCoverImage();
-					if (CONFIG.shouldShowToasts()) {
-						new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
-					}
-				});
+				if (nowPlayingScreen!= null) {
+					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
+						nowPlayingScreen.updateCoverImage();
+					});
+				}else{
+					SongDataExtractor.reloadData(false, () -> {}, () -> {}, () -> {
+						if (CONFIG.shouldShowToasts() && isStarted) {
+							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
+						}
+					});
+				}
 				if (CONFIG.lastRefresh() + 1.8e+6 < System.currentTimeMillis()) {
 					ApiCalls.refreshAccessToken();
 				}

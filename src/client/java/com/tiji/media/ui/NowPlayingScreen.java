@@ -4,11 +4,14 @@ import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.repeatMode;
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -53,6 +56,12 @@ public class NowPlayingScreen extends LightweightGuiDescription {
 
         artistName = artistName.setHorizontalAlignment(HorizontalAlignment.CENTER);
         root.add(artistName, 100, 135, 100, 20);
+
+        root.add(new borderlessButtonWidget(Text.literal("c").setStyle(ICON)).setOnClick(() -> {
+            Screen screen = new CottonClientScreen(new SearchScreen());
+            MinecraftClient.getInstance().setScreen(screen);
+            MediaClient.nowPlayingScreen = null;
+        }), 80, 150, 20, 20);
 
         shuffle.setOnClick(() -> {
             MediaClient.shuffle = !MediaClient.shuffle;
