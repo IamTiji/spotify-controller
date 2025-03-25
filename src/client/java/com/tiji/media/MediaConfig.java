@@ -52,7 +52,7 @@ public class MediaConfig {
                 lastRefresh = config.get("lastRefresh").getAsLong();
                 shouldShowToasts = config.get("shouldShowToasts").getAsBoolean();
             }catch (Exception e) {
-                e.printStackTrace();
+                writeToFile();
             }
         }else{
             writeToFile(false);
