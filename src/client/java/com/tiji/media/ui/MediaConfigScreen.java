@@ -19,7 +19,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         AtomicBoolean confirmReset = new AtomicBoolean(false);
 
         WPlainPanel root = new WPlainPanel();
-        root.setSize(200, 100);
+        root.setSize(300, 200);
         root.setInsets(Insets.NONE);
         
         Text statusText;
@@ -31,7 +31,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         }
         
         WLabel status = new WLabel(statusText);
-        root.add(status, 10, 10, 180, 20);
+        root.add(status, 10, 10, 280, 20);
 
         ApiCalls.getUserName((name) -> {
             status.setText(Text.translatable("ui.media.status.setup", name));
@@ -55,7 +55,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
                 confirmReset.set(true);
             }
         });
-        root.add(reset, 10, 40, 180, 20);
+        root.add(reset, 10, 40, 280, 20);
 
         WToggleButton toastToggle = new WToggleButton(Text.translatable("ui.media.show_toast")).setOnToggle(
                 MediaClient.CONFIG::shouldShowToasts
