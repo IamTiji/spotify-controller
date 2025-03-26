@@ -2,27 +2,15 @@ package com.tiji.media.api;
 
 import com.google.gson.JsonObject;
 import com.tiji.media.MediaClient;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 public class SongDataExtractor {
-    private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
     private static final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
     private static final Style DEFAULT = Style.EMPTY.withFont(Identifier.ofVanilla("default"));
 
@@ -45,54 +33,7 @@ public class SongDataExtractor {
                 trackObj.getAsJsonObject("external_urls").get("spotify").getAsString()
         );
     }
-    @SuppressWarnings("deprecation") // It will be re-visited
-    public static Identifier getAlbumCover(JsonObject trackObj) {
-        try {
-            Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
 
-            if (loadedCover.contains(id)) {
-                return id;
-            } else{
-                loadedCover.add(id);
-            }
-
-            int wantedSize = 100 * MinecraftClient.getInstance().options.getGuiScale().getValue();
-            int closest = Integer.MAX_VALUE;
-            String closestUrl = trackObj.getAsJsonObject("album")
-                    .getAsJsonArray("images").get(0)
-                    .getAsJsonObject().get("url").getAsString();
-
-            for (int i = 0; i < trackObj.getAsJsonObject("album")
-                    .getAsJsonArray("images").size(); i++) {
-                int size = trackObj.getAsJsonObject("album")
-                        .getAsJsonArray("images").get(i)
-                        .getAsJsonObject().get("height").getAsInt();
-                if (closest > size && size >= wantedSize) {
-                    closest = size;
-                    closestUrl = trackObj.getAsJsonObject("album")
-                            .getAsJsonArray("images").get(i)
-                            .getAsJsonObject().get("url").getAsString();
-                }
-            }
-            InputStream albumCoverUrl = new URL(closestUrl).openStream();
-
-            // Spotify provides JPEG image that Minecraft cannot handle
-            // Convert to PNG
-            BufferedImage jpegImage = ImageIO.read(albumCoverUrl);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ImageIO.write(jpegImage, "png", outputStream);
-            ByteArrayInputStream imageStream = new ByteArrayInputStream(outputStream.toByteArray());
-
-            NativeImage image = NativeImage.read(imageStream);
-            MinecraftClient.getInstance().getTextureManager().registerTexture(id,
-                    new NativeImageBackedTexture(image));
-
-            return id;
-        }catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
     public static double getDuration(JsonObject trackObj) {
         return trackObj.get("progress_ms").getAsDouble()/
                 trackObj.getAsJsonObject("item")
@@ -173,8 +114,7 @@ public class SongDataExtractor {
             song.coverImage = Identifier.of("media", "ui/nothing.png");
         }
 
-        CompletableFuture<Identifier> ImageIOFuture = CompletableFuture.supplyAsync(() -> getAlbumCover(data));
-        ImageIOFuture.thenAccept(id -> {
+        ImageDownloader.addDownloadTask(data, id -> {
             song.coverImage = id;
             if (onImageLoad != null) {
                 onImageLoad.run();

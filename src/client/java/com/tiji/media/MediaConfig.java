@@ -16,6 +16,7 @@ public class MediaConfig {
     private String refreshToken = "";
     private long lastRefresh = 0;
     private boolean shouldShowToasts = true;
+    private byte imageIoThreadCount = 4;
 
     public String clientId() {return clientId;}
     public void clientId(String value) {clientId = value; writeToFile();}
@@ -38,6 +39,9 @@ public class MediaConfig {
     public boolean shouldShowToasts() {return shouldShowToasts;}
     public void shouldShowToasts(boolean value) {shouldShowToasts = value; writeToFile();}
 
+    public byte imageIoThreadCount() {return imageIoThreadCount;}
+    public void imageIoThreadCount(byte value) {imageIoThreadCount = value; writeToFile();}
+
     public void generate() {
         Path configPath = FabricLoader.getInstance().getConfigDir().resolve("media.json");
         if (Files.exists(configPath)) {
@@ -51,6 +55,7 @@ public class MediaConfig {
                 refreshToken = config.get("refreshToken").getAsString();
                 lastRefresh = config.get("lastRefresh").getAsLong();
                 shouldShowToasts = config.get("shouldShowToasts").getAsBoolean();
+                imageIoThreadCount = config.get("imageIoThreadCount").getAsByte();
             }catch (Exception e) {
                 writeToFile();
             }
@@ -69,6 +74,7 @@ public class MediaConfig {
         config.addProperty("refreshToken", refreshToken);
         config.addProperty("lastRefresh", lastRefresh);
         config.addProperty("shouldShowToasts", shouldShowToasts);
+        config.addProperty("imageIoThreadCount", imageIoThreadCount);
         try {
             Files.write(configPath, new Gson().toJson(config).getBytes(), delete ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW);
         }catch (Exception e) {
@@ -85,5 +91,7 @@ public class MediaConfig {
         this.accessToken("");
         this.authToken("");
         this.refreshToken("");
+        this.shouldShowToasts(true);
+        this.imageIoThreadCount((byte) 4);
     }
 }

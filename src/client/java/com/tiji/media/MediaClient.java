@@ -1,6 +1,7 @@
 package com.tiji.media;
 
 import com.tiji.media.api.ApiCalls;
+import com.tiji.media.api.ImageDownloader;
 import com.tiji.media.api.SongData;
 import com.tiji.media.api.SongDataExtractor;
 import com.tiji.media.ui.NowPlayingScreen;
@@ -37,6 +38,7 @@ public class MediaClient implements ClientModInitializer {
 	public void onInitializeClient(){
 		CONFIG.generate();
 		KeyBindingHelper.registerKeyBinding(SETUP_KEY);
+		ImageDownloader.startThreads();
 
 		if (isNotSetup()){
 			try{
@@ -69,7 +71,6 @@ public class MediaClient implements ClientModInitializer {
 						if (CONFIG.shouldShowToasts() && isStarted) {
 							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
 						}
-						
 					});
 				}else{
 					SongDataExtractor.reloadData(false, () -> {}, () -> {}, () -> {
