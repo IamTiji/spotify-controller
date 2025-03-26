@@ -21,7 +21,10 @@
   "ui.media.premium_required.title": "Premium Required",
   "ui.media.premium_required.message": "Premium is required. This is Spotify's built-in limitation",
 
-  "ui.media.show_toast": "Show toast notifications when song changes",
+  "ui.media.config.head": "Options",
+  "ui.media.config.head_advanced": "Advanced Options",
+  "ui.media.config.show_toast": "Show toast notifications when song changes",
+  "ui.media.config.thread_image_io": "Number of thread for image downloading (Restart needed)",
 
   "key.media.general": "Open Config / Controller",
 

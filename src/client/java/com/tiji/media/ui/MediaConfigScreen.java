@@ -3,11 +3,9 @@ package com.tiji.media.ui;
 import com.tiji.media.MediaClient;
 import com.tiji.media.WebGuideServer;
 import com.tiji.media.api.ApiCalls;
+import com.tiji.media.widgets.intInputWidget;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WButton;
-import io.github.cottonmc.cotton.gui.widget.WLabel;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WToggleButton;
+import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.minecraft.text.Text;
 
@@ -57,11 +55,31 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         });
         root.add(reset, 10, 40, 280, 20);
 
-        WToggleButton toastToggle = new WToggleButton(Text.translatable("ui.media.show_toast")).setOnToggle(
+        root.add(new WLabel(Text.translatable("ui.media.config.head")), 10, 80, 280, 20);
+
+        WToggleButton toastToggle = new WToggleButton(Text.translatable("ui.media.config.show_toast")).setOnToggle(
                 MediaClient.CONFIG::shouldShowToasts
         );
         toastToggle.setToggle(MediaClient.CONFIG.shouldShowToasts());
-        root.add(toastToggle, 10, 60, 180, 20);
+        root.add(toastToggle, 10, 90, 180, 20);
+
+        root.add(new WLabel(Text.translatable("ui.media.config.head_advanced")), 10, 120, 280, 20);
+
+        root.add(new WLabel(Text.translatable("ui.media.config.thread_image_io")), 10, 140, 280, 20);
+        intInputWidget threadImageIoField = new intInputWidget();
+        threadImageIoField.setText(String.valueOf(MediaClient.CONFIG.imageIoThreadCount()));
+        threadImageIoField.setOnCharTyped((value) -> {
+            try {
+                byte count = Byte.parseByte(value);
+                if (count > 0) {
+                    MediaClient.CONFIG.imageIoThreadCount(count);
+                }
+            } catch (NumberFormatException e) {
+                // Ignore invalid input
+            }
+        });
+
+        root.add(threadImageIoField, 10, 155, 280, 20);
 
         root.validate(this);
         setRootPanel(root);
