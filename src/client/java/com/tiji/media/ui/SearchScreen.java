@@ -7,13 +7,11 @@ import com.tiji.media.api.ApiCalls;
 import com.tiji.media.widgets.songListItem;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
-import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.gui.DrawContext;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import com.tiji.media.widgets.*;
 
 public class SearchScreen extends LightweightGuiDescription {
     private static class RootPanel extends WPlainPanel {
@@ -38,24 +36,8 @@ public class SearchScreen extends LightweightGuiDescription {
             }
         }
     }
-    private static class SearchInput extends WTextField {
-        private @Nullable Consumer<String> consumer;
-        public SearchInput() {
-            super();
-        }
 
-        @Override
-        public InputResult onKeyReleased(int ch, int key, int modifiers) {
-            InputResult result = super.onKeyReleased(ch, key, modifiers);
-            if (consumer != null && !getText().isEmpty()) consumer.accept(getText());
-            return result;
-        }
-        public void setOnSearch(Consumer<String> consumer) {
-            this.consumer = consumer;
-        }
-    }
-
-    SearchInput searchField = new SearchInput();
+    stringInputWidget searchField = new stringInputWidget();
     SongList listBox = new SongList();
     WScrollPanel scrollPanel = new WScrollPanel(listBox)
             .setScrollingVertically(TriState.TRUE)
@@ -69,7 +51,7 @@ public class SearchScreen extends LightweightGuiDescription {
         root.setInsets(Insets.NONE);
 
         searchField.setMaxLength(100);
-        searchField.setOnSearch((q) -> {
+        searchField.setOnCharTyped((q) -> {
             ApiCalls.getSearch(q, results -> {
                 listBox.addTask(() -> {
                     listBox.clear();
