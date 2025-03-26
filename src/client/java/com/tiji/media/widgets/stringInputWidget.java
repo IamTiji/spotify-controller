@@ -18,6 +18,21 @@ public class stringInputWidget extends WTextField {
         if (consumer != null && !getText().isEmpty()) consumer.accept(getText());
         return result;
     }
+
+    @Override
+    public InputResult onKeyPressed(int keyCode, int scanCode, int modifiers) {
+        InputResult result = super.onKeyPressed(keyCode, scanCode, modifiers);
+        if (consumer!= null &&!getText().isEmpty()) consumer.accept(getText());
+        return result;
+    }
+
+    @Override
+    public InputResult onKeyReleased(int keyCode, int scanCode, int modifiers) {
+        InputResult result = super.onKeyReleased(keyCode, scanCode, modifiers);
+        if (consumer!= null &&!getText().isEmpty()) consumer.accept(getText());
+        return result;
+    }
+
     public void setOnCharTyped(Consumer<String> consumer) {
         this.consumer = consumer;
     }
