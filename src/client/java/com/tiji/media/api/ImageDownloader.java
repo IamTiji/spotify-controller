@@ -94,7 +94,7 @@ public class ImageDownloader {
                             try {
                                 Thread.sleep(100);
                             } catch (InterruptedException e) {
-                                return;
+                                Thread.currentThread().interrupt();
                             }
                         }
                         JsonObject data;
