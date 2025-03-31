@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
+import com.tiji.media.util.Task;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -17,14 +18,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Consumer;
 
 import static com.tiji.media.api.SongDataExtractor.*;
 public class ImageDownloader {
     private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
-    private static final Map<JsonObject, Consumer<Identifier>> tasks = new HashMap<>(100);
+    private static final ArrayBlockingQueue<Task<JsonObject, Identifier>> queue = new ArrayBlockingQueue<>(200); //Probably this is enough...
 
     @SuppressWarnings("deprecation") // It will be re-visited
     private static Identifier getAlbumCover(JsonObject trackObj) {
@@ -75,11 +75,11 @@ public class ImageDownloader {
     }
 
     public static void addDownloadTask(JsonObject data, Consumer<Identifier> callback) {
-        tasks.put(data, callback);
         if (loadedCover.contains(Identifier.of("media", getId(data).toLowerCase()))){
             callback.accept(Identifier.of("media", getId(data).toLowerCase()));
             return;
         }
+        queue.add(new Task<>(data, callback));
         Media.LOGGER.debug("Added download task for {}", getId(data));
     }
 
