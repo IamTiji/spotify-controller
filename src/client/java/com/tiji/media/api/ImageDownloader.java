@@ -87,44 +87,42 @@ public class ImageDownloader {
 
     public static void startThreads() {
         for (int i = 0; i < MediaClient.CONFIG.imageIoThreadCount(); i++) {
-            Thread thread = new Thread(null, () -> {
-                while (!Thread.interrupted()) {
-                    try {
-                        while (tasks.isEmpty()) {
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                            }
-                        }
-                        JsonObject data;
-                        Consumer<Identifier> callback;
-                        try {
-                            data = tasks.keySet().iterator().next();
-                            callback = tasks.remove(data);
-                        } catch (NullPointerException e) {
-                            continue; // Other thread already took this task
-                        }
-
-                        if (callback == null) {
-                            getAlbumCover(data);
-                            return;
-                        }
-                        callback.accept(getAlbumCover(data));
-                        Media.LOGGER.debug("Finished downloading cover for {}", getId(data));
-                    } catch (Exception e) {
-                        StringBuilder sb = new StringBuilder();
-                        for (StackTraceElement element : e.getStackTrace()) {
-                            sb.append("at ");
-                            sb.append(element.toString()).append("\n");
-                        }
-                        Media.LOGGER.error("Error in Image-IO thread: {}\n{}", e.getLocalizedMessage(), sb);
-                        // Exception shouldn't stop thread
-                        // They are mostly not from IO
-                    }
-                }
-            }, "Image-IO-" + i);
+            Thread thread = new Thread(null, ImageDownloader::threadWorker, "Image-IO-" + i);
             thread.start();
+        }
+    }
+
+    private static void threadWorker(){
+        while (!Thread.interrupted()) {
+            try {
+                while (tasks.isEmpty()) {
+                    Thread.sleep(100);
+                }
+                JsonObject data;
+                Consumer<Identifier> callback;
+                try {
+                    data = tasks.keySet().iterator().next();
+                    callback = tasks.remove(data);
+                } catch (NullPointerException e) {
+                    continue; // Other thread already took this task
+                }
+
+                if (callback == null) {
+                    getAlbumCover(data);
+                    return;
+                }
+                callback.accept(getAlbumCover(data));
+                Media.LOGGER.debug("Finished downloading cover for {}", getId(data));
+            } catch (Exception e) {
+                StringBuilder sb = new StringBuilder();
+                for (StackTraceElement element : e.getStackTrace()) {
+                    sb.append("at ");
+                    sb.append(element.toString()).append("\n");
+                }
+                Media.LOGGER.error("Error in Image-IO thread: {}\n{}", e.getLocalizedMessage(), sb);
+                // Exception shouldn't stop thread
+                // They are mostly not from IO
+            }
         }
     }
 }
