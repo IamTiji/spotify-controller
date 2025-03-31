@@ -31,12 +31,6 @@ public class ImageDownloader {
         try {
             Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
 
-            if (loadedCover.contains(id)) {
-                return id;
-            } else{
-                loadedCover.add(id);
-            }
-
             int wantedSize = 100 * MinecraftClient.getInstance().options.getGuiScale().getValue();
             int closest = Integer.MAX_VALUE;
             JsonArray ImageList = trackObj.getAsJsonObject("album")
@@ -82,6 +76,10 @@ public class ImageDownloader {
 
     public static void addDownloadTask(JsonObject data, Consumer<Identifier> callback) {
         tasks.put(data, callback);
+        if (loadedCover.contains(Identifier.of("media", getId(data).toLowerCase()))){
+            callback.accept(Identifier.of("media", getId(data).toLowerCase()));
+            return;
+        }
         Media.LOGGER.debug("Added download task for {}", getId(data));
     }
 
@@ -95,24 +93,10 @@ public class ImageDownloader {
     private static void threadWorker(){
         while (!Thread.interrupted()) {
             try {
-                while (tasks.isEmpty()) {
-                    Thread.sleep(100);
-                }
-                JsonObject data;
-                Consumer<Identifier> callback;
-                try {
-                    data = tasks.keySet().iterator().next();
-                    callback = tasks.remove(data);
-                } catch (NullPointerException e) {
-                    continue; // Other thread already took this task
-                }
+                Task<JsonObject, Identifier> task = queue.take();
 
-                if (callback == null) {
-                    getAlbumCover(data);
-                    return;
-                }
-                callback.accept(getAlbumCover(data));
-                Media.LOGGER.debug("Finished downloading cover for {}", getId(data));
+                task.run(getAlbumCover(task.getTask()));
+                Media.LOGGER.debug("Finished downloading cover for {}", getId(task.getTask()));
             } catch (Exception e) {
                 StringBuilder sb = new StringBuilder();
                 for (StackTraceElement element : e.getStackTrace()) {
