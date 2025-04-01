@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import static com.tiji.media.api.SongDataExtractor.*;
 public class ImageDownloader {
     private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
-    private static final ArrayBlockingQueue<Task<JsonObject, Identifier>> queue = new ArrayBlockingQueue<>(200); //Probably this is enough...
+    private static final ArrayBlockingQueue<Task<JsonObject, Identifier>> queue = new ArrayBlockingQueue<>(500); //Probably this is enough...
 
     @SuppressWarnings("deprecation") // It will be re-visited
     private static Identifier getAlbumCover(JsonObject trackObj) {
