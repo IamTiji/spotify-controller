@@ -30,6 +30,7 @@ public class ImageDownloader {
     private static Identifier getAlbumCover(JsonObject trackObj) {
         try {
             Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
+            loadedCover.add(id);
 
             int wantedSize = 100 * MinecraftClient.getInstance().options.getGuiScale().getValue();
             int closest = Integer.MAX_VALUE;
