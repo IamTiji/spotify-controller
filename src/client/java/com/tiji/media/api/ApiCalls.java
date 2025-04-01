@@ -174,38 +174,35 @@ public class ApiCalls {
         };
 
         client.sendAsync(request.build(), HttpResponse.BodyHandlers.ofString())
-                .exceptionally(e -> {
-                    Media.LOGGER.error("Failed to call API: {}", e.getMessage());
-                    return null;
-                })
-                .thenAccept(stringHttpResponse -> {
-                    try {
-                        String responseBody = stringHttpResponse.body();
-                        try {
-                            if (!responseBody.isEmpty()) {
-                                JsonObject data = new Gson().fromJson(responseBody, JsonObject.class);
+        .exceptionally(e -> {
+            Media.LOGGER.error("Failed to call API: {}", e.getMessage());
+            return null;
+        })
+        .thenAccept(stringHttpResponse -> {
+            if (stringHttpResponse == null) {
+                Media.LOGGER.warn("Empty response");
+                return;
+            }
+            String responseBody = stringHttpResponse.body();
+            if (responseBody.isEmpty()) {
+                Media.LOGGER.warn("Empty response body");
+                return;
+            }
+            try {
+                JsonObject data = new Gson().fromJson(responseBody, JsonObject.class);
 
-                                if (data.has("reason")) {
-                                    if (data.get("reason").getAsString().equals("PREMIUM_REQUIRED")) {
-                                        MinecraftClient.getInstance().getToastManager().add(
-                                                new SystemToast(new SystemToast.Type(), Text.translatable("ui.media.premium_required.title"), Text.translatable("ui.media.premium_required.message"))
-                                        );
-                                    }
-                                }
-                            }
-                        } catch (JsonSyntaxException e) {}
-                        if (stringHttpResponse.statusCode() >= 400) {
-                            Media.LOGGER.error("Failed to call API: {} (Status: {})", responseBody, stringHttpResponse.statusCode());
-                            consumer.accept(null);
-                            return;
-                        }
-                        consumer.accept(stringHttpResponse);
-                    }
-                    catch (Exception e){
-                        Media.LOGGER.error("Failed to consume API response: ");
-                        e.printStackTrace();
-                    }
-                });
+                if (data.get("reason").getAsString().equals("PREMIUM_REQUIRED")) {
+                    MinecraftClient.getInstance().getToastManager().add(
+                            new SystemToast(new SystemToast.Type(), Text.translatable("ui.media.premium_required.title"), Text.translatable("ui.media.premium_required.message"))
+                    );
+                }
+            } catch (JsonSyntaxException | NullPointerException ignored) {}
+            if (stringHttpResponse.statusCode() >= 400) {
+                Media.LOGGER.error("Failed to call API: {} (Status: {})", responseBody, stringHttpResponse.statusCode());
+                return;
+            }
+            consumer.accept(stringHttpResponse);
+        });
     }
     private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method) {
         call(endpoint, Authorization, ContentType, consumer, method, "");
