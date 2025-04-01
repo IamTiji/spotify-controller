@@ -77,6 +77,7 @@ public class ImageDownloader {
 
     public static void addDownloadTask(JsonObject data, Consumer<Identifier> callback) {
         if (loadedCover.contains(Identifier.of("media", getId(data).toLowerCase()))){
+            Media.LOGGER.debug("Cache hit for {}", getId(data));
             callback.accept(Identifier.of("media", getId(data).toLowerCase()));
             return;
         }
