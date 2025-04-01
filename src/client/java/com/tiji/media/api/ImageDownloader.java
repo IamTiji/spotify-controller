@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
-import com.tiji.media.util.Task;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -18,19 +18,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static com.tiji.media.api.SongDataExtractor.*;
 public class ImageDownloader {
     private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
-    private static final ArrayBlockingQueue<Task<JsonObject, Identifier>> queue = new ArrayBlockingQueue<>(500); //Probably this is enough...
+    private static final ArrayBlockingQueue<JsonObject> queue = new ArrayBlockingQueue<>(200);
+    private static final HashMap<JsonObject, ArrayList<Consumer<Identifier>>> onComplete = new HashMap<>();
 
     @SuppressWarnings("deprecation") // It will be re-visited
     private static Identifier getAlbumCover(JsonObject trackObj) {
         try {
             Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
-            loadedCover.add(id);
 
             int wantedSize = 100 * MinecraftClient.getInstance().options.getGuiScale().getValue();
             int closest = Integer.MAX_VALUE;
@@ -63,6 +65,7 @@ public class ImageDownloader {
 
             Thread.sleep(150); // Wait until the texture is loaded
 
+            loadedCover.add(id);
             return id;
         }catch (IOException e) {
             Media.LOGGER.error("Failed to download album cover for {}: {}", getId(trackObj), e);
@@ -78,11 +81,27 @@ public class ImageDownloader {
     public static void addDownloadTask(JsonObject data, Consumer<Identifier> callback) {
         if (loadedCover.contains(Identifier.of("media", getId(data).toLowerCase()))){
             Media.LOGGER.debug("Cache hit for {}", getId(data));
-            callback.accept(Identifier.of("media", getId(data).toLowerCase()));
+            CompletableFuture.runAsync(() -> {
+                try{
+                    Thread.sleep(100); // Wait until SongData object is ready to accept image
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                callback.accept(Identifier.of("media", getId(data).toLowerCase()));
+            });
             return;
         }
-        queue.add(new Task<>(data, callback));
-        Media.LOGGER.debug("Added download task for {}", getId(data));
+        Media.LOGGER.debug("Adding download task lister for {}", getId(data));
+        if (onComplete.containsKey(data)) {
+            onComplete.get(data).add(callback);
+            return;
+        }
+        ArrayList<Consumer<Identifier>> callbacks = new ArrayList<>();
+        callbacks.add(callback);
+        onComplete.put(data, callbacks);
+        queue.add(data);
+        Media.LOGGER.debug("Added download task for {} - Queue size: {}", getId(data), queue.size());
     }
 
     public static void startThreads() {
@@ -95,10 +114,13 @@ public class ImageDownloader {
     private static void threadWorker(){
         while (!Thread.interrupted()) {
             try {
-                Task<JsonObject, Identifier> task = queue.take();
+                JsonObject task = queue.take();
+                Identifier coverId = getAlbumCover(task);
 
-                task.run(getAlbumCover(task.getTask()));
-                Media.LOGGER.debug("Finished downloading cover for {}", getId(task.getTask()));
+                for (Consumer<Identifier> callback : onComplete.remove(task)) {
+                    callback.accept(coverId);
+                }
+                Media.LOGGER.debug("Finished downloading cover for {}", getId(task));
             } catch (Exception e) {
                 StringBuilder sb = new StringBuilder();
                 for (StackTraceElement element : e.getStackTrace()) {
