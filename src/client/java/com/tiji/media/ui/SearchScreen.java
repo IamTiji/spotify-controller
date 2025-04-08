@@ -55,6 +55,7 @@ public class SearchScreen extends LightweightGuiDescription {
             ApiCalls.getSearch(q, results -> {
                 listBox.addTask(() -> {
                     listBox.clear();
+                    listBox.setSize(280, 50 * results.size());
                     if (results.isEmpty()) return;
                     int y = 0;
                     for (JsonElement result : results) {
