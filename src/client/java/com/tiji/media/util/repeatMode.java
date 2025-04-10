@@ -1,4 +1,4 @@
-package com.tiji.media;
+package com.tiji.media.util;
 
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
