@@ -1,5 +1,6 @@
 package com.tiji.media;
 
+import com.tiji.media.util.imageWithColor;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
@@ -10,14 +11,12 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 public class SongToast implements Toast {
-    private final Identifier cover;
+    private final imageWithColor cover;
     private final String artist;
     private final Text title;
     private Long startTime;
 
-    private static final Identifier TEXTURE = Identifier.of("media", "ui/toast.png");
-
-    public SongToast(Identifier cover, String artist, Text title) {
+    public SongToast(imageWithColor cover, String artist, Text title) {
         this.cover = cover;
         this.artist = artist;
         this.title = title;
@@ -45,11 +44,11 @@ public class SongToast implements Toast {
         if (this.startTime == null) {
             this.startTime = System.currentTimeMillis();
         }
-        context.drawTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, 1, 1, 160, 32, 160, 32);
+        context.fill(0, 0, 180, 32, cover.color);
 
         context.drawText(textRenderer, title, 35, 6, Colors.LIGHT_YELLOW, false);
         context.drawText(textRenderer, artist, 35, 18, Colors.WHITE, false);
 
-        context.drawTexture(RenderLayer::getGuiTextured, cover, 0, 0, 0, 0, 32, 32, 32, 32);
+        context.drawTexture(RenderLayer::getGuiTextured, cover.image, 0, 0, 0, 0, 32, 32, 32, 32);
     }
 }

@@ -3,9 +3,11 @@ package com.tiji.media.ui;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
-import com.tiji.media.repeatMode;
+import com.tiji.media.util.repeatMode;
+import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
+import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
@@ -14,6 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 import com.tiji.media.widgets.*;
@@ -38,9 +41,9 @@ public class NowPlayingScreen extends LightweightGuiDescription {
     public borderlessButtonWidget repeat = new borderlessButtonWidget(repeatMode.getAsText(MediaClient.repeat));
     public borderlessButtonWidget shuffle = new borderlessButtonWidget(Text.literal("4").setStyle(ICON));
     public borderlessButtonWidget like = new borderlessButtonWidget(Text.literal("b").setStyle(ICON));
+    public WPlainPanel root = new RootPanel();
 
     public NowPlayingScreen() {
-        WPlainPanel root = new RootPanel();
         root.setSize(300, 200);
         root.setInsets(Insets.NONE);
 
@@ -117,6 +120,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         repeat.setLabel(repeatMode.getAsText(MediaClient.repeat));
         shuffle.setLabel(Text.literal(MediaClient.shuffle ? "5" : "4").setStyle(ICON));
         like.setLabel(Text.literal(MediaClient.isLiked ? "b" : "a").setStyle(ICON));
+        root.setBackgroundPainter(BackgroundPainter.createColorful(MediaClient.currentlyPlaying.coverImage.color));
     }
     public void updateNowPlaying() {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) {
@@ -141,6 +145,6 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         currentTimeLabel.setText(Text.translatable("ui.media.unknown_time"));
     }
     public void updateCoverImage() {
-        albumCover.setImage(MediaClient.currentlyPlaying.coverImage);
+        albumCover.setImage(MediaClient.currentlyPlaying.coverImage.image);
     }
 }

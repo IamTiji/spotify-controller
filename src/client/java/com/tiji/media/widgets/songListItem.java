@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 public class songListItem extends WPlainPanel {
     SongData songData = new SongData();
 
-    WSprite songIcon = new WSprite(songData.coverImage);
+    WSprite songIcon = new WSprite(songData.coverImage.image);
     WLabel songTitle = new WLabel(Text.empty());
     WLabel artist = new WLabel(Text.empty());
 
@@ -23,7 +23,7 @@ public class songListItem extends WPlainPanel {
         super();
 
         songData = SongDataExtractor.getDataFor(data, () -> {
-            songIcon.setImage(songData.coverImage);
+            songIcon.setImage(songData.coverImage.image);
         });
         songTitle.setText(songData.title);
         artist.setText(Text.literal(songData.artist));

@@ -17,7 +17,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         AtomicBoolean confirmReset = new AtomicBoolean(false);
 
         WPlainPanel root = new WPlainPanel();
-        root.setSize(300, 200);
+        root.setSize(300, 270);
         root.setInsets(Insets.NONE);
         
         Text statusText;
@@ -78,8 +78,31 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
                 // Ignore invalid input
             }
         });
-
         root.add(threadImageIoField, 10, 155, 280, 20);
+
+        root.add(new WLabel(Text.translatable("ui.media.config.brightness_weight")), 10, 180, 280, 20);
+        intInputWidget brightnessWeightField = new intInputWidget();
+        brightnessWeightField.setText(String.valueOf(MediaClient.CONFIG.brightnessFactor()));
+        brightnessWeightField.setOnCharTyped((value) -> {
+            try {
+                MediaClient.CONFIG.brightnessFactor(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                // Ignore invalid input
+            }
+        });
+        root.add(brightnessWeightField, 10, 195, 280, 20);
+
+        root.add(new WLabel(Text.translatable("ui.media.config.saturation_weight")), 10, 220, 280, 20);
+        intInputWidget saturationWeightField = new intInputWidget();
+        saturationWeightField.setText(String.valueOf(MediaClient.CONFIG.saturationFactor()));
+        saturationWeightField.setOnCharTyped((value) -> {
+            try {
+                MediaClient.CONFIG.saturationFactor(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                // Ignore invalid input
+            }
+        });
+        root.add(saturationWeightField, 10, 235, 280, 20);
 
         root.validate(this);
         setRootPanel(root);

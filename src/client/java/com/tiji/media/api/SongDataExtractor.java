@@ -2,6 +2,7 @@ package com.tiji.media.api;
 
 import com.google.gson.JsonObject;
 import com.tiji.media.MediaClient;
+import com.tiji.media.util.imageWithColor;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -109,13 +110,13 @@ public class SongDataExtractor {
         song.duration = getMaxDuration(data);
         song.songURI = getSpotifyLink(data);
 
-        if (!song.coverImage.getPath().equals("ui/nothing.png")) {
+        if (!song.coverImage.image.getPath().equals("ui/nothing.png")) {
             //MinecraftClient.getInstance().getTextureManager().destroyTexture(SongData.coverImage);        //Deleted line as they are used on toasts. Will be re-visited
-            song.coverImage = Identifier.of("media", "ui/nothing.png");
+            song.coverImage = new imageWithColor(0xffffffff, Identifier.of("media", "ui/nothing.png"));
         }
 
-        ImageDownloader.addDownloadTask(data, id -> {
-            song.coverImage = id;
+        ImageDownloader.addDownloadTask(data, image -> {
+            song.coverImage = image;
             if (onImageLoad != null) {
                 onImageLoad.run();
             }

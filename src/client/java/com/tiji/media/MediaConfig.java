@@ -2,6 +2,7 @@ package com.tiji.media;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.tiji.media.util.displayMode;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.nio.file.Files;
@@ -17,6 +18,9 @@ public class MediaConfig {
     private long lastRefresh = 0;
     private boolean shouldShowToasts = true;
     private byte imageIoThreadCount = 4;
+    private displayMode displayColor = displayMode.THEME;
+    private int brightnessFactor = 5;
+    private int saturationFactor = 5;
 
     public String clientId() {return clientId;}
     public void clientId(String value) {clientId = value; writeToFile();}
@@ -42,6 +46,15 @@ public class MediaConfig {
     public byte imageIoThreadCount() {return imageIoThreadCount;}
     public void imageIoThreadCount(byte value) {imageIoThreadCount = value; writeToFile();}
 
+    public displayMode displayColor() {return displayColor;}
+    public void displayColor(displayMode value) {displayColor = value; writeToFile();}
+
+    public int brightnessFactor() {return brightnessFactor;}
+    public void brightnessFactor(int value) {brightnessFactor = value; writeToFile();}
+
+    public int saturationFactor() {return saturationFactor;}
+    public void saturationFactor(int value) {saturationFactor = value; writeToFile();}
+
     public void generate() {
         Path configPath = FabricLoader.getInstance().getConfigDir().resolve("media.json");
         if (Files.exists(configPath)) {
@@ -56,6 +69,9 @@ public class MediaConfig {
                 lastRefresh = config.get("lastRefresh").getAsLong();
                 shouldShowToasts = config.get("shouldShowToasts").getAsBoolean();
                 imageIoThreadCount = config.get("imageIoThreadCount").getAsByte();
+                displayColor = displayMode.valueOf(config.get("displayColor").getAsString());
+                brightnessFactor = config.get("brightnessFactor").getAsInt();
+                saturationFactor = config.get("saturationFactor").getAsInt();
             }catch (Exception e) {
                 writeToFile();
             }
@@ -75,6 +91,9 @@ public class MediaConfig {
         config.addProperty("lastRefresh", lastRefresh);
         config.addProperty("shouldShowToasts", shouldShowToasts);
         config.addProperty("imageIoThreadCount", imageIoThreadCount);
+        config.addProperty("displayColor", displayColor.name());
+        config.addProperty("brightnessFactor", brightnessFactor);
+        config.addProperty("saturationFactor", saturationFactor);
         try {
             Files.write(configPath, new Gson().toJson(config).getBytes(), delete ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW);
         }catch (Exception e) {
