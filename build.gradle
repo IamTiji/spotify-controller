@@ -108,5 +108,5 @@ repositories {
 }
 
 dependencies {
-	modImplementation include("io.github.cottonmc:LibGui:11.1.0+1.21")
+	modImplementation include("io.github.cottonmc:LibGui:12.0.1+1.21.2")
 }
