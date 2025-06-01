@@ -96,7 +96,7 @@ public class WebGuideServer {
 
             ApiCalls.convertAccessToken(Code);
 
-            MinecraftClient.getInstance().setScreen(null);
+            MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(null));
 
             SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
             Media.LOGGER.info("Stopping Guide Server...");

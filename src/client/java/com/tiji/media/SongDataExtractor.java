@@ -40,7 +40,7 @@ public class SongDataExtractor {
                 trackObj.getAsJsonObject("item").getAsJsonObject("external_urls").get("spotify").getAsString()
         );
     }
-    @SuppressWarnings("deprecation") // It will be re-visited
+
     public static Identifier getAlbumCover(JsonObject trackObj) {
         try {
             Identifier id = Identifier.of("media", getId(trackObj));
@@ -68,7 +68,7 @@ public class SongDataExtractor {
                             .getAsJsonObject().get("url").getAsString();
                 }
             }
-            InputStream albumCoverUrl = new URL(closestUrl).openStream();
+            InputStream albumCoverUrl = URI.create(closestUrl).toURL().openStream();
 
             // Spotify provides JPEG image that Minecraft cannot handle
             // Convert to PNG
