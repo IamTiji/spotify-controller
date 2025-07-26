@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public class ApiCalls {
     public static void convertAccessToken(String accessToken) {
-        call("https://accounts.spotify.com/api/token?grant_type=authorization_code&code=" + accessToken + "&redirect_uri=http://127.0.0.7:25566/callback",
+        call("https://accounts.spotify.com/api/token?grant_type=authorization_code&code=" + accessToken + "&redirect_uri=http://127.0.0.1:25566/callback",
                 getAuthorizationHeader(),
                 "application/x-www-form-urlencoded",
                 body -> {

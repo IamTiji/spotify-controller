@@ -31,8 +31,8 @@ public class SetupScreen extends LightweightGuiDescription {
         setupLabel2.setColor(0x000000).setDarkmodeColor(0xFFFFFF);
         root.add(setupLabel2, 100, 65, 100, 20);
 
-        WButton linkLabel = new WButton(Text.literal("http://127.0.0.7:25566").formatted(Formatting.UNDERLINE));
-        linkLabel.setOnClick(() -> Util.getOperatingSystem().open("http://127.0.0.7:25566"));
+        WButton linkLabel = new WButton(Text.literal("http://127.0.0.1:25566").formatted(Formatting.UNDERLINE));
+        linkLabel.setOnClick(() -> Util.getOperatingSystem().open("http://127.0.0.1:25566"));
         root.add(linkLabel, 75, 100, 150, 20);
 
         root.validate(this);
