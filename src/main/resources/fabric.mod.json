@@ -7,6 +7,9 @@
 	"authors": [
 		"T1ji"
 	],
+	"contributors": [
+		"Nicholas Keller"
+	],
 	"license": "CC-BY-NC-SA-4.0",
 	"icon": "assets/media/icon.png",
 	"environment": "*",
