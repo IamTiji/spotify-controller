@@ -1,11 +1,14 @@
 {
 	"schemaVersion": 1,
 	"id": "media",
-	"version": "2.3",
+	"version": "2.4",
 	"name": "Spotify Controller",
 	"description": "Provides media control of Spotify in Minecraft\n\nSpotify is trademark of Spotify AB. This software is not endorsed by Spotify AB and is not owned by Spotify AB.",
 	"authors": [
 		"T1ji"
+	],
+	"contributors": [
+		"Nicholas Keller"
 	],
 	"license": "CC-BY-NC-SA-4.0",
 	"icon": "assets/media/icon.png",
