@@ -54,7 +54,7 @@ public class WebGuideServer {
                 byte[] file = in.readAllBytes();
                 length = file.length;
                 response = new String(file);
-            }catch(Exception e){
+            } catch(Exception e){
                 e.printStackTrace();
                 return;
             }
