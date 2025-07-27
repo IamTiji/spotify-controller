@@ -46,16 +46,17 @@
     </style>
     <script>
         function redirect() {
-            var xmlHttp1 = new XMLHttpRequest();
-            xmlHttp1.open("GET", "http://127.0.0.1:25566/secret?code=" + document.getElementById('clientsecret').value, true);
-            xmlHttp1.send(null);
-
-            var xmlHttp2 = new XMLHttpRequest();
-            xmlHttp2.open("GET", "http://127.0.0.1:25566/id?code=" + document.getElementById('clientid').value, true);
-            xmlHttp2.send(null);
+            fetch("http://127.0.0.1:25566/data", {
+              "headers": {
+                "Client-Id": document.getElementById('clientid').value,
+                "Secret": document.getElementById('clientsecret').value
+              },
+              "method": "PUT"
+            });
 
             url = "https://accounts.spotify.com/authorize?response_type=code&client_id=" + document.getElementById('clientid').value + "&redirect_uri=http://127.0.0.1:25566/callback&show_dialog=true&scope=user-read-playback-state%20user-modify-playback-state%20user-read-currently-playing";
-            window.location.href = url; }
+            window.location.href = url;
+        }
     </script>
 </head>
 
