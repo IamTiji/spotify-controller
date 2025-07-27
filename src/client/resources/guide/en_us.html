@@ -52,10 +52,10 @@
                 "Secret": document.getElementById('clientsecret').value
               },
               "method": "PUT"
+            }).then(() => {
+                url = "https://accounts.spotify.com/authorize?response_type=code&client_id=" + document.getElementById('clientid').value + "&redirect_uri=http://127.0.0.1:25566/callback&show_dialog=true&scope=user-read-playback-state%20user-modify-playback-state%20user-read-currently-playing";
+                window.location.href = url;
             });
-
-            url = "https://accounts.spotify.com/authorize?response_type=code&client_id=" + document.getElementById('clientid').value + "&redirect_uri=http://127.0.0.1:25566/callback&show_dialog=true&scope=user-read-playback-state%20user-modify-playback-state%20user-read-currently-playing";
-            window.location.href = url;
         }
     </script>
 </head>
