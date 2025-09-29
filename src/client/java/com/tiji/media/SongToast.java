@@ -8,7 +8,6 @@ import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
 
 public class SongToast implements Toast {
     private final imageWithColor cover;

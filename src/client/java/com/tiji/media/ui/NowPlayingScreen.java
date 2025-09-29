@@ -4,11 +4,15 @@ import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.util.repeatMode;
+import com.tiji.media.widgets.borderlessButtonWidget;
+import com.tiji.media.widgets.clickableSprite;
+import com.tiji.media.widgets.progressWidget;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
@@ -16,10 +20,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
-
-import com.tiji.media.widgets.*;
 import net.minecraft.util.Util;
 
 public class NowPlayingScreen extends LightweightGuiDescription {

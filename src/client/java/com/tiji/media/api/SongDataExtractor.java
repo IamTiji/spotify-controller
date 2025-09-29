@@ -1,7 +1,6 @@
 package com.tiji.media.api;
 
 import com.google.gson.JsonObject;
-import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.util.imageWithColor;
 import net.minecraft.text.Style;
@@ -10,7 +9,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.concurrent.CompletableFuture;
 
 public class SongDataExtractor {
     private static final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
@@ -99,9 +97,9 @@ public class SongDataExtractor {
                 MediaClient.currentlyPlaying = getDataFor(data.getAsJsonObject("item"), onImageLoad);
             }
 
-            ApiCalls.isSongLiked(MediaClient.currentlyPlaying.Id, isLiked -> {
-                MediaClient.isLiked = isLiked;
-            });
+            ApiCalls.isSongLiked(MediaClient.currentlyPlaying.Id, isLiked ->
+                MediaClient.isLiked = isLiked
+            );
             if (isSongDifferent || forceFullReload) {
                 onDataUpdate.run();
             } else {

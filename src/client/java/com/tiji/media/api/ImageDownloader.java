@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
-
 import com.tiji.media.util.imageWithColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
@@ -24,7 +23,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import static com.tiji.media.api.SongDataExtractor.*;
+import static com.tiji.media.api.SongDataExtractor.getId;
 public class ImageDownloader {
     private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
     private static final ArrayBlockingQueue<JsonObject> queue = new ArrayBlockingQueue<>(200);

@@ -1,6 +1,5 @@
 package com.tiji.media.widgets;
 
-import com.tiji.media.Media;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;

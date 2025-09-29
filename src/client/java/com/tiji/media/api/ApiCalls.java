@@ -158,9 +158,9 @@ public class ApiCalls {
         call("https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId,
                 getAuthorizationCode(),
                 null,
-                body -> {
-                    consumer.accept(new Gson().fromJson(body.body(), JsonArray.class).get(0).getAsBoolean());
-                },
+                body ->
+                    consumer.accept(new Gson().fromJson(body.body(), JsonArray.class).get(0).getAsBoolean())
+                ,
                 "GET"
         );
     }

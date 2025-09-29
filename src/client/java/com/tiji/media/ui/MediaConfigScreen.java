@@ -5,11 +5,13 @@ import com.tiji.media.WebGuideServer;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.widgets.intInputWidget;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WButton;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WToggleButton;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.minecraft.text.Text;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class MediaConfigScreen extends LightweightGuiDescription {
@@ -31,9 +33,9 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         WLabel status = new WLabel(statusText);
         root.add(status, 10, 10, 280, 20);
 
-        ApiCalls.getUserName((name) -> {
-            status.setText(Text.translatable("ui.media.status.setup", name));
-        });
+        ApiCalls.getUserName((name) ->
+            status.setText(Text.translatable("ui.media.status.setup", name))
+        );
 
         WButton reset = new WButton(Text.translatable("ui.media.reset_config"));
         reset.setOnClick(() -> {

@@ -5,13 +5,13 @@ import com.google.gson.JsonObject;
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.widgets.songListItem;
+import com.tiji.media.widgets.stringInputWidget;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.gui.DrawContext;
-
-import com.tiji.media.widgets.*;
 
 public class SearchScreen extends LightweightGuiDescription {
     private static class RootPanel extends WPlainPanel {
@@ -51,8 +51,8 @@ public class SearchScreen extends LightweightGuiDescription {
         root.setInsets(Insets.NONE);
 
         searchField.setMaxLength(100);
-        searchField.setOnCharTyped((q) -> {
-            ApiCalls.getSearch(q, results -> {
+        searchField.setOnCharTyped((q) ->
+            ApiCalls.getSearch(q, results ->
                 listBox.addTask(() -> {
                     listBox.clear();
                     listBox.setSize(280, 50 * results.size());
@@ -65,9 +65,9 @@ public class SearchScreen extends LightweightGuiDescription {
                         y += 50;
                         root.validate(this);
                     }
-                });
-            });
-        });
+                })
+            )
+        );
         root.add(searchField, 10, 10, 280, 20);
 
         listBox.setInsets(Insets.NONE);
