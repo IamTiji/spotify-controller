@@ -1,6 +1,7 @@
 package com.tiji.media.api;
 
 import com.google.gson.JsonObject;
+import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.util.imageWithColor;
 import net.minecraft.text.Style;
@@ -86,6 +87,14 @@ public class SongDataExtractor {
             MediaClient.repeat = getRepeatState(data);
             MediaClient.shuffle = getShuffleState(data);
 
+            JsonObject disallows = data.getAsJsonObject("actions").getAsJsonObject("disallows");
+            MediaClient.canShuffle = disallows.has("toggling_shuffle");
+            MediaClient.canRepeat = disallows.has("toggling_repeat_context") ||
+                                    disallows.has("toggling_repeat_track");
+            MediaClient.canSkip = disallows.has("skipping_next");
+            MediaClient.canGoBack = disallows.has("skipping_prev");
+            MediaClient.canSeek = disallows.has("seeking");
+
             if (isSongDifferent || forceFullReload) {
                 MediaClient.currentlyPlaying = getDataFor(data.getAsJsonObject("item"), onImageLoad);
             }
@@ -95,7 +104,7 @@ public class SongDataExtractor {
             });
             if (isSongDifferent || forceFullReload) {
                 onDataUpdate.run();
-            }else{
+            } else {
                 onNoUpdate.run();
             }
         });

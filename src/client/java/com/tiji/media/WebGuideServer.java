@@ -88,7 +88,6 @@ public class WebGuideServer {
 
             MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(null));
 
-            SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
             Media.LOGGER.info("Stopping Guide Server...");
             WebGuideServer.stop();
         }

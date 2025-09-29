@@ -18,8 +18,8 @@
 
   "ui.media.loading": "Loading...",
 
-  "ui.media.premium_required.title": "Premium Required",
-  "ui.media.premium_required.message": "Premium is required. This is Spotify's built-in limitation",
+  "ui.media.not_allowed.title": "Not Allowed",
+  "ui.media.not_allowed.message": "This action is not allowed",
 
   "ui.media.config.head": "Options",
   "ui.media.config.head_advanced": "Advanced Options",

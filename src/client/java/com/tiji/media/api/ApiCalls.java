@@ -3,15 +3,10 @@ package com.tiji.media.api;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.WebGuideServer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -30,7 +25,8 @@ public class ApiCalls {
             "user-modify-playback-state",
             "user-read-currently-playing",
             "user-read-private",
-            "user-library-read"
+            "user-library-read",
+            "user-library-modify"
     );
     public static void convertAccessToken(String accessToken) {
         call("https://accounts.spotify.com/api/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:25566/callback&code=" + accessToken,
@@ -44,6 +40,9 @@ public class ApiCalls {
                     MediaClient.CONFIG.authToken(data.get("access_token").getAsString());
                     MediaClient.CONFIG.refreshToken(data.get("refresh_token").getAsString());
                     MediaClient.CONFIG.lastRefresh(System.currentTimeMillis());
+
+                    getSubscription();
+                    SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
                 }, "POST");
     }
 
@@ -76,6 +75,8 @@ public class ApiCalls {
                     MediaClient.CONFIG.authToken(data.get("access_token").getAsString());
                     if (data.has("refresh_token")) MediaClient.CONFIG.refreshToken(data.get("refresh_token").getAsString());
                     MediaClient.CONFIG.lastRefresh(System.currentTimeMillis());
+
+                    getSubscription();
                 }, "POST");
     }
     public static void getNowPlayingTrack(Consumer<JsonObject> callback) {
@@ -104,9 +105,17 @@ public class ApiCalls {
         call(uri, getAuthorizationCode(), null, body -> {}, "PUT");
     }
     public static void nextTrack() {
+        if (!MediaClient.canSkip) {
+            MediaClient.showNotAllowedToast();
+            return;
+        }
         call("https://api.spotify.com/v1/me/player/next", getAuthorizationCode(), null, body -> {}, "POST");
     }
     public static void previousTrack() {
+        if (!MediaClient.canGoBack) {
+            MediaClient.showNotAllowedToast();
+            return;
+        }
         call("https://api.spotify.com/v1/me/player/previous", getAuthorizationCode(), null, body -> {}, "POST");
     }
     public static void getUserName(Consumer<String> consumer) {
@@ -115,7 +124,17 @@ public class ApiCalls {
             consumer.accept(name);
         }, "GET");
     }
+    public static void getSubscription() {
+        call("https://api.spotify.com/v1/me", getAuthorizationCode(), null, body -> {
+            String name = new Gson().fromJson(body.body(), JsonObject.class).get("product").getAsString();
+            MediaClient.isPremium = name.equals("premium");
+        }, "GET");
+    }
     public static void setShuffle(boolean state) {
+        if (!MediaClient.canShuffle) {
+            MediaClient.showNotAllowedToast();
+            return;
+        }
         call("https://api.spotify.com/v1/me/player/shuffle?state=" + (state ? "true" : "false"),
                 getAuthorizationCode(),
                 null,
@@ -124,6 +143,10 @@ public class ApiCalls {
         );
     }
     public static void setRepeat(String state) {
+        if (!MediaClient.canRepeat) {
+            MediaClient.showNotAllowedToast();
+            return;
+        }
         call("https://api.spotify.com/v1/me/player/repeat?state=" + state,
                 getAuthorizationCode(),
                 null,
@@ -190,8 +213,9 @@ public class ApiCalls {
             case "POST" -> request.POST(publisher);
             case "PUT" -> request.PUT(publisher);
             case "DELETE" -> request.DELETE();
-            default -> request;
+            default -> null;
         };
+        if (request == null) throw new RuntimeException("Invalid request method");
 
         client.sendAsync(request.build(), HttpResponse.BodyHandlers.ofString())
         .exceptionally(e -> {
@@ -208,15 +232,6 @@ public class ApiCalls {
                 Media.LOGGER.warn("Empty response body");
                 return;
             }
-            try {
-                JsonObject data = new Gson().fromJson(responseBody, JsonObject.class);
-
-                if (data.get("reason").getAsString().equals("PREMIUM_REQUIRED")) {
-                    MinecraftClient.getInstance().getToastManager().add(
-                            new SystemToast(new SystemToast.Type(), Text.translatable("ui.media.premium_required.title"), Text.translatable("ui.media.premium_required.message"))
-                    );
-                }
-            } catch (JsonSyntaxException | NullPointerException ignored) {}
             if (stringHttpResponse.statusCode() >= 400) {
                 Media.LOGGER.error("Failed to call API: {} (Status: {}, endpoint: {})", responseBody, stringHttpResponse.statusCode(), endpoint);
                 MediaClient.CONFIG.reset();

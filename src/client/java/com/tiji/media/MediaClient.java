@@ -13,6 +13,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
@@ -33,6 +35,14 @@ public class MediaClient implements ClientModInitializer {
 	public static boolean shuffle = false;
 	public static boolean isLiked = false;
 
+    public static boolean canShuffle = false;
+    public static boolean canRepeat = false;
+    public static boolean canSkip = false;
+    public static boolean canGoBack = false;
+    public static boolean canSeek = false;
+
+    public static boolean isPremium = false;
+
 	public static boolean isStarted = false;
 
 	public void onInitializeClient(){
@@ -46,9 +56,11 @@ public class MediaClient implements ClientModInitializer {
 			ApiCalls.refreshAccessToken();
 		}
 		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> {
-			SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
-			isStarted = true;
-		});
+            isStarted = true;
+            if (!isNotSetup()) {
+                SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
+            }
+        });
 		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
 			while (SETUP_KEY.wasPressed()) {
 				if (isNotSetup()) {
@@ -83,6 +95,13 @@ public class MediaClient implements ClientModInitializer {
 		});
 	}
 	public static boolean isNotSetup() {
-		return CONFIG.clientId().isEmpty() || CONFIG.accessToken().isEmpty() || CONFIG.refreshToken().isEmpty();
+		return CONFIG.clientId().isEmpty() || CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
 	}
+    public static void showNotAllowedToast() {
+        MinecraftClient.getInstance().getToastManager().add(
+                new SystemToast(new SystemToast.Type(),
+                        Text.translatable("ui.media.not_allowed.title"),
+                        Text.translatable("ui.media.not_allowed.message"))
+        );
+    }
 }
