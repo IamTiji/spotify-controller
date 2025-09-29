@@ -40,13 +40,9 @@ public class MediaClient implements ClientModInitializer {
 		KeyBindingHelper.registerKeyBinding(SETUP_KEY);
 		ImageDownloader.startThreads();
 
-		if (isNotSetup()){
-			try{
-				WebGuideServer.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else{
+		if (isNotSetup()) {
+            WebGuideServer.start();
+		} else {
 			ApiCalls.refreshAccessToken();
 		}
 		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> {
@@ -57,7 +53,7 @@ public class MediaClient implements ClientModInitializer {
 			while (SETUP_KEY.wasPressed()) {
 				if (isNotSetup()) {
 					client.setScreen(new CottonClientScreen(new SetupScreen()));
-				}else{
+				} else {
 					nowPlayingScreen = new NowPlayingScreen();
 					nowPlayingScreen.updateCoverImage();
 					nowPlayingScreen.updateNowPlaying();
@@ -65,14 +61,14 @@ public class MediaClient implements ClientModInitializer {
 				}
 			}
 			if (!isNotSetup() && tickCount % 10 == 0){
-				if (nowPlayingScreen!= null) {
+				if (nowPlayingScreen != null) {
 					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
 						nowPlayingScreen.updateCoverImage();
 						if (CONFIG.shouldShowToasts() && isStarted) {
 							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
 						}
 					});
-				}else{
+				} else {
 					SongDataExtractor.reloadData(false, () -> {}, () -> {}, () -> {
 						if (CONFIG.shouldShowToasts() && isStarted) {
 							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
@@ -87,6 +83,6 @@ public class MediaClient implements ClientModInitializer {
 		});
 	}
 	public static boolean isNotSetup() {
-		return CONFIG.clientId().isEmpty() || CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
+		return CONFIG.clientId().isEmpty() || CONFIG.accessToken().isEmpty() || CONFIG.refreshToken().isEmpty();
 	}
 }

@@ -41,14 +41,10 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
             if (confirmReset.get()) {
                 MediaClient.CONFIG.reset();
 
-                try {
-                    WebGuideServer.start();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                WebGuideServer.start();
 
                 reset.setLabel(Text.translatable("ui.media.reset_config_success"));
-            }else{
+            } else{
                 reset.setLabel(Text.translatable("ui.media.reset_config_confirm"));
                 confirmReset.set(true);
             }

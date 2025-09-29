@@ -19,21 +19,45 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class ApiCalls {
+    private static final HttpClient client = HttpClient.newHttpClient();
+
+    private static final List<String> REQUIRED_SCOPES = List.of(
+            "user-read-playback-state",
+            "user-modify-playback-state",
+            "user-read-currently-playing",
+            "user-read-private",
+            "user-library-read"
+    );
     public static void convertAccessToken(String accessToken) {
-        call("https://accounts.spotify.com/api/token?grant_type=authorization_code&redirect_uri=http://localhost:25566/callback&code=" + accessToken,
+        call("https://accounts.spotify.com/api/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:25566/callback&code=" + accessToken,
                 getAuthorizationHeader(),
                 "application/x-www-form-urlencoded",
                 body -> {
                     JsonObject data = new Gson().fromJson(body.body(), JsonObject.class);
+
+                    verifyToken(data);
 
                     MediaClient.CONFIG.authToken(data.get("access_token").getAsString());
                     MediaClient.CONFIG.refreshToken(data.get("refresh_token").getAsString());
                     MediaClient.CONFIG.lastRefresh(System.currentTimeMillis());
                 }, "POST");
     }
+
+    private static void verifyToken(JsonObject data) {
+        boolean valid = true;
+        String scopes = data.get("scope").getAsString();
+        for (String scope : REQUIRED_SCOPES) {
+            valid &= scopes.contains(scope);
+        }
+        if (!valid) {
+            throw new RuntimeException("Invalid token! (probably modified auth)");
+        }
+    }
+
     public static void refreshAccessToken() {
         call("https://accounts.spotify.com/api/token?grant_type=refresh_token&refresh_token=" + MediaClient.CONFIG.refreshToken(),
                 getAuthorizationHeader(),
@@ -44,13 +68,10 @@ public class ApiCalls {
                     if (data.has("error")) {
                         Media.LOGGER.warn("Failed to refresh access token; Normally caused when developer app is deleted. {}: {}", data.get("error"), data.get("error_description"));
                         MediaClient.CONFIG.reset();
-                        try {
-                            WebGuideServer.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
                         return;
                     }
+
+                    verifyToken(data);
 
                     MediaClient.CONFIG.authToken(data.get("access_token").getAsString());
                     if (data.has("refresh_token")) MediaClient.CONFIG.refreshToken(data.get("refresh_token").getAsString());
@@ -156,7 +177,6 @@ public class ApiCalls {
         );
     }
     private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method, String requestBody) {
-        HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder request = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
                 .timeout(Duration.ofSeconds(10))
@@ -198,7 +218,9 @@ public class ApiCalls {
                 }
             } catch (JsonSyntaxException | NullPointerException ignored) {}
             if (stringHttpResponse.statusCode() >= 400) {
-                Media.LOGGER.error("Failed to call API: {} (Status: {})", responseBody, stringHttpResponse.statusCode());
+                Media.LOGGER.error("Failed to call API: {} (Status: {}, endpoint: {})", responseBody, stringHttpResponse.statusCode(), endpoint);
+                MediaClient.CONFIG.reset();
+                WebGuideServer.start();
                 return;
             }
             consumer.accept(stringHttpResponse);

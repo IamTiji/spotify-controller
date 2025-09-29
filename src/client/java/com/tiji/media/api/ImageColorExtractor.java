@@ -26,7 +26,7 @@ public class ImageColorExtractor {
         }
         Media.LOGGER.debug("Dominant color: {}", highestScoredColor);
         return highestScoredColor;
-    };
+    }
 
     private static HashMap<Integer, Integer> getColorFrequency(NativeImage image) {
         HashMap<Integer, Integer> colorCount = new HashMap<>();
