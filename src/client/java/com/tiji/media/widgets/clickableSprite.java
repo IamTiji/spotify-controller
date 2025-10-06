@@ -3,6 +3,7 @@ package com.tiji.media.widgets;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +26,7 @@ public class clickableSprite extends WWidget {
     }
 
     @Override
-    public InputResult onClick(int x, int y, int button) {
+    public InputResult onClick(Click click, boolean doubled) {
         if (onClickEvent != null) {
             onClickEvent.run();
             return InputResult.PROCESSED;

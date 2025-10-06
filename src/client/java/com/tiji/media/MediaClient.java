@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class MediaClient implements ClientModInitializer {
 	public static final MediaConfig CONFIG = new MediaConfig();
-	private static final KeyBinding SETUP_KEY = new KeyBinding("key.media.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
+	private static final KeyBinding SETUP_KEY = new KeyBinding("key.media.general", GLFW.GLFW_KEY_Z, KeyBinding.Category.MISC);
 	public static int tickCount = 0;
 	public static NowPlayingScreen nowPlayingScreen = null;
 

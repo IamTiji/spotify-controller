@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -108,5 +108,5 @@ repositories {
 }
 
 dependencies {
-	modImplementation include("io.github.cottonmc:LibGui:14.0.0+1.21.6")
+	modImplementation include("io.github.cottonmc:LibGui:15.0.0+1.21.9-rc1")
 }

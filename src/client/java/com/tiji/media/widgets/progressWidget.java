@@ -6,7 +6,9 @@ import com.tiji.media.SongData;
 import io.github.cottonmc.cotton.gui.widget.WSlider;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.input.MouseInput;
 
 public class progressWidget extends WSlider {
     final int THUMB_SIZE = 4;
@@ -28,7 +30,7 @@ public class progressWidget extends WSlider {
             ApiCalls.setPlaybackLoc((int) Math.round(progress * SongData.duration));
             allowUpdateProgress = true;
         }
-        return super.onMouseUp(x, y, button);
+        return super.onMouseUp(new Click(x, y, new MouseInput(button, 0)));
     }
 
     public InputResult onMouseDown(int x, int y, int button) {
@@ -37,7 +39,7 @@ public class progressWidget extends WSlider {
         if (button == 0) {
             allowUpdateProgress = false;
         }
-        return super.onMouseDown(x, y, button);
+        return super.onMouseDown(new Click(x, y, new MouseInput(button, 0)), false);
     }
 
     @Override
