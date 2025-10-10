@@ -1,5 +1,6 @@
 package com.tiji.media.util;
 
+import com.tiji.media.ui.Icons;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -10,12 +11,10 @@ public class repeatMode {
     public static final String TRACK = "track";
 
     public static Text getAsText(String mode) {
-        final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
-
         return switch (mode) {
-            case CONTEXT -> Text.literal("7").setStyle(ICON);
-            case TRACK -> Text.literal("8").setStyle(ICON);
-            default -> Text.literal("6").setStyle(ICON);
+            case CONTEXT -> Icons.REPEAT_ON;
+            case TRACK -> Icons.REPEAT_SINGLE;
+            default -> Icons.REPEAT;
         };
     }
     public static String getNextMode(String currentMode) {

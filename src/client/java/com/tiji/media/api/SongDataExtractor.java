@@ -2,6 +2,7 @@ package com.tiji.media.api;
 
 import com.google.gson.JsonObject;
 import com.tiji.media.MediaClient;
+import com.tiji.media.ui.Icons;
 import com.tiji.media.util.imageWithColor;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -11,9 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URI;
 
 public class SongDataExtractor {
-    private static final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
-    private static final Style DEFAULT = Style.EMPTY.withFont(Identifier.ofVanilla("default"));
-
     public static String getName(JsonObject trackObj) {
         return trackObj.get("name").getAsString();
     }
@@ -118,7 +116,7 @@ public class SongDataExtractor {
     public static SongData getDataFor(JsonObject data, @Nullable Runnable onImageLoad) {
         SongData song = new SongData();
 
-        song.title = Text.literal(isExplicit(data) ? "9 " : "").setStyle(ICON).append(Text.literal(getName(data)).setStyle(DEFAULT));
+        song.title = (isExplicit(data) ? Icons.EXPLICT : Text.literal("")).append(Text.literal(getName(data)));
         song.artist = getArtist(data);
         song.durationLabel = getDurationLabel(data);
         song.Id = getId(data);

@@ -30,18 +30,16 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         }
     }
 
-    private static final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
-
     public WLabel songName = new WLabel(Text.translatable("ui.media.nothing_playing"));
     public WLabel artistName = new WLabel(Text.translatable("ui.media.unknown_artist"));
     public progressWidget progressBar = new progressWidget(0, 100, Axis.HORIZONTAL);
     public WLabel durationLabel = new WLabel(Text.translatable("ui.media.unknown_duration"));
     public WLabel currentTimeLabel = new WLabel(Text.translatable("ui.media.unknown_time"));
-    public borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Text.literal("2").setStyle(ICON));
+    public borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Icons.PAUSE);
     public WSprite albumCover = new WSprite(Identifier.of("media", "ui/nothing.png"));
     public borderlessButtonWidget repeat = new borderlessButtonWidget(repeatMode.getAsText(MediaClient.repeat));
-    public borderlessButtonWidget shuffle = new borderlessButtonWidget(Text.literal("4").setStyle(ICON));
-    public borderlessButtonWidget like = new borderlessButtonWidget(Text.literal("b").setStyle(ICON));
+    public borderlessButtonWidget shuffle = new borderlessButtonWidget(Icons.SHUFFLE);
+    public borderlessButtonWidget like = new borderlessButtonWidget(Icons.ADD_TO_FAV);
     public WPlainPanel root = new RootPanel();
 
     public NowPlayingScreen() {
@@ -61,7 +59,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         artistName = artistName.setHorizontalAlignment(HorizontalAlignment.CENTER);
         root.add(artistName, 100, 135, 100, 20);
 
-        root.add(new borderlessButtonWidget(Text.literal("c").setStyle(ICON)).setOnClick(() -> {
+        root.add(new borderlessButtonWidget(Icons.SEARCH).setOnClick(() -> {
             Screen screen = new CottonClientScreen(new SearchScreen());
             MinecraftClient.getInstance().setScreen(screen);
             MediaClient.nowPlayingScreen = null;
@@ -73,7 +71,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         });
         root.add(shuffle, 100, 150, 20, 20);
 
-        root.add(new borderlessButtonWidget(Text.literal("0").setStyle(ICON)).setOnClick(ApiCalls::previousTrack), 120, 150, 20, 20);
+        root.add(new borderlessButtonWidget(Icons.NEXT).setOnClick(ApiCalls::previousTrack), 120, 150, 20, 20);
 
         playPauseButton.setOnClick(() -> {
             if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
@@ -83,7 +81,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         });
         root.add(playPauseButton, 140, 150, 20, 20);
 
-        root.add(new borderlessButtonWidget(Text.literal("1").setStyle(ICON)).setOnClick(ApiCalls::nextTrack), 160, 150, 20, 20);
+        root.add(new borderlessButtonWidget(Icons.PREVIOUS).setOnClick(ApiCalls::nextTrack), 160, 150, 20, 20);
 
         repeat.setOnClick(() -> {
             MediaClient.repeat = repeatMode.getNextMode(MediaClient.repeat);
@@ -117,10 +115,10 @@ public class NowPlayingScreen extends LightweightGuiDescription {
             progressBar.setValue((int) Math.round(MediaClient.progressValue * 300));
         }
         currentTimeLabel.setText(Text.of(MediaClient.progressLabel));
-        playPauseButton.setLabel(Text.literal(MediaClient.isPlaying ? "2" : "3").setStyle(ICON));
+        playPauseButton.setLabel(MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME);
         repeat.setLabel(repeatMode.getAsText(MediaClient.repeat));
-        shuffle.setLabel(Text.literal(MediaClient.shuffle ? "5" : "4").setStyle(ICON));
-        like.setLabel(Text.literal(MediaClient.isLiked ? "b" : "a").setStyle(ICON));
+        shuffle.setLabel(MediaClient.shuffle ? Icons.SHUFFLE : Icons.SHUFFLE_ON);
+        like.setLabel(MediaClient.isLiked ? Icons.ADD_TO_FAV : Icons.REMOVE_FROM_FAV);
         root.setBackgroundPainter(BackgroundPainter.createColorful(MediaClient.currentlyPlaying.coverImage.color));
     }
     public void updateNowPlaying() {
