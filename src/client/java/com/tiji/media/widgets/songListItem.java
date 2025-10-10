@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.api.SongData;
 import com.tiji.media.api.SongDataExtractor;
+import com.tiji.media.ui.Icons;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
@@ -34,10 +35,10 @@ public class songListItem extends WPlainPanel {
         add(songTitle, 65, 5, 200, 20);
         add(artist, 65, 15, 200, 20);
 
-        add(new borderlessButtonWidget(Text.literal("e").setStyle(ICON)).setOnClick(() -> {
+        add(new borderlessButtonWidget(Icons.PLAY).setOnClick(() -> {
             ApiCalls.setPlayingSong(songData.Id);
         }).setAlignment(HorizontalAlignment.LEFT), 65, 30, 20, 20);
-        add(new borderlessButtonWidget(Text.literal("f").setStyle(ICON)).setOnClick(() -> {
+        add(new borderlessButtonWidget(Icons.ADD_TO_QUEUE).setOnClick(() -> {
             ApiCalls.addSongToQueue(songData.Id);
         }).setAlignment(HorizontalAlignment.CENTER), 85, 30, 20, 20);
         setSize(230, 50);
