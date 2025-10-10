@@ -76,7 +76,15 @@ public class SongDataExtractor {
     }
     public static void reloadData(boolean forceFullReload, Runnable onNoUpdate, Runnable onDataUpdate, Runnable onImageLoad) {
         ApiCalls.getNowPlayingTrack(data -> {
-            if (data == null) return;
+            if (data == null) {
+                MediaClient.currentlyPlaying = SongData.emptyData();
+                MediaClient.canGoBack = false;
+                MediaClient.canRepeat = false;
+                MediaClient.canSeek = false;
+                MediaClient.canSkip = false;
+                MediaClient.canShuffle = false;
+                return;
+            }
             boolean isSongDifferent = !getId(data.getAsJsonObject("item")).equals(MediaClient.currentlyPlaying.Id);
 
             MediaClient.progressLabel = getProgressLabel(data);

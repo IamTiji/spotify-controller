@@ -229,7 +229,7 @@ public class ApiCalls {
             }
             String responseBody = stringHttpResponse.body();
             if (responseBody.isEmpty()) {
-                Media.LOGGER.warn("Empty response body");
+                consumer.accept(null);
                 return;
             }
             if (stringHttpResponse.statusCode() >= 400) {
