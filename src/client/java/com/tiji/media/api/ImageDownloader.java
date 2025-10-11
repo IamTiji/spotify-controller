@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
 import static com.tiji.media.api.SongDataExtractor.getId;
@@ -63,17 +64,20 @@ public class ImageDownloader {
             MinecraftClient.getInstance().getTextureManager().registerTexture(id,
                     new NativeImageBackedTexture(image));
 
-            Thread.sleep(150); // Wait until the texture is loaded
+            CountDownLatch latch = new CountDownLatch(1);
+
+            MinecraftClient.getInstance().execute(latch::countDown);
+            latch.await();
 
             loadedCover.add(id);
             return new imageWithColor(image, id);
-        }catch (IOException e) {
+        } catch (IOException e) {
             Media.LOGGER.error("Failed to download album cover for {}: {}", getId(trackObj), e);
             Media.LOGGER.error(trackObj.toString());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
         } catch (NullPointerException e) {
             Media.LOGGER.error("Unexpected response from Spotify: {}\n{}", trackObj, e.getLocalizedMessage());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
         return new imageWithColor(0xffffffff, Identifier.of("media", "ui/nothing.png"));
     }

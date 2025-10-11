@@ -92,12 +92,12 @@ public class SongDataExtractor {
             MediaClient.shuffle = getShuffleState(data);
 
             JsonObject disallows = data.getAsJsonObject("actions").getAsJsonObject("disallows");
-            MediaClient.canShuffle = disallows.has("toggling_shuffle");
-            MediaClient.canRepeat = disallows.has("toggling_repeat_context") ||
-                                    disallows.has("toggling_repeat_track");
-            MediaClient.canSkip = disallows.has("skipping_next");
-            MediaClient.canGoBack = disallows.has("skipping_prev");
-            MediaClient.canSeek = disallows.has("seeking");
+            MediaClient.canShuffle = !disallows.has("toggling_shuffle");
+            MediaClient.canRepeat = !(disallows.has("toggling_repeat_context") ||
+                                    disallows.has("toggling_repeat_track"));
+            MediaClient.canSkip = !disallows.has("skipping_next");
+            MediaClient.canGoBack = !disallows.has("skipping_prev");
+            MediaClient.canSeek = !disallows.has("seeking");
 
             if (isSongDifferent || forceFullReload) {
                 MediaClient.currentlyPlaying = getDataFor(data.getAsJsonObject("item"), onImageLoad);
@@ -116,7 +116,9 @@ public class SongDataExtractor {
     public static SongData getDataFor(JsonObject data, @Nullable Runnable onImageLoad) {
         SongData song = new SongData();
 
-        song.title = (isExplicit(data) ? Icons.EXPLICT : Text.literal("")).append(Text.literal(getName(data)));
+        song.title = Text.empty()
+                .append(isExplicit(data) ? Icons.EXPLICT : Text.literal(""))
+                .append(Text.literal(getName(data)));
         song.artist = getArtist(data);
         song.durationLabel = getDurationLabel(data);
         song.Id = getId(data);

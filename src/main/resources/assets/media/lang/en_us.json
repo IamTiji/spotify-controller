@@ -27,6 +27,8 @@
   "ui.media.config.thread_image_io": "Number of thread for image downloading (Restart needed)",
   "ui.media.config.brightness_weight": "Brightness weight",
   "ui.media.config.saturation_weight": "Saturation weight",
+  "ui.media.config.target_brightness": "Target Brightness",
+  "ui.media.config.sample_size": "Sample size",
 
   "key.media.general": "Open Config / Controller",
 

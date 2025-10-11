@@ -20,6 +20,8 @@
   "ui.media.config.thread_image_io": "이미지를 다운로드 받는 쓰레드 갯수 (재시작 필요)",
   "ui.media.config.brightness_weight": "밝기 가중치",
   "ui.media.config.saturation_weight": "채도 가중치",
+  "ui.media.config.target_brightness": "목표 밝기",
+  "ui.media.config.sample_size": "샘플 크기",
   "key.media.general": "설정 / 제어판 열기",
   "modmenu.nameTranslation.media": "스포티파이 제어기",
   "modmenu.descriptionTranslation.media": "인게임에서 스포티파이 제어하기\n\n스포티파이는 Spotify AB의 트레이드 마크입니다. 이 프로그램은 스포티파이의 소유가 아니며 스포티파이와의 승인을 받지 않았습니다."

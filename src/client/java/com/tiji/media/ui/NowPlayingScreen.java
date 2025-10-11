@@ -7,6 +7,7 @@ import com.tiji.media.util.repeatMode;
 import com.tiji.media.widgets.borderlessButtonWidget;
 import com.tiji.media.widgets.clickableSprite;
 import com.tiji.media.widgets.progressWidget;
+import io.github.cottonmc.cotton.gui.ValidatedSlot;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
@@ -16,6 +17,7 @@ import io.github.cottonmc.cotton.gui.widget.WSprite;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Style;
@@ -30,19 +32,24 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         }
     }
 
-    public WLabel songName = new WLabel(Text.translatable("ui.media.nothing_playing"));
-    public WLabel artistName = new WLabel(Text.translatable("ui.media.unknown_artist"));
-    public progressWidget progressBar = new progressWidget(0, 100, Axis.HORIZONTAL);
-    public WLabel durationLabel = new WLabel(Text.translatable("ui.media.unknown_duration"));
-    public WLabel currentTimeLabel = new WLabel(Text.translatable("ui.media.unknown_time"));
-    public borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Icons.PAUSE);
-    public WSprite albumCover = new WSprite(Identifier.of("media", "ui/nothing.png"));
-    public borderlessButtonWidget repeat = new borderlessButtonWidget(repeatMode.getAsText(MediaClient.repeat));
-    public borderlessButtonWidget shuffle = new borderlessButtonWidget(Icons.SHUFFLE);
-    public borderlessButtonWidget like = new borderlessButtonWidget(Icons.ADD_TO_FAV);
-    public WPlainPanel root = new RootPanel();
+    private final WLabel songName = new WLabel(Text.translatable("ui.media.nothing_playing"));
+    private final WLabel artistName = new WLabel(Text.translatable("ui.media.unknown_artist"));
+    private final progressWidget progressBar = new progressWidget(0, 100, Axis.HORIZONTAL);
+    private final WLabel durationLabel = new WLabel(Text.translatable("ui.media.unknown_duration"));
+    private final WLabel currentTimeLabel = new WLabel(Text.translatable("ui.media.unknown_time"));
+    private final borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Icons.PAUSE);
+    private final WSprite albumCover = new WSprite(Identifier.of("media", "ui/nothing.png"));
+    private final borderlessButtonWidget repeat = new borderlessButtonWidget(repeatMode.getAsText(MediaClient.repeat));
+    private final borderlessButtonWidget shuffle = new borderlessButtonWidget(Icons.SHUFFLE);
+    private final borderlessButtonWidget like = new borderlessButtonWidget(Icons.ADD_TO_FAV);
+    private final WPlainPanel root = new RootPanel();
 
     public NowPlayingScreen() {
+        super();
+
+        setUseDefaultRootBackground(false);
+        root.setBackgroundPainter(BackgroundPainter.createColorful(MediaClient.currentlyPlaying.coverImage.color));
+
         root.setSize(300, 200);
         root.setInsets(Insets.NONE);
 
@@ -53,10 +60,10 @@ public class NowPlayingScreen extends LightweightGuiDescription {
             Util.getOperatingSystem().open(MediaClient.currentlyPlaying.songURI);
         }), 270, 10);
 
-        songName = songName.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        songName.setHorizontalAlignment(HorizontalAlignment.CENTER);
         root.add(songName, 100, 120, 100, 20);
 
-        artistName = artistName.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        artistName.setHorizontalAlignment(HorizontalAlignment.CENTER);
         root.add(artistName, 100, 135, 100, 20);
 
         root.add(new borderlessButtonWidget(Icons.SEARCH).setOnClick(() -> {
@@ -95,19 +102,25 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         });
         root.add(like, 200, 150, 20, 20);
 
-        currentTimeLabel = currentTimeLabel.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        currentTimeLabel.setHorizontalAlignment(HorizontalAlignment.LEFT);
         root.add(currentTimeLabel, 10, 160, 60, 20);
 
         progressBar.setMaxValue(300);
         root.add(progressBar, 10, 175, 280, 10);
 
-        durationLabel = durationLabel.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+        durationLabel.setHorizontalAlignment(HorizontalAlignment.RIGHT);
         root.add(durationLabel, 230, 160, 60, 20);
 
         root.validate(this);
 
         setRootPanel(root);
     }
+
+    @Override
+    public TriState isDarkMode() {
+        return MediaClient.currentlyPlaying.coverImage.shouldUseDarkUI ? TriState.TRUE : TriState.FALSE;
+    }
+
     public void updateStatus() {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
 
@@ -117,10 +130,10 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         currentTimeLabel.setText(Text.of(MediaClient.progressLabel));
         playPauseButton.setLabel(MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME);
         repeat.setLabel(repeatMode.getAsText(MediaClient.repeat));
-        shuffle.setLabel(MediaClient.shuffle ? Icons.SHUFFLE : Icons.SHUFFLE_ON);
-        like.setLabel(MediaClient.isLiked ? Icons.ADD_TO_FAV : Icons.REMOVE_FROM_FAV);
-        root.setBackgroundPainter(BackgroundPainter.createColorful(MediaClient.currentlyPlaying.coverImage.color));
+        shuffle.setLabel(MediaClient.shuffle ? Icons.SHUFFLE_ON : Icons.SHUFFLE);
+        like.setLabel(MediaClient.isLiked ? Icons.REMOVE_FROM_FAV : Icons.ADD_TO_FAV);
     }
+
     public void updateNowPlaying() {
         if (MediaClient.currentlyPlaying.Id.isEmpty()) {
             nothingPlaying();
@@ -135,6 +148,7 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         updateCoverImage();
         updateStatus();
     }
+
     public void nothingPlaying() {
         songName.setText(Text.translatable("ui.media.nothing_playing"));
         artistName.setText(Text.translatable("ui.media.unknown_artist"));
@@ -143,7 +157,9 @@ public class NowPlayingScreen extends LightweightGuiDescription {
         progressBar.setValue(0);
         currentTimeLabel.setText(Text.translatable("ui.media.unknown_time"));
     }
+
     public void updateCoverImage() {
         albumCover.setImage(MediaClient.currentlyPlaying.coverImage.image);
+        root.setBackgroundPainter(BackgroundPainter.createColorful(MediaClient.currentlyPlaying.coverImage.color));
     }
 }

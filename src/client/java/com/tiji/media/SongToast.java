@@ -45,8 +45,8 @@ public class SongToast implements Toast {
         }
         context.fill(0, 0, 180, 32, cover.color);
 
-        context.drawText(textRenderer, title, 35, 6, Colors.LIGHT_YELLOW, false);
-        context.drawText(textRenderer, artist, 35, 18, Colors.WHITE, false);
+        context.drawText(textRenderer, title , 35, 6 , cover.shouldUseDarkUI ? Colors.WHITE : Colors.BLACK, false);
+        context.drawText(textRenderer, artist, 35, 18, cover.shouldUseDarkUI ? Colors.WHITE : Colors.BLACK, false);
 
         context.drawTexture(RenderLayer::getGuiTextured, cover.image, 0, 0, 0, 0, 32, 32, 32, 32);
     }

@@ -8,8 +8,9 @@ import java.util.HashMap;
 
 public class imageWithColor {
     public Identifier image;
-    public int color;
+    public final int color;
     private static final HashMap<Identifier, Integer> cachedColors = new HashMap<>();
+    public boolean shouldUseDarkUI;
 
     public imageWithColor(NativeImage image, Identifier id) {
         this.image = id;
@@ -18,16 +19,20 @@ public class imageWithColor {
             return;
         }
         this.color = ImageColorExtractor.getDominantColor(image);
+        this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
         cachedColors.put(id, color);
     }
     public imageWithColor(int color, Identifier id) {
         this.image = id;
         this.color = color;
+        this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
     }
     public imageWithColor(Identifier id) {
         this.image = id;
         this.color = cachedColors.getOrDefault(id, 0xffffffff);
+        this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
     }
+
     public String toString() {
         return "imageWithColor{" +
                 "image=" + image +

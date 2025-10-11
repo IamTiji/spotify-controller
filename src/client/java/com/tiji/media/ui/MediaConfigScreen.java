@@ -78,7 +78,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         });
         root.add(threadImageIoField, 10, 155, 280, 20);
 
-        root.add(new WLabel(Text.translatable("ui.media.config.brightness_weight")), 10, 180, 280, 20);
+        root.add(new WLabel(Text.translatable("ui.media.config.brightness_weight")), 10, 180, 135, 20);
         intInputWidget brightnessWeightField = new intInputWidget();
         brightnessWeightField.setText(String.valueOf(MediaClient.CONFIG.brightnessFactor()));
         brightnessWeightField.setOnCharTyped((value) -> {
@@ -88,9 +88,9 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
                 // Ignore invalid input
             }
         });
-        root.add(brightnessWeightField, 10, 195, 280, 20);
+        root.add(brightnessWeightField, 10, 195, 135, 20);
 
-        root.add(new WLabel(Text.translatable("ui.media.config.saturation_weight")), 10, 220, 280, 20);
+        root.add(new WLabel(Text.translatable("ui.media.config.saturation_weight")), 155, 180, 135, 20);
         intInputWidget saturationWeightField = new intInputWidget();
         saturationWeightField.setText(String.valueOf(MediaClient.CONFIG.saturationFactor()));
         saturationWeightField.setOnCharTyped((value) -> {
@@ -100,7 +100,31 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
                 // Ignore invalid input
             }
         });
-        root.add(saturationWeightField, 10, 235, 280, 20);
+        root.add(saturationWeightField, 155, 195, 135, 20);
+
+        root.add(new WLabel(Text.translatable("ui.media.config.target_brightness")), 155, 220, 135, 20);
+        intInputWidget targetBrightnessField = new intInputWidget();
+        targetBrightnessField.setText(String.valueOf(MediaClient.CONFIG.targetBrightness()));
+        targetBrightnessField.setOnCharTyped((value) -> {
+            try {
+                MediaClient.CONFIG.targetBrightness(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                // Ignore invalid input
+            }
+        });
+        root.add(targetBrightnessField, 155, 235, 135, 20);
+
+        root.add(new WLabel(Text.translatable("ui.media.config.sample_size")), 10, 220, 135, 20);
+        intInputWidget sampleSizeField = new intInputWidget();
+        sampleSizeField.setText(String.valueOf(MediaClient.CONFIG.sampleSize()));
+        sampleSizeField.setOnCharTyped((value) -> {
+            try {
+                MediaClient.CONFIG.sampleSize(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                // Ignore invalid input
+            }
+        });
+        root.add(sampleSizeField, 10, 235, 135, 20);
 
         root.validate(this);
         setRootPanel(root);
