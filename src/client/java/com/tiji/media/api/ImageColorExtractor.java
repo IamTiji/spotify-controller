@@ -50,9 +50,9 @@ public class ImageColorExtractor {
             for (int y = 0; y < sampleSize; y++) {
                 int color = image.getColorArgb((int) (x * multiplier_width) + multiplier_width_half,
                         (int) (y * multiplier_height) + multiplier_height_half);
-                int b = (color >> 24) & 0xFF;
-                int g = (color >> 16) & 0xFF;
-                int r = (color >> 8) & 0xFF;
+                int r = (color << 24) & 0xFF;
+                int g = (color << 16) & 0xFF;
+                int b = (color << 8 ) & 0xFF;
 
                 boolean found = false;
                 for (Integer index : colorCount.keySet()) {
