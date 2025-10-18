@@ -19,7 +19,7 @@ public class Icons {
     public static final MutableText REPEAT =           Text.literal("6").setStyle(ICONS).append(RESETTER);
     public static final MutableText REPEAT_ON =        Text.literal("7").setStyle(ICONS).append(RESETTER);
     public static final MutableText REPEAT_SINGLE =    Text.literal("8").setStyle(ICONS).append(RESETTER);
-    public static final MutableText EXPLICT =          Text.literal("9").setStyle(ICONS).append(RESETTER);
+    public static final MutableText EXPLICT =          Text.literal("9").setStyle(ICONS).append(RESETTER).append(" ");
     public static final MutableText ADD_TO_FAV =       Text.literal("a").setStyle(ICONS).append(RESETTER);
     public static final MutableText REMOVE_FROM_FAV =  Text.literal("b").setStyle(ICONS).append(RESETTER);
     public static final MutableText SEARCH =           Text.literal("c").setStyle(ICONS).append(RESETTER);
