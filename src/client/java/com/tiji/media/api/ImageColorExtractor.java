@@ -7,14 +7,14 @@ import net.minecraft.client.texture.NativeImage;
 import java.util.HashMap;
 
 public class ImageColorExtractor {
-    public static final int MAX_COLOR_DIST = 40;
-    public static final int MAX_COLOR_DIST_SQR = MAX_COLOR_DIST * MAX_COLOR_DIST;
+    public static final float MAX_COLOR_DIST = 0.2f;
+    public static final float MAX_COLOR_DIST_SQR = MAX_COLOR_DIST * MAX_COLOR_DIST;
 
     public static int getDominantColor(NativeImage image) {
         HashMap<Integer, Integer> colorCount = getColorFrequency(image, MediaClient.CONFIG.sampleSize());
         int highestScoredColor = 0;
         double highestScore = -Double.MAX_VALUE;
-        Media.LOGGER.debug("Color frequencies: {}", colorCount);
+        Media.LOGGER.debug("Color frequencies (Found: {}): {}", colorCount.size(), colorCount);
         for (Integer color : colorCount.keySet()) {
             double score = calcWeightByArea(colorCount.getOrDefault(color, 0), MediaClient.CONFIG.sampleSize())
                     * calcScore(color,
@@ -28,7 +28,25 @@ public class ImageColorExtractor {
             }
         }
         Media.LOGGER.debug("Dominant color: {}", highestScoredColor);
-        return highestScoredColor;
+        return fixContrast(highestScoredColor);
+    }
+
+    private static int fixContrast(int color) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8 ) & 0xFF;
+        int b =  color        & 0xFF;
+        double brightness = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0;
+
+        if (brightness < 0.5 && brightness > 0.4) {
+            r = (int) (r * 0.5);
+            g = (int) (g * 0.5);
+            b = (int) (b * 0.5);
+        } else if (brightness > 0.5 && brightness < 0.6) {
+            r = (int) (r * 1.5);
+            g = (int) (g * 1.5);
+            b = (int) (b * 1.5);
+        }
+        return (r << 16) | (g << 8) | b | (0xFF << 24);
     }
 
     public static boolean shouldUseDarkMode(int dominantColor) {
@@ -50,17 +68,32 @@ public class ImageColorExtractor {
             for (int y = 0; y < sampleSize; y++) {
                 int color = image.getColorArgb((int) (x * multiplier_width) + multiplier_width_half,
                         (int) (y * multiplier_height) + multiplier_height_half);
-                int r = (color << 24) & 0xFF;
-                int g = (color << 16) & 0xFF;
-                int b = (color << 8 ) & 0xFF;
+                int r = (color >> 16) & 0xFF;
+                int g = (color >> 8 ) & 0xFF;
+                int b = (color      ) & 0xFF;
 
                 boolean found = false;
                 for (Integer index : colorCount.keySet()) {
-                    int b2 = (index >> 24) & 0xFF;
-                    int g2 = (index >> 16) & 0xFF;
-                    int r2 = (index >> 8) & 0xFF;
-                    int dist = (int) (Math.pow(r - r2, 2) + Math.pow(g - g2, 2) + Math.pow(b - b2, 2));
-                    if (dist < MAX_COLOR_DIST_SQR) {
+                    int r2 = (index >> 16) & 0xFF;
+                    int g2 = (index >> 8 ) & 0xFF;
+                    int b2 = (index      ) & 0xFF;
+
+                    // Convert to linear first
+                    double lr = convertToLinear(r / 255.0);
+                    double lg = convertToLinear(g / 255.0);
+                    double lb = convertToLinear(b / 255.0);
+
+                    double lr2 = convertToLinear(r2 / 255.0);
+                    double lg2 = convertToLinear(g2 / 255.0);
+                    double lb2 = convertToLinear(b2 / 255.0);
+
+                    // Calculate appropriate distance cap
+                    double brightness = (0.299f*r2 + 0.587f*g2 + 0.114f*b2) / 255;
+                    double dist_cap = (brightness  + 0.3) * MAX_COLOR_DIST;
+
+                    double dist_sq = (lr - lr2) * (lr - lr2) + (lg - lg2) * (lg - lg2) + (lb - lb2) * (lb - lb2);
+
+                    if (dist_sq < dist_cap) {
                         colorCount.put(index, colorCount.get(index) + 1);
                         found = true;
                         break;
@@ -107,8 +140,17 @@ public class ImageColorExtractor {
     }
 
     private static double calcWeightByArea(int x, int sampleSize) {
-        double normalizedX = (double) x / (sampleSize * sampleSize);
-        double t = Math.min(1.4*normalizedX*normalizedX*normalizedX,1);
-        return t * t * (3.0f - 2.0f * t);
+//        double normalizedX = (double) x / (sampleSize * sampleSize);
+//        double t = Math.min(2*normalizedX*normalizedX*normalizedX,1);
+//        return t * t * (3.0f - 2.0f * t);
+        return (double) x / (sampleSize * sampleSize) < 0.2 ? 0 : 1;
+    }
+
+    private static double convertToLinear(double color) {
+        if (color <= 0.04045) {
+            return color / 12.92;
+        } else {
+            return Math.pow((color + 0.055) / 1.055, 2.4);
+        }
     }
 }
