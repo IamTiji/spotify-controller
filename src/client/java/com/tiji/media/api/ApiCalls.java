@@ -14,8 +14,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ApiCalls {
     private static final HttpClient client = HttpClient.newHttpClient();
@@ -28,6 +30,7 @@ public class ApiCalls {
             "user-library-read",
             "user-library-modify"
     );
+
     public static void convertAccessToken(String accessToken) {
         call("https://accounts.spotify.com/api/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:25566/callback&code=" + accessToken,
                 getAuthorizationHeader(),
@@ -154,14 +157,31 @@ public class ApiCalls {
                 "PUT"
         );
     }
+
+    private static boolean cachedLikeStatus;
+    private static String cachedSongId;
+    private static long cachedLikeStatusTime;
+
+    private static final int LIKE_CACHE_LIFETIME = 5000;
+
     public static void isSongLiked(String trackId, Consumer<Boolean> consumer) {
+        if (System.currentTimeMillis() - cachedLikeStatusTime < LIKE_CACHE_LIFETIME &&
+                cachedSongId != null &&
+                cachedSongId.equals(trackId)) {
+            consumer.accept(cachedLikeStatus);
+        }
+
         call("https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId,
                 getAuthorizationCode(),
                 null,
-                body ->
-                    consumer.accept(new Gson().fromJson(body.body(), JsonArray.class).get(0).getAsBoolean())
-                ,
-                "GET"
+                body -> {
+                    cachedLikeStatus = new Gson().fromJson(body.body(), JsonArray.class).get(0).getAsBoolean();
+                    cachedSongId = trackId;
+                    cachedLikeStatusTime = System.currentTimeMillis();
+
+                    consumer.accept(cachedLikeStatus);
+                }
+                , "GET"
         );
     }
     public static void toggleLikeSong(String trackId, boolean state) {
@@ -199,7 +219,17 @@ public class ApiCalls {
                 "POST"
         );
     }
+
+    private static final HashMap<String, Long> rateLimited = new HashMap<>();
     private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method, String requestBody) {
+        if (rateLimited.containsKey(endpoint)) {
+            if (rateLimited.get(endpoint) > System.currentTimeMillis()) {
+                return; // Drop calls that will be rate-limited
+            } else {
+                rateLimited.remove(endpoint);
+            }
+        }
+
         HttpRequest.Builder request = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
                 .timeout(Duration.ofSeconds(10))
@@ -232,7 +262,13 @@ public class ApiCalls {
                 consumer.accept(null);
                 return;
             }
-            if (stringHttpResponse.statusCode() >= 400) {
+            if (stringHttpResponse.statusCode() == 429) {
+                long retryAfter = stringHttpResponse.headers().firstValueAsLong("Retry-After").orElse(Long.MAX_VALUE);
+                Media.LOGGER.error("Rate limit hit for: endpoint: {}, retryAfter: {}", endpoint, retryAfter);
+                rateLimited.put(endpoint, System.currentTimeMillis() + retryAfter * 1000);
+                return;
+            }
+            else if (stringHttpResponse.statusCode() >= 400) {
                 Media.LOGGER.error("Failed to call API: {} (Status: {}, endpoint: {})", responseBody, stringHttpResponse.statusCode(), endpoint);
                 MediaClient.CONFIG.reset();
                 WebGuideServer.start();
