@@ -24,5 +24,7 @@
   "ui.media.config.sample_size": "샘플 크기",
   "key.media.general": "설정 / 제어판 열기",
   "modmenu.nameTranslation.media": "스포티파이 제어기",
-  "modmenu.descriptionTranslation.media": "인게임에서 스포티파이 제어하기\n\n스포티파이는 Spotify AB의 트레이드 마크입니다. 이 프로그램은 스포티파이의 소유가 아니며 스포티파이와의 승인을 받지 않았습니다."
+  "modmenu.descriptionTranslation.media": "인게임에서 스포티파이 제어하기\n\n스포티파이는 Spotify AB의 트레이드 마크입니다. 이 프로그램은 스포티파이의 소유가 아니며 스포티파이와의 승인을 받지 않았습니다.",
+  "rp.media.highres": "고화질 아이콘 리팩\nCaxton 모드 필요",
+  "rp.media.highres.title": "고화질 아이콘 리팩"
 }

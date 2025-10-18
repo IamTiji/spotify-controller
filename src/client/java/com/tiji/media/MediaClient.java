@@ -11,10 +11,14 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class MediaClient implements ClientModInitializer {
@@ -44,6 +48,16 @@ public class MediaClient implements ClientModInitializer {
 	public static boolean isStarted = false;
 
 	public void onInitializeClient(){
+        FabricLoader.getInstance().getModContainer(Media.MOD_ID).ifPresent(modContainer -> {
+            if (!
+                ResourceManagerHelper.registerBuiltinResourcePack(
+                        Identifier.of("media", "higher_res"),
+                        modContainer,
+                        Text.translatable("rp.media.highres.title"),
+                        ResourcePackActivationType.NORMAL)) Media.LOGGER.error("High Resolution RP failed load!");
+            }
+        );
+
 		CONFIG.generate();
 		KeyBindingHelper.registerKeyBinding(SETUP_KEY);
 		ImageDownloader.startThreads();

@@ -33,5 +33,8 @@
   "key.media.general": "Open Config / Controller",
 
   "modmenu.nameTranslation.media": "Spotify Controller",
-  "modmenu.descriptionTranslation.media": "Control Spotify in-game"
+  "modmenu.descriptionTranslation.media": "Control Spotify in-game",
+
+  "rp.media.highres": "High Resolution Icons RP\nRequires Caxton to be functional",
+  "rp.media.highres.title": "High Resolution Icons RP"
 }
