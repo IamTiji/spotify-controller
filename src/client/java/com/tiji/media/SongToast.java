@@ -16,7 +16,7 @@ public class SongToast implements Toast {
     private Toast.Visibility visibility;
 
     private static final Identifier TEXTURE = Identifier.of("media", "ui/toast.png");
-    private static final long DISPLAY_DURATION_MS = 5000L;
+    private static final long DISPLAY_DURATION_MS = 3000L;
 
     public SongToast(Identifier cover, String artist, String title) {
         this.cover = cover;
