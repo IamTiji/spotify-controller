@@ -12,14 +12,18 @@ public class SongToast implements Toast {
     private final Identifier cover;
     private final String artist;
     private final String title;
-    private Long startTime;
+
+    private Toast.Visibility visibility;
 
     private static final Identifier TEXTURE = Identifier.of("media", "ui/toast.png");
+    private static final long DISPLAY_DURATION_MS = 5000L;
 
     public SongToast(Identifier cover, String artist, String title) {
         this.cover = cover;
         this.artist = artist;
         this.title = title;
+
+        this.visibility = Visibility.HIDE;
     }
 
     public void show(ToastManager manager) {
@@ -28,19 +32,18 @@ public class SongToast implements Toast {
 
     @Override
     public Visibility getVisibility() {
-        return System.currentTimeMillis() - this.startTime > 3000 ? Visibility.HIDE : Visibility.SHOW;
+        return this.visibility;
     }
 
     @Override
     public void update(ToastManager manager, long time) {
-
+        this.visibility = DISPLAY_DURATION_MS * manager.getNotificationDisplayTimeMultiplier() <= time
+                ? Visibility.HIDE
+                : Visibility.SHOW;
     }
 
     @Override
     public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-        if (this.startTime == null) {
-            this.startTime = System.currentTimeMillis();
-        }
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, 1, 1, 160, 32, 160, 32);
 
         context.drawText(textRenderer, title, 35, 6, Colors.LIGHT_YELLOW, false);
