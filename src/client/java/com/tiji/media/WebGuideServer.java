@@ -29,6 +29,7 @@ public class WebGuideServer {
         public void handle(HttpExchange exchange) throws IOException {
             String filepath = switch (MinecraftClient.getInstance().getLanguageManager().getLanguage()) {
                 case "ko_kr" -> "/guide/ko_kr.html";
+                case "es_es" -> "/guide/es_es.html";
                 default -> "/guide/en_us.html";
             };
 
@@ -59,6 +60,7 @@ public class WebGuideServer {
 
             String filepath = switch (MinecraftClient.getInstance().getLanguageManager().getLanguage()) {
                 case "ko_kr" -> "/allset/ko_kr.html";
+                case "es_es" -> "/allset/es_es.html";
                 default -> "/allset/en_us.html";
             };
 
