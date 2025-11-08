@@ -1,0 +1,30 @@
+{
+  "ui.media.welcome": "Bienvenido a la configuración del controlador de Spotify",
+  "ui.media.welcome.subtext1": "Este enlace te guiará a través de la",
+  "ui.media.welcome.subtext2": "configuración del controlador de Spotify.",
+
+  "ui.media.nothing_playing": "Nada está sonando",
+  "ui.media.unknown_artist": "Artista desconocido",
+
+  "ui.media.unknown_time": "00:00",
+  "ui.media.unknown_duration": "00:00",
+
+  "ui.media.reset_config": "Restablecer configuración / conexión",
+  "ui.media.reset_config_confirm": "¿Estás seguro de que deseas restablecer?",
+  "ui.media.reset_config_success": "Configuración restablecida correctamente",
+
+  "ui.media.status.not_setup": "No configurado",
+  "ui.media.status.setup": "Vinculado con: %1$s",
+
+  "ui.media.loading": "Cargando...",
+
+  "ui.media.premium_required.title": "Se requiere Premium",
+  "ui.media.premium_required.message": "Se requiere Premium. Esta es una limitación de Spotify",
+
+  "ui.media.show_toast": "Mostrar notificaciones cuando cambie la canción",
+
+  "key.media.general": "Abrir configuración / controlador",
+
+  "modmenu.nameTranslation.media": "Controlador de Spotify",
+  "modmenu.descriptionTranslation.media": "Controla Spotify en el juego"
+}
