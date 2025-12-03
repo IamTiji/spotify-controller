@@ -53,9 +53,19 @@ public class SearchScreen extends SecondaryBaseScreen {
             offset = -(int) ((contentHeight - resultSpace) * this.scrollBarPos);
         }
 
+        //#if MC>=12102
         context.enableScissor(0, MARGIN*2 + 20, WIDTH - SCROLLBAR_WIDTH - MARGIN, height - INFO_HEIGHT);
+        //#else
+        //$$ context.enableScissor(0, MARGIN*2 + 20 + offset, WIDTH - SCROLLBAR_WIDTH - MARGIN, height - INFO_HEIGHT + offset);
+        //#endif
+
+        //#if MC>=12106
+        //$$ context.getMatrices().pushMatrix();
+        //$$ context.getMatrices().translate(0, offset);
+        //#else
         context.getMatrices().push();
         context.getMatrices().translate(0, offset, 0);
+        //#endif
 
         synchronized (searchResults) {
             for (Drawable searchResult : searchResults) {
@@ -63,7 +73,12 @@ public class SearchScreen extends SecondaryBaseScreen {
             }
         }
 
+        //#if MC>=12106
+        //$$ context.getMatrices().popMatrix();
+        //#else
         context.getMatrices().pop();
+        //#endif
+
         context.disableScissor();
     }
 

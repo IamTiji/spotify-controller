@@ -1,6 +1,7 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.util.ImageDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -33,13 +34,28 @@ public class BaseScreen extends Screen {
 
         // Glow
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
-        context.drawTexture(RenderLayer::getGuiTextured,
+        int color = cover.color;
+
+        //#if MC>=12106
+        //$$ // In this version, background darkening seems to be broken, so we need to do it ourselves
+        //$$ final float darkenAmount = 1 - (1/64f);
+        //$$ final int mask = 0xFF000000;
+        //$$ int r = (int) (((color >> 16) & 0xff) * darkenAmount);
+        //$$ int g = (int) (((color >> 8)  & 0xff) * darkenAmount);
+        //$$ int b = (int) (( color        & 0xff) * darkenAmount);
+        //$$ color &= mask;
+        //$$ color |= r << 16 | g << 8 | b;
+        //#endif
+
+        ImageDrawer.drawImage(
+                context,
                 Identifier.of(Main.MOD_ID, "ui/gradient.png"),
                 widgetsOffset, 0,
                 0, 0,
                 255, height,
                 255, 1,
-                cover.color
+                255, 1,
+                color
         );
 
         widgetsOffset = (int) (-ANIMATION_AMOUNT + easeInOut(normalized) * ANIMATION_AMOUNT);

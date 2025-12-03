@@ -1,12 +1,14 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.util.ImageDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 
@@ -30,13 +32,12 @@ public class SecondaryBaseScreen extends BaseScreen {
 
         // Playback info
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
-        context.drawTexture(
-                RenderLayer::getGuiTextured,
+        ImageDrawer.drawImage(
+                context,
                 cover.image,
                 MARGIN, height - IMAGE_SIZE - MARGIN,
                 0, 0,
-                IMAGE_SIZE, IMAGE_SIZE,
-                1, 1, 1, 1 // When drawing full texture, they can be 1
+                IMAGE_SIZE, IMAGE_SIZE
         );
         int nextX = (int) (MARGIN*1.5 + widgetsOffset + IMAGE_SIZE + 3);
 

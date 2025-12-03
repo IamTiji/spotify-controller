@@ -5,6 +5,7 @@ import com.tiji.spotify_controller.api.ApiCalls;
 import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
 import com.tiji.spotify_controller.ui.Icons;
+import com.tiji.spotify_controller.util.ImageDrawer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
@@ -57,16 +58,19 @@ public class SongListItem implements Drawable, Element, Selectable {
         fadePos = Math.clamp(fadePos, 20 / 255f, 1);
 
         int color = ((int) (fadePos * 255)) << 24 | 0x00FFFFFF;
+
         int imageColor = ((int) (255 - fadePos * IMAGE_FADE_OUT) * 0x00010101) | 0xFF000000;
+        ImageDrawer.drawImage(
+                context,
+                song.coverImage.image,
+                x, y,
+                0, 0,
+                IMAGE_SIZE, IMAGE_SIZE,
+                imageColor
+        );
 
-        context.enableScissor(x, y, x+WIDTH, y+HEIGHT);
-
-        context.drawTexture(RenderLayer::getGuiTextured, song.coverImage.image,
-                x, y, 0, 0, IMAGE_SIZE, IMAGE_SIZE, 1, 1, 1, 1, imageColor);
         context.drawText(client.textRenderer, song.title, x + IMAGE_SIZE + MARGIN, y + MARGIN, 0xFFFFFFFF, false);
         context.drawText(client.textRenderer, song.artist, x + IMAGE_SIZE + MARGIN, y + MARGIN + 15, 0xFFFFFFFF, false);
-
-        context.disableScissor();
 
         context.drawText(client.textRenderer, Icons.ADD_TO_QUEUE, x + IMAGE_SIZE - 8 - MARGIN, y + IMAGE_SIZE - 5 - MARGIN, color, false);
     }

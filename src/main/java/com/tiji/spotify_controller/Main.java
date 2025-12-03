@@ -22,18 +22,28 @@ import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// For those who want to work with this
+// You will need to add dependencies to classpath
+// manually. I was too lazy to fix them
+
 public class Main implements ClientModInitializer {
-	public static SpotifyControllerConfig CONFIG = new SpotifyControllerConfig();
-	private static final KeyBinding SETUP_KEY = new KeyBinding("key.spotify_controller.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
+	public static final String            MOD_ID    = "spotify_controller";
+	public static final Logger            LOGGER    = LoggerFactory.getLogger(MOD_ID);
+	public static SpotifyControllerConfig CONFIG    = new SpotifyControllerConfig();
+	private static final KeyBinding       SETUP_KEY =
+			//#if MC<=12108
+			new KeyBinding("key.spotify_controller.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
+			//#else
+			//$$ new KeyBinding("key.spotify_controller.general", GLFW.GLFW_KEY_Z, KeyBinding.Category.MISC);
+			//#endif
+
 	public static int tickCount = 0;
 	public static NowPlayingScreen nowPlayingScreen = null;
-    public static final String MOD_ID = "spotify_controller";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static SongData currentlyPlaying = SongData.emptyData();
-    public static PlaybackState playbackState = new PlaybackState();
+	public static PlaybackState playbackState = new PlaybackState();
 
-    public static boolean isPremium = false;
+	public static boolean isPremium = false;
 
 	public static boolean isStarted = false;
 
@@ -43,7 +53,6 @@ public class Main implements ClientModInitializer {
                 ResourceManagerHelper.registerBuiltinResourcePack(
                         Identifier.of(MOD_ID, "higher_res"),
                         modContainer,
-                        Text.translatable("rp.spotify_controller.highres.title"),
                         ResourcePackActivationType.NORMAL)) Main.LOGGER.error("High Resolution RP failed load!");
             }
         );

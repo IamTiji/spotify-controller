@@ -29,7 +29,7 @@ public class ImageWithColor {
     }
     public ImageWithColor(Identifier id) {
         this.image = id;
-        this.color = cachedColors.getOrDefault(id, 0xffffffff);
+        this.color = cachedColors.getOrDefault(id, 0xffEFE4B0);
         this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
     }
 

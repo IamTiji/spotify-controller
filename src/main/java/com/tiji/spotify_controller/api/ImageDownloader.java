@@ -62,23 +62,25 @@ public class ImageDownloader {
             ImageIO.write(jpegImage, "png", outputStream);
             ByteArrayInputStream imageStream = new ByteArrayInputStream(outputStream.toByteArray());
 
-            NativeImage image = NativeImage.read(imageStream);
-            client.getTextureManager().registerTexture(id,
-                    new NativeImageBackedTexture(image));
-
             CountDownLatch latch = new CountDownLatch(1);
 
+            NativeImage image = NativeImage.read(imageStream);
             client.execute(() -> {
-                int glId = client.getTextureManager().getTexture(id).getGlId();
-
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, glId);
-                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+                //#if MC<=12104
+                //$$ client.getTextureManager().registerTexture(id,
+                //$$             new NativeImageBackedTexture(image));
+                //#else
+                client.getTextureManager().registerTexture(id,
+                        new NativeImageBackedTexture(id::getPath, image));
+                //#endif
 
                 latch.countDown();
             });
             latch.await();
+
+            //#if MC<=12101
+            //$$ Thread.sleep(100); // Texture loading before 1.21.2 is really weird
+            //#endif
 
             loadedCover.add(id);
             return new ImageWithColor(image, id);

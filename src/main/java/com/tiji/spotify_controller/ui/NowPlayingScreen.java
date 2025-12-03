@@ -2,6 +2,7 @@ package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.ApiCalls;
+import com.tiji.spotify_controller.util.ImageDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.util.RepeatMode;
 import com.tiji.spotify_controller.util.TextUtils;
@@ -9,7 +10,6 @@ import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
 import com.tiji.spotify_controller.widgets.ProgressWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -146,14 +146,14 @@ public class NowPlayingScreen extends BaseScreen {
 
         // Playback info
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
-        context.drawTexture(
-                RenderLayer::getGuiTextured,
+        ImageDrawer.drawImage(
+                context,
                 cover.image,
                 MARGIN + widgetsOffset, MARGIN,
                 0, 0,
-                IMAGE_SIZE, IMAGE_SIZE,
-                1, 1, 1, 1 // When drawing full texture, they can be 1
+                IMAGE_SIZE, IMAGE_SIZE
         );
+
         int nextX = MARGIN *2 + widgetsOffset + IMAGE_SIZE + 3;
 
         Text title = Text.of(Main.currentlyPlaying.title);

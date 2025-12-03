@@ -65,8 +65,13 @@ public class ImageColorExtractor {
 
         for (int x = 0; x < sampleSize; x++) {
             for (int y = 0; y < sampleSize; y++) {
+                //#if MC>=12103
                 int color = image.getColorArgb((int) (x * multiplier_width) + multiplier_width_half,
                         (int) (y * multiplier_height) + multiplier_height_half);
+                //#else
+                //$$ int color = image.getColor((int) (x * multiplier_width) + multiplier_width_half,
+                //$$        (int) (y * multiplier_height) + multiplier_height_half);
+                //#endif
                 int r = (color >> 16) & 0xFF;
                 int g = (color >> 8 ) & 0xFF;
                 int b = (color      ) & 0xFF;

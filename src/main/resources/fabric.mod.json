@@ -22,9 +22,11 @@
   },
   "depends": {
     "fabricloader": ">=0.16.9",
-    "minecraft": "~1.21.4",
+    "minecraft": "*",
     "java": ">=21",
-    "fabric-api": "*"
+    "fabric-resource-loader-v0": "*",
+    "fabric-lifecycle-events-v1": "*",
+    "fabric-key-binding-api-v1": "*"
   },
   "custom": {
     "modmenu": {

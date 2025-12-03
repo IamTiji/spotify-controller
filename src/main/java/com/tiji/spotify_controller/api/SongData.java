@@ -10,7 +10,7 @@ import java.net.URI;
 public class SongData {
     public Text title;
     public String artist;
-    public ImageWithColor coverImage = new ImageWithColor(0xffffffff, Identifier.of(Main.MOD_ID, "ui/nothing.png")); // Avoid NullPointerException
+    public ImageWithColor coverImage = new ImageWithColor(Identifier.of(Main.MOD_ID, "ui/nothing.png")); // Avoid NPE
     public String durationLabel;
     public Integer duration;
     public String Id = "";
