@@ -10,8 +10,8 @@ public class Icons {
     private static final Text RESETTER = Text.literal("").setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT_ID));
 
 
-    public static final MutableText NEXT =             Text.literal("0").setStyle(ICONS).append(RESETTER);
-    public static final MutableText PREVIOUS =         Text.literal("1").setStyle(ICONS).append(RESETTER);
+    public static final MutableText NEXT =             Text.literal("1").setStyle(ICONS).append(RESETTER);
+    public static final MutableText PREVIOUS =         Text.literal("0").setStyle(ICONS).append(RESETTER);
     public static final MutableText PAUSE =            Text.literal("2").setStyle(ICONS).append(RESETTER);
     public static final MutableText RESUME =           Text.literal("3").setStyle(ICONS).append(RESETTER);
     public static final MutableText SHUFFLE =          Text.literal("4").setStyle(ICONS).append(RESETTER);
