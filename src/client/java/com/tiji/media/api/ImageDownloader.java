@@ -16,7 +16,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -35,7 +36,8 @@ public class ImageDownloader {
         try {
             Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
 
-            int wantedSize = 100 * MinecraftClient.getInstance().options.getGuiScale().getValue();
+            int wantedSize = 100 * client.options.getGuiScale().getValue();
+            if (wantedSize == 0) wantedSize = Integer.MAX_VALUE;
             int closest = Integer.MAX_VALUE;
             JsonArray ImageList = trackObj.getAsJsonObject("album")
                     .getAsJsonArray("images");
@@ -51,7 +53,7 @@ public class ImageDownloader {
                             .getAsJsonObject().get("url").getAsString();
                 }
             }
-            InputStream albumCoverUrl = new URL(closestUrl).openStream();
+            InputStream albumCoverUrl = new URI(closestUrl).toURL().openStream();
 
             // Spotify provides JPEG image that Minecraft cannot handle
             // Convert to PNG
@@ -78,6 +80,8 @@ public class ImageDownloader {
             Media.LOGGER.error("Unexpected response from Spotify: {}\n{}", trackObj, e.getLocalizedMessage());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
         return new imageWithColor(0xffffffff, Identifier.of("media", "ui/nothing.png"));
     }
