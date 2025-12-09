@@ -99,15 +99,9 @@ public class ImageDownloader {
     public static void addDownloadTask(JsonObject data, Consumer<imageWithColor> callback) {
         if (loadedCover.contains(Identifier.of("media", getId(data).toLowerCase()))){
             Media.LOGGER.debug("Cache hit for {}", getId(data));
-            CompletableFuture.runAsync(() -> {
-                try{
-                    Thread.sleep(100); // Wait until SongData object is ready to accept image
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-
-                callback.accept(new imageWithColor(Identifier.of("media", getId(data).toLowerCase())));
-            });
+            CompletableFuture.runAsync(() ->
+                callback.accept(new imageWithColor(Identifier.of("media", getId(data).toLowerCase())))
+            );
             return;
         }
         Media.LOGGER.debug("Adding download task lister for {}", getId(data));
