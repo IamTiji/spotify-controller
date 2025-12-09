@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
+import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,8 +31,8 @@ public class ImageDownloader {
     private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
     private static final ArrayBlockingQueue<JsonObject> queue = new ArrayBlockingQueue<>(200);
     private static final HashMap<JsonObject, ArrayList<Consumer<imageWithColor>>> onComplete = new HashMap<>();
+    public static final MinecraftClient client = MinecraftClient.getInstance();
 
-    @SuppressWarnings("deprecation") // It will be re-visited
     private static imageWithColor getAlbumCover(JsonObject trackObj) {
         try {
             Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
@@ -63,12 +64,21 @@ public class ImageDownloader {
             ByteArrayInputStream imageStream = new ByteArrayInputStream(outputStream.toByteArray());
 
             NativeImage image = NativeImage.read(imageStream);
-            MinecraftClient.getInstance().getTextureManager().registerTexture(id,
+            client.getTextureManager().registerTexture(id,
                     new NativeImageBackedTexture(image));
 
             CountDownLatch latch = new CountDownLatch(1);
 
-            MinecraftClient.getInstance().execute(latch::countDown);
+            client.execute(() -> {
+                int glId = client.getTextureManager().getTexture(id).getGlId();
+
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, glId);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+
+                latch.countDown();
+            });
             latch.await();
 
             loadedCover.add(id);
