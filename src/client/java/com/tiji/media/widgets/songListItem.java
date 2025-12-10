@@ -35,12 +35,12 @@ public class songListItem extends WPlainPanel {
         add(songTitle, 65, 5, 200, 20);
         add(artist, 65, 15, 200, 20);
 
-        add(new borderlessButtonWidget(Icons.PLAY).setOnClick(() -> {
-            ApiCalls.setPlayingSong(songData.Id);
-        }).setAlignment(HorizontalAlignment.LEFT), 65, 30, 20, 20);
-        add(new borderlessButtonWidget(Icons.ADD_TO_QUEUE).setOnClick(() -> {
-            ApiCalls.addSongToQueue(songData.Id);
-        }).setAlignment(HorizontalAlignment.CENTER), 85, 30, 20, 20);
+        //add(new borderlessButtonWidget(Icons.PLAY).setOnClick(() -> {
+        //    ApiCalls.setPlayingSong(songData.Id);
+        //}).setAlignment(HorizontalAlignment.LEFT), 65, 30, 20, 20);
+        //add(new borderlessButtonWidget(Icons.ADD_TO_QUEUE).setOnClick(() -> {
+        //    ApiCalls.addSongToQueue(songData.Id);
+        //}).setAlignment(HorizontalAlignment.CENTER), 85, 30, 20, 20);
         setSize(230, 50);
     }
 }

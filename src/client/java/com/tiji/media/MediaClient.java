@@ -81,7 +81,7 @@ public class MediaClient implements ClientModInitializer {
 					nowPlayingScreen = new NowPlayingScreen();
 					nowPlayingScreen.updateCoverImage();
 					nowPlayingScreen.updateNowPlaying();
-					client.setScreen(new CottonClientScreen(nowPlayingScreen));
+					client.setScreen(nowPlayingScreen);
 				}
 			}
 			if (!isNotSetup() && tickCount % 10 == 0){
