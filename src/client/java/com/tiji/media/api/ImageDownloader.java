@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
-import com.tiji.media.util.imageWithColor;
+import com.tiji.media.util.ImageWithColor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -30,10 +30,10 @@ import static com.tiji.media.api.SongDataExtractor.getId;
 public class ImageDownloader {
     private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
     private static final ArrayBlockingQueue<JsonObject> queue = new ArrayBlockingQueue<>(200);
-    private static final HashMap<JsonObject, ArrayList<Consumer<imageWithColor>>> onComplete = new HashMap<>();
+    private static final HashMap<JsonObject, ArrayList<Consumer<ImageWithColor>>> onComplete = new HashMap<>();
     public static final MinecraftClient client = MinecraftClient.getInstance();
 
-    private static imageWithColor getAlbumCover(JsonObject trackObj) {
+    private static ImageWithColor getAlbumCover(JsonObject trackObj) {
         try {
             Identifier id = Identifier.of("media", getId(trackObj).toLowerCase());
 
@@ -82,7 +82,7 @@ public class ImageDownloader {
             latch.await();
 
             loadedCover.add(id);
-            return new imageWithColor(image, id);
+            return new ImageWithColor(image, id);
         } catch (IOException e) {
             Media.LOGGER.error("Failed to download album cover for {}: {}", getId(trackObj), e);
             Media.LOGGER.error(trackObj.toString());
@@ -93,14 +93,14 @@ public class ImageDownloader {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        return new imageWithColor(0xffffffff, Identifier.of("media", "ui/nothing.png"));
+        return new ImageWithColor(0xffffffff, Identifier.of("media", "ui/nothing.png"));
     }
 
-    public static void addDownloadTask(JsonObject data, Consumer<imageWithColor> callback) {
+    public static void addDownloadTask(JsonObject data, Consumer<ImageWithColor> callback) {
         if (loadedCover.contains(Identifier.of("media", getId(data).toLowerCase()))){
             Media.LOGGER.debug("Cache hit for {}", getId(data));
             CompletableFuture.runAsync(() ->
-                callback.accept(new imageWithColor(Identifier.of("media", getId(data).toLowerCase())))
+                callback.accept(new ImageWithColor(Identifier.of("media", getId(data).toLowerCase())))
             );
             return;
         }
@@ -109,7 +109,7 @@ public class ImageDownloader {
             onComplete.get(data).add(callback);
             return;
         }
-        ArrayList<Consumer<imageWithColor>> callbacks = new ArrayList<>();
+        ArrayList<Consumer<ImageWithColor>> callbacks = new ArrayList<>();
         callbacks.add(callback);
         onComplete.put(data, callbacks);
         queue.add(data);
@@ -127,9 +127,9 @@ public class ImageDownloader {
         while (!Thread.interrupted()) {
             try {
                 JsonObject task = queue.take();
-                imageWithColor coverId = getAlbumCover(task);
+                ImageWithColor coverId = getAlbumCover(task);
 
-                for (Consumer<imageWithColor> callback : onComplete.remove(task)) {
+                for (Consumer<ImageWithColor> callback : onComplete.remove(task)) {
                     callback.accept(coverId);
                 }
                 Media.LOGGER.debug("Finished downloading cover for {}", getId(task));

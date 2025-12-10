@@ -3,8 +3,7 @@ package com.tiji.media.api;
 import com.google.gson.JsonObject;
 import com.tiji.media.MediaClient;
 import com.tiji.media.ui.Icons;
-import com.tiji.media.util.imageWithColor;
-import net.minecraft.text.Style;
+import com.tiji.media.util.ImageWithColor;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -127,7 +126,7 @@ public class SongDataExtractor {
 
         if (!song.coverImage.image.getPath().equals("ui/nothing.png")) {
             //MinecraftClient.getInstance().getTextureManager().destroyTexture(SongData.coverImage);        //Deleted line as they are used on toasts. Will be re-visited
-            song.coverImage = new imageWithColor(0xffffffff, Identifier.of("media", "ui/nothing.png"));
+            song.coverImage = new ImageWithColor(0xffffffff, Identifier.of("media", "ui/nothing.png"));
         }
 
         ImageDownloader.addDownloadTask(data, image -> {

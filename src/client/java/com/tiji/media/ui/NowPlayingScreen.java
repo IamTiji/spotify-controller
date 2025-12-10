@@ -167,14 +167,13 @@ package com.tiji.media.ui;
 
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
-import com.tiji.media.util.imageWithColor;
-import com.tiji.media.util.repeatMode;
-import com.tiji.media.widgets.borderlessButtonWidget;
-import com.tiji.media.widgets.progressWidget;
+import com.tiji.media.util.ImageWithColor;
+import com.tiji.media.util.RepeatMode;
+import com.tiji.media.widgets.BorderlessButtonWidget;
+import com.tiji.media.widgets.ProgressWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -188,10 +187,10 @@ public class NowPlayingScreen extends BaseScreen {
     private static final int PLAYBACK_SIZE = 200;
     private static final int INFO_TEXT_SIZE = PLAYBACK_SIZE - MARGIN*2 - IMAGE_SIZE;
 
-    private borderlessButtonWidget playPauseButton;
-    private progressWidget progressBar;
-    private borderlessButtonWidget repeatButton;
-    private borderlessButtonWidget shuffleButton;
+    private BorderlessButtonWidget playPauseButton;
+    private ProgressWidget progressBar;
+    private BorderlessButtonWidget repeatButton;
+    private BorderlessButtonWidget shuffleButton;
 
     private boolean isFirstInit = true;
 
@@ -216,49 +215,49 @@ public class NowPlayingScreen extends BaseScreen {
         int x = MARGIN *2 + widgetsOffset + IMAGE_SIZE;
         int y = MARGIN + PLAYBACK_CONTROL_Y;
 
-        shuffleButton = new borderlessButtonWidget(
+        shuffleButton = new BorderlessButtonWidget(
                 Icons.SHUFFLE,
                 x, y,
                 () -> ApiCalls.setShuffle(!MediaClient.shuffle)
         );
         addDrawableChild(shuffleButton); // Shuffle
 
-        x += borderlessButtonWidget.BUTTON_SIZE + 1;
+        x += BorderlessButtonWidget.BUTTON_SIZE + 1;
         addDrawableChild(
-                new borderlessButtonWidget(
+                new BorderlessButtonWidget(
                         Icons.PREVIOUS,
                         x, y,
                         ApiCalls::previousTrack
                 )
         ); // Previous
 
-        x += borderlessButtonWidget.BUTTON_SIZE + 1;
-        playPauseButton = new borderlessButtonWidget(
+        x += BorderlessButtonWidget.BUTTON_SIZE + 1;
+        playPauseButton = new BorderlessButtonWidget(
                 MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME,
                 x, y,
                 () -> ApiCalls.playPause(!MediaClient.isPlaying)
         );
         addDrawableChild(playPauseButton);
 
-        x += borderlessButtonWidget.BUTTON_SIZE + 1;
+        x += BorderlessButtonWidget.BUTTON_SIZE + 1;
         addDrawableChild(
-                new borderlessButtonWidget(
+                new BorderlessButtonWidget(
                         Icons.NEXT,
                         x, y,
                         ApiCalls::nextTrack
                 )
         ); // Next
 
-        x += borderlessButtonWidget.BUTTON_SIZE + 1;
-        repeatButton = new borderlessButtonWidget(
+        x += BorderlessButtonWidget.BUTTON_SIZE + 1;
+        repeatButton = new BorderlessButtonWidget(
                 Icons.REPEAT,
                 x, y,
-                () -> ApiCalls.setRepeat(repeatMode.getNextMode(MediaClient.repeat))
+                () -> ApiCalls.setRepeat(RepeatMode.getNextMode(MediaClient.repeat))
         );
         addDrawableChild(repeatButton); // Repeat
 
         // Progress bar
-        progressBar = new progressWidget(
+        progressBar = new ProgressWidget(
                 MARGIN + widgetsOffset, (int) (MARGIN * 1.5 + IMAGE_SIZE), PLAYBACK_SIZE,
                 (float) MediaClient.progressValue,
                 (v) -> ApiCalls.setPlaybackLoc((int) (MediaClient.currentlyPlaying.duration * v))
@@ -271,7 +270,7 @@ public class NowPlayingScreen extends BaseScreen {
         super.render(context, mouseX, mouseY, delta);
 
         // Playback info
-        imageWithColor cover = MediaClient.currentlyPlaying.coverImage;
+        ImageWithColor cover = MediaClient.currentlyPlaying.coverImage;
         context.drawTexture(
                 RenderLayer::getGuiTextured,
                 cover.image,
@@ -339,7 +338,7 @@ public class NowPlayingScreen extends BaseScreen {
     public void updateStatus() {
         playPauseButton.setLabel(MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME);
         progressBar.setValue((float) MediaClient.progressValue);
-        repeatButton.setLabel(repeatMode.getAsText(MediaClient.repeat));
+        repeatButton.setLabel(RepeatMode.getAsText(MediaClient.repeat));
         shuffleButton.setLabel(MediaClient.shuffle ? Icons.SHUFFLE_ON : Icons.SHUFFLE);
     }
     public void updateNowPlaying() {}

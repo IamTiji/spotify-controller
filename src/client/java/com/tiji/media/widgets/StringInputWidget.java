@@ -6,9 +6,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class stringInputWidget extends WTextField {
+public class StringInputWidget extends WTextField {
     private @Nullable Consumer<String> consumer;
-    public stringInputWidget() {
+    public StringInputWidget() {
         super();
     }
 

@@ -3,7 +3,7 @@ package com.tiji.media.ui;
 import com.tiji.media.MediaClient;
 import com.tiji.media.WebGuideServer;
 import com.tiji.media.api.ApiCalls;
-import com.tiji.media.widgets.intInputWidget;
+import com.tiji.media.widgets.IntInputWidget;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WButton;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
@@ -64,7 +64,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         root.add(new WLabel(Text.translatable("ui.media.config.head_advanced")), 10, 120, 280, 20);
 
         root.add(new WLabel(Text.translatable("ui.media.config.thread_image_io")), 10, 140, 280, 20);
-        intInputWidget threadImageIoField = new intInputWidget();
+        IntInputWidget threadImageIoField = new IntInputWidget();
         threadImageIoField.setText(String.valueOf(MediaClient.CONFIG.imageIoThreadCount()));
         threadImageIoField.setOnCharTyped((value) -> {
             try {
@@ -79,7 +79,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         root.add(threadImageIoField, 10, 155, 280, 20);
 
         root.add(new WLabel(Text.translatable("ui.media.config.brightness_weight")), 10, 180, 135, 20);
-        intInputWidget brightnessWeightField = new intInputWidget();
+        IntInputWidget brightnessWeightField = new IntInputWidget();
         brightnessWeightField.setText(String.valueOf(MediaClient.CONFIG.brightnessFactor()));
         brightnessWeightField.setOnCharTyped((value) -> {
             try {
@@ -91,7 +91,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         root.add(brightnessWeightField, 10, 195, 135, 20);
 
         root.add(new WLabel(Text.translatable("ui.media.config.saturation_weight")), 155, 180, 135, 20);
-        intInputWidget saturationWeightField = new intInputWidget();
+        IntInputWidget saturationWeightField = new IntInputWidget();
         saturationWeightField.setText(String.valueOf(MediaClient.CONFIG.saturationFactor()));
         saturationWeightField.setOnCharTyped((value) -> {
             try {
@@ -103,7 +103,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         root.add(saturationWeightField, 155, 195, 135, 20);
 
         root.add(new WLabel(Text.translatable("ui.media.config.target_brightness")), 155, 220, 135, 20);
-        intInputWidget targetBrightnessField = new intInputWidget();
+        IntInputWidget targetBrightnessField = new IntInputWidget();
         targetBrightnessField.setText(String.valueOf(MediaClient.CONFIG.targetBrightness()));
         targetBrightnessField.setOnCharTyped((value) -> {
             try {
@@ -115,7 +115,7 @@ public abstract class MediaConfigScreen extends LightweightGuiDescription {
         root.add(targetBrightnessField, 155, 235, 135, 20);
 
         root.add(new WLabel(Text.translatable("ui.media.config.sample_size")), 10, 220, 135, 20);
-        intInputWidget sampleSizeField = new intInputWidget();
+        IntInputWidget sampleSizeField = new IntInputWidget();
         sampleSizeField.setText(String.valueOf(MediaClient.CONFIG.sampleSize()));
         sampleSizeField.setOnCharTyped((value) -> {
             try {

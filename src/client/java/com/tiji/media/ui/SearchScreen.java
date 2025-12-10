@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
-import com.tiji.media.widgets.songListItem;
-import com.tiji.media.widgets.stringInputWidget;
+import com.tiji.media.widgets.SongListItem;
+import com.tiji.media.widgets.StringInputWidget;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
@@ -37,7 +37,7 @@ public class SearchScreen extends LightweightGuiDescription {
         }
     }
 
-    stringInputWidget searchField = new stringInputWidget();
+    StringInputWidget searchField = new StringInputWidget();
     SongList listBox = new SongList();
     WScrollPanel scrollPanel = new WScrollPanel(listBox)
             .setScrollingVertically(TriState.TRUE)
@@ -60,7 +60,7 @@ public class SearchScreen extends LightweightGuiDescription {
                     int y = 0;
                     for (JsonElement result : results) {
                         JsonObject jsonObject = result.getAsJsonObject();
-                        songListItem item = new songListItem(jsonObject);
+                        SongListItem item = new SongListItem(jsonObject);
                         listBox.add(item, 0, y);
                         y += 50;
                         root.validate(this);

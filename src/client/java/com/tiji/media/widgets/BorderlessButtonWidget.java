@@ -27,7 +27,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.text.Text;
 
-public class borderlessButtonWidget extends PressableWidget {
+public class BorderlessButtonWidget extends PressableWidget {
     private Text label;
     private final Runnable action;
     private static final int HOVERED_COLOR = 0xFFAAAAAA;
@@ -36,7 +36,7 @@ public class borderlessButtonWidget extends PressableWidget {
     public static final int BUTTON_SIZE = 16;
     private static final int LABEL_OFFSET = 4;
 
-    public borderlessButtonWidget(Text innerText, int x, int y, Runnable action) {
+    public BorderlessButtonWidget(Text innerText, int x, int y, Runnable action) {
         super(x, y, BUTTON_SIZE, BUTTON_SIZE, Text.empty());
         this.label = innerText;
         this.action = action;

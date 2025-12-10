@@ -62,7 +62,7 @@ import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
 
-public class progressWidget extends ClickableWidget {
+public class ProgressWidget extends ClickableWidget {
     private static final int h = 10;
     private static final int RAIL_HEIGHT = 2;
     private static final int RAIL_Y = (h - RAIL_HEIGHT) / 2;
@@ -74,7 +74,7 @@ public class progressWidget extends ClickableWidget {
     private final Consumer<Float> action;
     private boolean dragging;
 
-    public progressWidget(int x, int y, int w, float value, Consumer<Float> action) {
+    public ProgressWidget(int x, int y, int w, float value, Consumer<Float> action) {
         super(x, y, w, h, Text.empty());
         this.value = value;
         this.action = action;

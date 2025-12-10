@@ -1,19 +1,16 @@
 package com.tiji.media.widgets;
 
 import com.google.gson.JsonObject;
-import com.tiji.media.api.ApiCalls;
 import com.tiji.media.api.SongData;
 import com.tiji.media.api.SongDataExtractor;
-import com.tiji.media.ui.Icons;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
-import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class songListItem extends WPlainPanel {
+public class SongListItem extends WPlainPanel {
     SongData songData = new SongData();
 
     WSprite songIcon = new WSprite(songData.coverImage.image);
@@ -22,7 +19,7 @@ public class songListItem extends WPlainPanel {
 
     final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
 
-    public songListItem(JsonObject data) {
+    public SongListItem(JsonObject data) {
         super();
 
         songData = SongDataExtractor.getDataFor(data, () -> {

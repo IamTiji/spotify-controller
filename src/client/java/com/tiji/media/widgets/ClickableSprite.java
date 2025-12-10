@@ -7,19 +7,19 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-public class clickableSprite extends WWidget {
+public class ClickableSprite extends WWidget {
     private @Nullable Runnable onClickEvent;
     private final Identifier texture;
 
     private final int width = 18;
     private final int height = 18;
 
-    public clickableSprite(Identifier texture) {
+    public ClickableSprite(Identifier texture) {
         super();
         this.texture = texture;
     }
 
-    public clickableSprite setOnClick(@Nullable Runnable onClickEvent) {
+    public ClickableSprite setOnClick(@Nullable Runnable onClickEvent) {
         this.onClickEvent = onClickEvent;
         return this;
     }

@@ -1,11 +1,9 @@
 package com.tiji.media.util;
 
 import com.tiji.media.ui.Icons;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
-public class repeatMode {
+public class RepeatMode {
     public static final String OFF = "off";
     public static final String CONTEXT = "context";
     public static final String TRACK = "track";

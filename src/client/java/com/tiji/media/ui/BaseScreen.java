@@ -1,7 +1,7 @@
 package com.tiji.media.ui;
 
 import com.tiji.media.MediaClient;
-import com.tiji.media.util.imageWithColor;
+import com.tiji.media.util.ImageWithColor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -30,7 +30,7 @@ public class BaseScreen extends Screen {
         int previousOffset = widgetsOffset;
 
         // Glow
-        imageWithColor cover = MediaClient.currentlyPlaying.coverImage;
+        ImageWithColor cover = MediaClient.currentlyPlaying.coverImage;
         context.drawTexture(RenderLayer::getGuiTextured,
                 Identifier.of("media", "ui/gradient.png"),
                 widgetsOffset, 0,

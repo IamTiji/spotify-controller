@@ -2,8 +2,8 @@ package com.tiji.media.widgets;
 
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 
-public class intInputWidget extends stringInputWidget {
-    public intInputWidget() {
+public class IntInputWidget extends StringInputWidget {
+    public IntInputWidget() {
         super();
     }
 
