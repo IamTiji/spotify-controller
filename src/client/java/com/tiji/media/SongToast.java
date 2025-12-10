@@ -13,12 +13,16 @@ public class SongToast implements Toast {
     private final ImageWithColor cover;
     private final String artist;
     private final Text title;
-    private Long startTime;
+    private Toast.Visibility visibility;
+
+    private static final long DISPLAY_DURATION_MS = 3000L;
 
     public SongToast(ImageWithColor cover, String artist, Text title) {
         this.cover = cover;
         this.artist = artist;
         this.title = title;
+
+        this.visibility = Visibility.HIDE;
     }
 
     public void show(ToastManager manager) {
@@ -27,22 +31,18 @@ public class SongToast implements Toast {
 
     @Override
     public Visibility getVisibility() {
-        if (this.startTime == null) {
-            return Visibility.SHOW;
-        }
-        return System.currentTimeMillis() - this.startTime > 3000 ? Visibility.HIDE : Visibility.SHOW;
+        return this.visibility;
     }
 
     @Override
     public void update(ToastManager manager, long time) {
-
+        this.visibility = DISPLAY_DURATION_MS * manager.getNotificationDisplayTimeMultiplier() <= time
+                ? Visibility.HIDE
+                : Visibility.SHOW;
     }
 
     @Override
     public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-        if (this.startTime == null) {
-            this.startTime = System.currentTimeMillis();
-        }
         context.fill(0, 0, 180, 32, cover.color);
 
         context.drawText(textRenderer, title , 35, 6 , cover.shouldUseDarkUI ? Colors.WHITE : Colors.BLACK, false);
