@@ -2,6 +2,7 @@ package com.tiji.media;
 
 import com.tiji.media.util.ImageWithColor;
 import com.tiji.media.util.TextTranter;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
@@ -11,12 +12,19 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 
 public class SongToast implements Toast {
+    private static final int TITLE_Y = 6;
+    private static final int ARTIST_Y = 18;
+    private static final int TOAST_WIDTH = 180;
+    private static final int TOAST_HEIGHT = 32;
+    private static final int MARGIN = 5;
+    private static final int IMAGE_WIDTH = TOAST_HEIGHT;
+    private static final long DISPLAY_DURATION_MS = 3000L;
+    private static final int TEXT_WIDTH = TOAST_WIDTH - MARGIN*2 - IMAGE_WIDTH;
+
     private final ImageWithColor cover;
     private final Text artist;
     private final Text title;
     private Toast.Visibility visibility;
-
-    private static final long DISPLAY_DURATION_MS = 3000L;
 
     public SongToast(ImageWithColor cover, String artist, Text title) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -46,11 +54,12 @@ public class SongToast implements Toast {
 
     @Override
     public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-        context.fill(0, 0, 180, 32, cover.color);
+        context.fill(0, 0, TOAST_WIDTH, TOAST_HEIGHT, cover.color);
 
-        context.drawText(textRenderer, title , 35, 6 , cover.shouldUseDarkUI ? Colors.WHITE : Colors.BLACK, false);
-        context.drawText(textRenderer, artist, 35, 18, cover.shouldUseDarkUI ? Colors.WHITE : Colors.BLACK, false);
+        int labelColor = cover.shouldUseDarkUI ? Colors.WHITE : Colors.BLACK;
+        context.drawText(textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
+        context.drawText(textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
 
-        context.drawTexture(RenderLayer::getGuiTextured, cover.image, 0, 0, 0, 0, 32, 32, 32, 32);
+        context.drawTexture(RenderLayer::getGuiTextured, cover.image, 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT, IMAGE_WIDTH, TOAST_HEIGHT);
     }
 }
