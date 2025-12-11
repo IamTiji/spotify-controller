@@ -169,6 +169,7 @@ import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.util.ImageWithColor;
 import com.tiji.media.util.RepeatMode;
+import com.tiji.media.util.TextTranter;
 import com.tiji.media.widgets.BorderlessButtonWidget;
 import com.tiji.media.widgets.ProgressWidget;
 import net.minecraft.client.MinecraftClient;
@@ -285,13 +286,8 @@ public class NowPlayingScreen extends BaseScreen {
         Text title = Text.of(MediaClient.currentlyPlaying.title);
         Text artist = Text.of(MediaClient.currentlyPlaying.artist);
 
-        int titleWidth = textRenderer.getWidth(title);
-        int artistWidth = textRenderer.getWidth(artist);
-
-        if (titleWidth > INFO_TEXT_SIZE)
-            title = getTrantedText(title);
-        if (artistWidth > INFO_TEXT_SIZE)
-            artist = getTrantedText(artist);
+        title = TextTranter.getTrantedText(title, textRenderer, INFO_TEXT_SIZE);
+        artist = TextTranter.getTrantedText(artist, textRenderer, INFO_TEXT_SIZE);
 
         context.enableScissor(
                 IMAGE_SIZE + MARGIN*2 + 2 + widgetsOffset, 0,
@@ -327,12 +323,6 @@ public class NowPlayingScreen extends BaseScreen {
                 MARGIN + PLAYBACK_CONTROL_Y + 35,
                 0xFFFFFFFF, false
         ); // duration label
-    }
-
-    private Text getTrantedText(Text title) {
-        int ellipsisSize = textRenderer.getWidth("...");
-        String plainText = textRenderer.trimToWidth(title, INFO_TEXT_SIZE - ellipsisSize).getString();
-        return Text.of(plainText + "...");
     }
 
     public void updateStatus() {
