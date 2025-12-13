@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 public class BaseScreen extends Screen {
     protected float totalTime = 0f;
     protected int widgetsOffset = -100;
+    protected static final int ANIMATION_AMOUNT = 100;
     private static final float animationTime = 0.5f;
 
     public BaseScreen(boolean animate) {
@@ -20,6 +21,7 @@ public class BaseScreen extends Screen {
 
         if (!animate) {
             totalTime += animationTime;
+            widgetsOffset = 0;
         }
     }
 
@@ -40,7 +42,7 @@ public class BaseScreen extends Screen {
                 cover.color
         );
 
-        widgetsOffset = (int) (-100 + easeInOut(normalized) * 100);
+        widgetsOffset = (int) (-ANIMATION_AMOUNT + easeInOut(normalized) * ANIMATION_AMOUNT);
 
         for (Element child : children()) {
             if (child instanceof ClickableWidget clickable) {
