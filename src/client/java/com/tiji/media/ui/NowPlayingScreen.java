@@ -1,170 +1,5 @@
 package com.tiji.media.ui;
 
-//import com.tiji.media.Media;
-//import com.tiji.media.MediaClient;
-//import com.tiji.media.api.ApiCalls;
-//import com.tiji.media.util.repeatMode;
-//import com.tiji.media.widgets.borderlessButtonWidget;
-//import com.tiji.media.widgets.clickableSprite;
-//import com.tiji.media.widgets.progressWidget;
-//import io.github.cottonmc.cotton.gui.ValidatedSlot;
-//import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
-//import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
-//import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-//import io.github.cottonmc.cotton.gui.widget.WLabel;
-//import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-//import io.github.cottonmc.cotton.gui.widget.WSprite;
-//import io.github.cottonmc.cotton.gui.widget.data.Axis;
-//import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
-//import io.github.cottonmc.cotton.gui.widget.data.Insets;
-//import net.fabricmc.fabric.api.util.TriState;
-//import net.minecraft.client.MinecraftClient;
-//import net.minecraft.client.gui.screen.Screen;
-//import net.minecraft.text.Style;
-//import net.minecraft.text.Text;
-//import net.minecraft.util.Identifier;
-//import net.minecraft.util.Util;
-//
-//public class NowPlayingScreen extends LightweightGuiDescription {
-//    private static class RootPanel extends WPlainPanel {
-//        public void onHidden() {
-//            MediaClient.nowPlayingScreen = null;
-//        }
-//    }
-//
-//    private final WLabel songName = new WLabel(Text.translatable("ui.media.nothing_playing"));
-//    private final WLabel artistName = new WLabel(Text.translatable("ui.media.unknown_artist"));
-//    private final progressWidget progressBar = new progressWidget(0, 100, Axis.HORIZONTAL);
-//    private final WLabel durationLabel = new WLabel(Text.translatable("ui.media.unknown_duration"));
-//    private final WLabel currentTimeLabel = new WLabel(Text.translatable("ui.media.unknown_time"));
-//    private final borderlessButtonWidget playPauseButton = new borderlessButtonWidget(Icons.PAUSE);
-//    private final WSprite albumCover = new WSprite(Identifier.of("media", "ui/nothing.png"));
-//    private final borderlessButtonWidget repeat = new borderlessButtonWidget(repeatMode.getAsText(MediaClient.repeat));
-//    private final borderlessButtonWidget shuffle = new borderlessButtonWidget(Icons.SHUFFLE);
-//    private final borderlessButtonWidget like = new borderlessButtonWidget(Icons.ADD_TO_FAV);
-//    private final WPlainPanel root = new RootPanel();
-//
-//    public NowPlayingScreen() {
-//        super();
-//
-//        setUseDefaultRootBackground(false);
-//        root.setBackgroundPainter(BackgroundPainter.createColorful(MediaClient.currentlyPlaying.coverImage.color));
-//
-//        root.setSize(300, 200);
-//        root.setInsets(Insets.NONE);
-//
-//        root.add(albumCover, 100, 10, 100, 100);
-//
-//        root.add(new clickableSprite(Identifier.of("media", "ui/attribution.png")).setOnClick(() -> {
-//            if (MediaClient.currentlyPlaying.songURI == null) return;
-//            Util.getOperatingSystem().open(MediaClient.currentlyPlaying.songURI);
-//        }), 270, 10);
-//
-//        songName.setHorizontalAlignment(HorizontalAlignment.CENTER);
-//        root.add(songName, 100, 120, 100, 20);
-//
-//        artistName.setHorizontalAlignment(HorizontalAlignment.CENTER);
-//        root.add(artistName, 100, 135, 100, 20);
-//
-//        root.add(new borderlessButtonWidget(Icons.SEARCH).setOnClick(() -> {
-//            Screen screen = new CottonClientScreen(new SearchScreen());
-//            MinecraftClient.getInstance().setScreen(screen);
-//            MediaClient.nowPlayingScreen = null;
-//        }), 80, 150, 20, 20);
-//
-//        shuffle.setOnClick(() -> {
-//            MediaClient.shuffle = !MediaClient.shuffle;
-//            ApiCalls.setShuffle(MediaClient.shuffle);
-//        });
-//        root.add(shuffle, 100, 150, 20, 20);
-//
-//        root.add(new borderlessButtonWidget(Icons.NEXT).setOnClick(ApiCalls::previousTrack), 120, 150, 20, 20);
-//
-//        playPauseButton.setOnClick(() -> {
-//            if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
-//
-//            MediaClient.isPlaying = !MediaClient.isPlaying;
-//            ApiCalls.playPause(MediaClient.isPlaying);
-//        });
-//        root.add(playPauseButton, 140, 150, 20, 20);
-//
-//        root.add(new borderlessButtonWidget(Icons.PREVIOUS).setOnClick(ApiCalls::nextTrack), 160, 150, 20, 20);
-//
-//        repeat.setOnClick(() -> {
-//            MediaClient.repeat = repeatMode.getNextMode(MediaClient.repeat);
-//            ApiCalls.setRepeat(MediaClient.repeat);
-//        });
-//        root.add(repeat, 180, 150, 20, 20);
-//
-//        like.setOnClick(() -> {
-//            MediaClient.isLiked = !MediaClient.isLiked;
-//            ApiCalls.toggleLikeSong(MediaClient.currentlyPlaying.Id, MediaClient.isLiked);
-//        });
-//        root.add(like, 200, 150, 20, 20);
-//
-//        currentTimeLabel.setHorizontalAlignment(HorizontalAlignment.LEFT);
-//        root.add(currentTimeLabel, 10, 160, 60, 20);
-//
-//        progressBar.setMaxValue(300);
-//        root.add(progressBar, 10, 175, 280, 10);
-//
-//        durationLabel.setHorizontalAlignment(HorizontalAlignment.RIGHT);
-//        root.add(durationLabel, 230, 160, 60, 20);
-//
-//        root.validate(this);
-//
-//        setRootPanel(root);
-//    }
-//
-//    @Override
-//    public TriState isDarkMode() {
-//        return MediaClient.currentlyPlaying.coverImage.shouldUseDarkUI ? TriState.TRUE : TriState.FALSE;
-//    }
-//
-//    public void updateStatus() {
-//        if (MediaClient.currentlyPlaying.Id.isEmpty()) return;
-//
-//        if (progressBar.allowUpdateProgress) {
-//            progressBar.setValue((int) Math.round(MediaClient.progressValue * 300));
-//        }
-//        currentTimeLabel.setText(Text.of(MediaClient.progressLabel));
-//        playPauseButton.setLabel(MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME);
-//        repeat.setLabel(repeatMode.getAsText(MediaClient.repeat));
-//        shuffle.setLabel(MediaClient.shuffle ? Icons.SHUFFLE_ON : Icons.SHUFFLE);
-//        like.setLabel(MediaClient.isLiked ? Icons.REMOVE_FROM_FAV : Icons.ADD_TO_FAV);
-//    }
-//
-//    public void updateNowPlaying() {
-//        if (MediaClient.currentlyPlaying.Id.isEmpty()) {
-//            nothingPlaying();
-//            return;
-//        }
-//
-//        Media.LOGGER.info(MediaClient.currentlyPlaying.toString());
-//
-//        songName.setText(MediaClient.currentlyPlaying.title);
-//        artistName.setText(Text.of(MediaClient.currentlyPlaying.artist));
-//        durationLabel.setText(Text.of(MediaClient.currentlyPlaying.durationLabel));
-//        updateCoverImage();
-//        updateStatus();
-//    }
-//
-//    public void nothingPlaying() {
-//        songName.setText(Text.translatable("ui.media.nothing_playing"));
-//        artistName.setText(Text.translatable("ui.media.unknown_artist"));
-//        durationLabel.setText(Text.translatable("ui.media.unknown_duration"));
-//        updateCoverImage();
-//        progressBar.setValue(0);
-//        currentTimeLabel.setText(Text.translatable("ui.media.unknown_time"));
-//    }
-//
-//    public void updateCoverImage() {
-//        albumCover.setImage(MediaClient.currentlyPlaying.coverImage.image);
-//        root.setBackgroundPainter(BackgroundPainter.createColorful(MediaClient.currentlyPlaying.coverImage.color));
-//    }
-//}
-//
-
 import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.util.ImageWithColor;
@@ -175,8 +10,12 @@ import com.tiji.media.widgets.ProgressWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 public class NowPlayingScreen extends BaseScreen {
     private static final int MARGIN = 10;
@@ -194,6 +33,17 @@ public class NowPlayingScreen extends BaseScreen {
     private BorderlessButtonWidget shuffleButton;
 
     private boolean isFirstInit = true;
+
+    private static final Map<Text, Class<? extends SecondaryBaseScreen>> SUBSCREENS = Map.of(
+            subscreenText(Icons.SEARCH, "ui.media.subscreens.search"), SearchScreen.class
+    );
+    private static final int SUBSCREEN_BUTTONS_HEIGHT = 16;
+    private static Text subscreenText(Text Icon, String description) {
+        return Icon.copy()
+                .append(" ")
+                .append(Text.translatable(description)
+                        .setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT_ID)));
+    }
 
     public NowPlayingScreen() {
         super(true);
@@ -219,7 +69,8 @@ public class NowPlayingScreen extends BaseScreen {
         shuffleButton = new BorderlessButtonWidget(
                 Icons.SHUFFLE,
                 x, y,
-                () -> ApiCalls.setShuffle(!MediaClient.shuffle)
+                () -> ApiCalls.setShuffle(!MediaClient.shuffle),
+                true
         );
         addDrawableChild(shuffleButton); // Shuffle
 
@@ -228,7 +79,8 @@ public class NowPlayingScreen extends BaseScreen {
                 new BorderlessButtonWidget(
                         Icons.PREVIOUS,
                         x, y,
-                        ApiCalls::previousTrack
+                        ApiCalls::previousTrack,
+                        true
                 )
         ); // Previous
 
@@ -236,7 +88,8 @@ public class NowPlayingScreen extends BaseScreen {
         playPauseButton = new BorderlessButtonWidget(
                 MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME,
                 x, y,
-                () -> ApiCalls.playPause(!MediaClient.isPlaying)
+                () -> ApiCalls.playPause(!MediaClient.isPlaying),
+                true
         );
         addDrawableChild(playPauseButton);
 
@@ -245,7 +98,8 @@ public class NowPlayingScreen extends BaseScreen {
                 new BorderlessButtonWidget(
                         Icons.NEXT,
                         x, y,
-                        ApiCalls::nextTrack
+                        ApiCalls::nextTrack,
+                        true
                 )
         ); // Next
 
@@ -253,7 +107,8 @@ public class NowPlayingScreen extends BaseScreen {
         repeatButton = new BorderlessButtonWidget(
                 Icons.REPEAT,
                 x, y,
-                () -> ApiCalls.setRepeat(RepeatMode.getNextMode(MediaClient.repeat))
+                () -> ApiCalls.setRepeat(RepeatMode.getNextMode(MediaClient.repeat)),
+                true
         );
         addDrawableChild(repeatButton); // Repeat
 
@@ -264,6 +119,25 @@ public class NowPlayingScreen extends BaseScreen {
                 (v) -> ApiCalls.setPlaybackLoc((int) (MediaClient.currentlyPlaying.duration * v))
         );
         addDrawableChild(progressBar);
+
+        // Subscreen button
+        y = height - MARGIN - SUBSCREEN_BUTTONS_HEIGHT;
+        for (Map.Entry<Text, Class<? extends SecondaryBaseScreen>> entry : SUBSCREENS.entrySet()) {
+            addDrawableChild(
+                    new BorderlessButtonWidget(
+                            entry.getKey(),
+                            MARGIN + widgetsOffset, y,
+                            () -> {
+                                try {
+                                    SecondaryBaseScreen screen = entry.getValue().getDeclaredConstructor().newInstance();
+                                    client.setScreen(screen);
+                                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                                         InvocationTargetException ignored) {}
+                            }, false
+                    )
+            );
+            y -= SUBSCREEN_BUTTONS_HEIGHT;
+        }
     }
 
     @Override
@@ -278,8 +152,7 @@ public class NowPlayingScreen extends BaseScreen {
                 MARGIN + widgetsOffset, MARGIN,
                 0, 0,
                 IMAGE_SIZE, IMAGE_SIZE,
-                300, 300,
-                300, 300
+                1, 1, 1, 1 // When drawing full texture, they can be 1
         );
         int nextX = MARGIN *2 + widgetsOffset + IMAGE_SIZE + 3;
 
@@ -319,10 +192,16 @@ public class NowPlayingScreen extends BaseScreen {
         context.drawText(
                 textRenderer,
                 Text.of(MediaClient.currentlyPlaying.durationLabel),
-                MARGIN + widgetsOffset + 201 - textRenderer.getWidth(Text.of(MediaClient.currentlyPlaying.durationLabel)),
+                MARGIN + widgetsOffset + PLAYBACK_SIZE - textRenderer.getWidth(Text.of(MediaClient.currentlyPlaying.durationLabel)) + 1,
                 MARGIN + PLAYBACK_CONTROL_Y + 35,
                 0xFFFFFFFF, false
         ); // duration label
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        MediaClient.nowPlayingScreen = null;
     }
 
     public void updateStatus() {
