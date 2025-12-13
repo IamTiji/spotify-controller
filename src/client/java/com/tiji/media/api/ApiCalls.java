@@ -162,7 +162,7 @@ public class ApiCalls {
     private static String cachedSongId;
     private static long cachedLikeStatusTime;
 
-    private static final int LIKE_CACHE_LIFETIME = 5000;
+    private static final int LIKE_CACHE_LIFETIME = 15000;
 
     public static void isSongLiked(String trackId, Consumer<Boolean> consumer) {
         if (System.currentTimeMillis() - cachedLikeStatusTime < LIKE_CACHE_LIFETIME &&
