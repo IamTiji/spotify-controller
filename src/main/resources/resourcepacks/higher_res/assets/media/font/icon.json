@@ -1,22 +1,22 @@
 {
-    "providers": [
-      {
-        "type": "caxton",
-        "regular": {
-          "file": "higher_res:icon.ttf",
-          "shadow_offset": 0.5,
-          "scale_factor": 1.25,
-          "shift": [
-            0.0,
-            -0.5
-          ]
-        }
-      },
-      {
-        "type": "space",
-        "advances": {
-          " ": 4
-        }
+  "providers": [
+    {
+      "type": "caxton",
+      "regular": {
+        "file": "higher_res:icon.ttf",
+        "shadow_offset": 0.5,
+        "scale_factor": 2,
+        "shift": [
+          2,
+          2
+        ]
       }
-    ]
-  }
+    },
+    {
+      "type": "space",
+      "advances": {
+        " ": 4
+      }
+    }
+  ]
+}
