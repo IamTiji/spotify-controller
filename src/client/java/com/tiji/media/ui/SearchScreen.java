@@ -2,77 +2,111 @@ package com.tiji.media.ui;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.widgets.SongListItem;
 import com.tiji.media.widgets.StringInputWidget;
-import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WScrollPanel;
-import io.github.cottonmc.cotton.gui.widget.data.Insets;
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.text.Text;
 
-public class SearchScreen extends LightweightGuiDescription {
-    private static class RootPanel extends WPlainPanel {
-        public void onHidden() {
-            MediaClient.nowPlayingScreen = null;
-        }
+import java.util.ArrayList;
+
+public class SearchScreen extends SecondaryBaseScreen {
+    private static final int WIDTH = 300;
+    private static final int MARGIN = 10;
+    private static final int SCROLLBAR_WIDTH = 4;
+
+    private final ArrayList<Drawable> searchResults = new ArrayList<>(20);
+    private float scrollBarPos;
+    private int offset;
+
+    @Override
+    protected void init() {
+        super.init();
+
+        StringInputWidget searchField = new StringInputWidget(textRenderer,
+                MARGIN, MARGIN,
+                WIDTH - MARGIN * 2, 20, Text.empty(),
+                Icons.SEARCH, this::search);
+        addDrawableChild(searchField);
+        setFocused(searchField);
     }
-    private static class SongList extends WPlainPanel {
-        private Runnable scheduledTask;
-        public void clear() {
-            if (children.isEmpty()) return;
-            children.clear();
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
+
+        int resultSpace     = height - MARGIN*2 - 20 - INFO_HEIGHT;
+        int contentHeight   = Math.max(0, searchResults.size() * (SongListItem.HEIGHT + MARGIN) - MARGIN);
+        int scrollBarSize   = (int) ((float) resultSpace / contentHeight * resultSpace);
+        int scrollBarPos    = (int) ((resultSpace - scrollBarSize) * this.scrollBarPos);
+
+        offset = 0;
+        if (resultSpace < contentHeight) {
+            context.fill(WIDTH - SCROLLBAR_WIDTH - MARGIN, MARGIN*2 + 20,
+                    WIDTH - MARGIN, height - INFO_HEIGHT,
+                    0xAAFFFFFF);
+            context.fill(WIDTH - SCROLLBAR_WIDTH - MARGIN, MARGIN*2 + 20 + scrollBarPos,
+                    WIDTH - MARGIN, MARGIN*2 + 20 + scrollBarPos + scrollBarSize,
+                    0xFFFFFFFF);
+            offset = -(int) ((contentHeight - resultSpace) * this.scrollBarPos);
         }
-        public void addTask(Runnable task) {
-            scheduledTask = task;
-        }
-        public void paint(DrawContext context, int x, int y, int mouseX, int mouseY){
-            super.paint(context, x, y, mouseX, mouseY);
-            if (scheduledTask!= null) {
-                scheduledTask.run();
-                scheduledTask = null;
+
+        context.enableScissor(0, MARGIN*2 + 20, WIDTH - SCROLLBAR_WIDTH - MARGIN, height - INFO_HEIGHT);
+        context.getMatrices().push();
+        context.getMatrices().translate(0, offset, 0);
+
+        synchronized (searchResults) {
+            for (Drawable searchResult : searchResults) {
+                searchResult.render(context, mouseX, mouseY - offset, delta);
             }
         }
+
+        context.getMatrices().pop();
+        context.disableScissor();
     }
 
-    StringInputWidget searchField = new StringInputWidget();
-    SongList listBox = new SongList();
-    WScrollPanel scrollPanel = new WScrollPanel(listBox)
-            .setScrollingVertically(TriState.TRUE)
-            .setScrollingHorizontally(TriState.FALSE);
+    private void search(String query) {
+        if (query.isEmpty()) return;
 
-    public SearchScreen() {
-        WPlainPanel root = new RootPanel();
+        for (Drawable searchResult : searchResults) {
+            remove((Element) searchResult);
+        }
+        synchronized (searchResults) {
+            searchResults.clear();
+            scrollBarPos = 0;
+        }
 
-        setRootPanel(root);
-        root.setSize(300, 200);
-        root.setInsets(Insets.NONE);
+        ApiCalls.getSearch(query, results -> {
+            synchronized (searchResults) {
+                int y = MARGIN*2 + 20;
+                for (JsonElement result : results) {
+                    JsonObject jsonObject = result.getAsJsonObject();
+                    SongListItem item = new SongListItem(jsonObject, MARGIN, y);
+                    searchResults.add(item);
 
-        searchField.setMaxLength(100);
-        searchField.setOnCharTyped((q) ->
-            ApiCalls.getSearch(q, results ->
-                listBox.addTask(() -> {
-                    listBox.clear();
-                    listBox.setSize(280, 50 * results.size());
-                    if (results.isEmpty()) return;
-                    int y = 0;
-                    for (JsonElement result : results) {
-                        JsonObject jsonObject = result.getAsJsonObject();
-                        SongListItem item = new SongListItem(jsonObject);
-                        listBox.add(item, 0, y);
-                        y += 50;
-                        root.validate(this);
-                    }
-                })
-            )
-        );
-        root.add(searchField, 10, 10, 280, 20);
+                    y += SongListItem.HEIGHT + MARGIN;
+                }
+            }
+        });
+    }
 
-        listBox.setInsets(Insets.NONE);
-        root.add(scrollPanel, 10, 40, 280, 150);
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        scrollBarPos = (float) Math.clamp(scrollBarPos - verticalAmount * 0.03f, 0f, 1f);
+        return true;
+    }
 
-        root.validate(this);
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!super.mouseClicked(mouseX, mouseY, button)) {
+            for (Drawable searchResult : searchResults) {
+                Element selectable = (Element) searchResult;
+                if (selectable.mouseClicked(mouseX, mouseY - offset, button))
+                    return true;
+            }
+        }
+        return false;
     }
 }

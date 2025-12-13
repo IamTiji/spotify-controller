@@ -1,43 +1,93 @@
 package com.tiji.media.widgets;
 
 import com.google.gson.JsonObject;
+import com.tiji.media.api.ApiCalls;
 import com.tiji.media.api.SongData;
 import com.tiji.media.api.SongDataExtractor;
-import io.github.cottonmc.cotton.gui.widget.WLabel;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WSprite;
-import net.minecraft.text.Style;
+import com.tiji.media.ui.Icons;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
-public class SongListItem extends WPlainPanel {
-    SongData songData = new SongData();
+public class SongListItem implements Drawable, Element, Selectable {
+    SongData song;
+    private final int x, y;
 
-    WSprite songIcon = new WSprite(songData.coverImage.image);
-    WLabel songTitle = new WLabel(Text.empty());
-    WLabel artist = new WLabel(Text.empty());
+    public static final int WIDTH = 300;
+    public static final int HEIGHT = 50;
 
-    final Style ICON = Style.EMPTY.withFont(Identifier.of("media", "icon"));
+    private static final int IMAGE_SIZE = HEIGHT;
+    private static final int MARGIN = 10;
+    private static final float FADE_TIME = 0.2f;
+    private static final int IMAGE_FADE_OUT = 80;
 
-    public SongListItem(JsonObject data) {
-        super();
+    private float fadePos = 0f;
 
-        songData = SongDataExtractor.getDataFor(data, () -> {
-            songIcon.setImage(songData.coverImage.image);
-        });
-        songTitle.setText(songData.title);
-        artist.setText(Text.literal(songData.artist));
+    private static final MinecraftClient client = MinecraftClient.getInstance();
 
-        add(songIcon, 0, 0, 50, 50);
-        add(songTitle, 65, 5, 200, 20);
-        add(artist, 65, 15, 200, 20);
+    public SongListItem(JsonObject data, int x, int y) {
+        song = SongDataExtractor.getDataFor(data, () -> {});
+        this.x = x;
+        this.y = y;
+    }
 
-        //add(new borderlessButtonWidget(Icons.PLAY).setOnClick(() -> {
-        //    ApiCalls.setPlayingSong(songData.Id);
-        //}).setAlignment(HorizontalAlignment.LEFT), 65, 30, 20, 20);
-        //add(new borderlessButtonWidget(Icons.ADD_TO_QUEUE).setOnClick(() -> {
-        //    ApiCalls.addSongToQueue(songData.Id);
-        //}).setAlignment(HorizontalAlignment.CENTER), 85, 30, 20, 20);
-        setSize(230, 50);
+    @Override
+    public void setFocused(boolean focused) {
+
+    }
+
+    @Override
+    public boolean isFocused() {
+        return false;
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        boolean isHovered = mouseX >= x && mouseY >= y && mouseX < x + WIDTH && mouseY < y + HEIGHT;
+
+        float change = delta / 10 / FADE_TIME;
+        if (isHovered) fadePos += change;
+        else fadePos -= change;
+        fadePos = Math.clamp(fadePos, 20 / 255f, 1);
+
+        int color = ((int) (fadePos * 255)) << 24 | 0x00FFFFFF;
+        int imageColor = ((int) (255 - fadePos * IMAGE_FADE_OUT) * 0x00010101) | 0xFF000000;
+
+        context.enableScissor(x, y, x+WIDTH, y+HEIGHT);
+
+        context.drawTexture(RenderLayer::getGuiTextured, song.coverImage.image,
+                x, y, 0, 0, IMAGE_SIZE, IMAGE_SIZE, 1, 1, 1, 1, imageColor);
+        context.drawText(client.textRenderer, song.title, x + IMAGE_SIZE + MARGIN, y + MARGIN, 0xFFFFFFFF, false);
+        context.drawText(client.textRenderer, song.artist, x + IMAGE_SIZE + MARGIN, y + MARGIN + 15, 0xFFFFFFFF, false);
+
+        context.disableScissor();
+
+        context.drawText(client.textRenderer, Icons.ADD_TO_QUEUE, x + IMAGE_SIZE - 8 - MARGIN, y + IMAGE_SIZE - 5 - MARGIN, color, false);
+    }
+
+    @Override
+    public SelectionType getType() {
+        return SelectionType.NONE;
+    }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder builder) {}
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean isHovered = mouseX >= x && mouseY >= y && mouseX < x + WIDTH && mouseY < y + HEIGHT;
+        if (isHovered && button == 0) {
+            ApiCalls.addSongToQueue(song.Id);
+            client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            return true;
+        }
+        return false;
     }
 }

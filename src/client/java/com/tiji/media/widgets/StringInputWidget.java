@@ -1,39 +1,57 @@
 package com.tiji.media.widgets;
 
-import io.github.cottonmc.cotton.gui.widget.WTextField;
-import io.github.cottonmc.cotton.gui.widget.data.InputResult;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
 
-public class StringInputWidget extends WTextField {
-    private @Nullable Consumer<String> consumer;
-    public StringInputWidget() {
-        super();
+public class StringInputWidget extends TextFieldWidget {
+    private final Text icon;
+    private static final MinecraftClient client = MinecraftClient.getInstance();
+    private long time = System.currentTimeMillis();
+    private static final long CURSOR_BLINK_DURATION = 1000;
+    private static final int MAX_TYPING_PAUSE = 500;
+    private final Consumer<String> action;
+    private boolean didRunAction = false;
+
+    public StringInputWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, Text icon, Consumer<String> action) {
+        super(textRenderer, x, y, width, height, text);
+        setMaxLength(Integer.MAX_VALUE);
+        this.icon = icon;
+        this.action = action;
     }
 
     @Override
-    public InputResult onCharTyped(char ch) {
-        InputResult result = super.onCharTyped(ch);
-        if (consumer != null && !getText().isEmpty()) consumer.accept(getText());
-        return result;
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.drawBorder(getX(), getY(), width, height, 0xFFFFFFFF);
+
+        int y = (height - client.textRenderer.fontHeight) / 2 + getY();
+        context.drawText(client.textRenderer, icon, width - 18 + getX(), y+2, 0xFFFFFFFF, false);
+
+        context.enableScissor(getX(), getY(), getX() + width - 18, getY() + height);
+        context.drawText(client.textRenderer, getText(), getX() + 4, y+1, 0xFFFFFFFF, false);
+        context.disableScissor();
+
+        long timePast = System.currentTimeMillis() - time;
+        boolean shouldBlink = timePast % CURSOR_BLINK_DURATION < CURSOR_BLINK_DURATION / 2;
+        if (shouldBlink && isFocused()) {
+            context.drawVerticalLine(client.textRenderer.getWidth(getText()) + getX() + 4, getY() + 3, getY() + height - 5, 0xFFFFFFFF);
+        }
+
+        if (!didRunAction && timePast > MAX_TYPING_PAUSE) {
+            didRunAction = true;
+            action.accept(getText());
+        }
     }
 
     @Override
-    public InputResult onKeyPressed(int keyCode, int scanCode, int modifiers) {
-        InputResult result = super.onKeyPressed(keyCode, scanCode, modifiers);
-        if (consumer!= null &&!getText().isEmpty()) consumer.accept(getText());
-        return result;
-    }
-
-    @Override
-    public InputResult onKeyReleased(int keyCode, int scanCode, int modifiers) {
-        InputResult result = super.onKeyReleased(keyCode, scanCode, modifiers);
-        if (consumer!= null &&!getText().isEmpty()) consumer.accept(getText());
-        return result;
-    }
-
-    public void setOnCharTyped(Consumer<String> consumer) {
-        this.consumer = consumer;
+    public void write(String text) {
+        if (client.textRenderer.getWidth(getText() + text) > width - 22) return; // text is too long; probably won't fit
+        time = System.currentTimeMillis();
+        didRunAction = false;
+        super.write(text);
     }
 }

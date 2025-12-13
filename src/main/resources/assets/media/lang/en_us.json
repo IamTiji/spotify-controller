@@ -36,5 +36,10 @@
   "modmenu.descriptionTranslation.media": "Control Spotify in-game",
 
   "rp.media.highres": "High Resolution Icons RP\nRequires Caxton to be functional",
-  "rp.media.highres.title": "High Resolution Icons RP"
+  "rp.media.highres.title": "High Resolution Icons RP",
+
+  "ui.media.subscreens.search": "Search",
+  "ui.media.subscreens.library": "Library",
+  "ui.media.subscreens.queue": "Queue",
+  "ui.media.subscreens.lyrics": "Lyrics"
 }
