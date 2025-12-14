@@ -67,7 +67,7 @@ public class MediaClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
 			while (SETUP_KEY.wasPressed()) {
 				if (isNotSetup()) {
-					client.setScreen(new CottonClientScreen(new SetupScreen()));
+					client.setScreen(new SetupScreen());
 				} else {
 					nowPlayingScreen = new NowPlayingScreen();
 					nowPlayingScreen.updateCoverImage();

@@ -1,7 +1,7 @@
 package com.tiji.media;
 
 import com.tiji.media.util.ImageWithColor;
-import com.tiji.media.util.TextTranter;
+import com.tiji.media.util.TextUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -30,8 +30,8 @@ public class SongToast implements Toast {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         this.cover = cover;
-        this.artist = TextTranter.getTrantedText(Text.of(artist), textRenderer, TEXT_WIDTH);
-        this.title =  TextTranter.getTrantedText(title          , textRenderer, TEXT_WIDTH);
+        this.artist = TextUtils.getTrantedText(Text.of(artist), TEXT_WIDTH);
+        this.title =  TextUtils.getTrantedText(title          , TEXT_WIDTH);
 
         this.visibility = Visibility.HIDE;
     }

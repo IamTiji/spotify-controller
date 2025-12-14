@@ -1,7 +1,6 @@
 {
   "ui.media.welcome": "Welcome to Spotify controller setup",
-  "ui.media.welcome.subtext1": "This link will guide you through the",
-  "ui.media.welcome.subtext2": "process of setting up your Spotify controller.",
+  "ui.media.welcome.subtext": "This link will guide you through the process of setting up your Spotify controller.",
 
   "ui.media.nothing_playing": "Nothing playing",
   "ui.media.unknown_artist": "Unknown artist",

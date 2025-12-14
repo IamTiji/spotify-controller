@@ -4,7 +4,7 @@ import com.tiji.media.MediaClient;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.util.ImageWithColor;
 import com.tiji.media.util.RepeatMode;
-import com.tiji.media.util.TextTranter;
+import com.tiji.media.util.TextUtils;
 import com.tiji.media.widgets.BorderlessButtonWidget;
 import com.tiji.media.widgets.ProgressWidget;
 import net.minecraft.client.MinecraftClient;
@@ -159,8 +159,8 @@ public class NowPlayingScreen extends BaseScreen {
         Text title = Text.of(MediaClient.currentlyPlaying.title);
         Text artist = Text.of(MediaClient.currentlyPlaying.artist);
 
-        title = TextTranter.getTrantedText(title, textRenderer, INFO_TEXT_SIZE);
-        artist = TextTranter.getTrantedText(artist, textRenderer, INFO_TEXT_SIZE);
+        title = TextUtils.getTrantedText(title, INFO_TEXT_SIZE);
+        artist = TextUtils.getTrantedText(artist, INFO_TEXT_SIZE);
 
         context.enableScissor(
                 IMAGE_SIZE + MARGIN*2 + 2 + widgetsOffset, 0,

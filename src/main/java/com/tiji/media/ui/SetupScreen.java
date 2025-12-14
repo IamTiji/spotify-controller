@@ -1,41 +1,46 @@
 package com.tiji.media.ui;
 
-import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
-import io.github.cottonmc.cotton.gui.widget.WButton;
-import io.github.cottonmc.cotton.gui.widget.WLabel;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
-import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import com.tiji.media.util.TextUtils;
+import com.tiji.media.widgets.BorderlessButtonWidget;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 
-public class SetupScreen extends LightweightGuiDescription {
+public class SetupScreen extends BaseScreen {
+    private static final int MARGIN = 10;
+    private static final Style LINK = Style.EMPTY.withFont(Style.DEFAULT_FONT_ID).withUnderline(true);
+
     public SetupScreen() {
-        WPlainPanel root = new WPlainPanel();
-        root.setSize(300, 200);
-        root.setInsets(Insets.NONE);
+        super(true);
+    }
 
-        WLabel welcomeLabel = new WLabel(Text.translatable("ui.media.welcome"));
-        welcomeLabel.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        welcomeLabel.setColor(0x000000).setDarkmodeColor(0xFFFFFF);
-        root.add(welcomeLabel, 100, 20, 100, 20);
+    @Override
+    protected void init() {
+        super.init();
 
-        WLabel setupLabel1 = new WLabel(Text.translatable("ui.media.welcome.subtext1"));
-        setupLabel1.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        setupLabel1.setColor(0x000000).setDarkmodeColor(0xFFFFFF);
-        root.add(setupLabel1, 100, 50, 100, 20);
+        addDrawableChild(
+                new BorderlessButtonWidget(Icons.POPUP_OPEN.copy().append(Text.literal("http://127.0.0.1:25566").setStyle(LINK)),
+                        MARGIN + widgetsOffset, MARGIN*3 + textRenderer.fontHeight*3,
+                        () -> Util.getOperatingSystem().open("http://127.0.0.1:25566"),
+                        false)
+        );
+    }
 
-        WLabel setupLabel2 = new WLabel(Text.translatable("ui.media.welcome.subtext2"));
-        setupLabel2.setHorizontalAlignment(HorizontalAlignment.CENTER);
-        setupLabel2.setColor(0x000000).setDarkmodeColor(0xFFFFFF);
-        root.add(setupLabel2, 100, 65, 100, 20);
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
 
-        WButton linkLabel = new WButton(Text.literal("http://127.0.0.1:25566").formatted(Formatting.UNDERLINE));
-        linkLabel.setOnClick(() -> Util.getOperatingSystem().open("http://127.0.0.1:25566"));
-        root.add(linkLabel, 75, 100, 150, 20);
+        context.drawText(textRenderer, Text.translatable("ui.media.welcome"), MARGIN + widgetsOffset, MARGIN, 0xFFFFFFFF, false);
 
-        root.validate(this);
-        setRootPanel(root);
+        String rawText = I18n.translate("ui.media.welcome.subtext");
+        String[] warpedText = TextUtils.warpText(rawText, 200);
+        int y = MARGIN*2 + textRenderer.fontHeight;
+
+        for (String line : warpedText) {
+            context.drawText(textRenderer, line, MARGIN + widgetsOffset, y, 0xFFFFFFFF, false);
+            y += textRenderer.fontHeight;
+        }
     }
 }

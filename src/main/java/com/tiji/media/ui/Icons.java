@@ -26,4 +26,5 @@ public class Icons {
     public static final MutableText ADD =              Text.literal("d").setStyle(ICONS).append(RESETTER);
     public static final MutableText PLAY =             Text.literal("e").setStyle(ICONS).append(RESETTER);
     public static final MutableText ADD_TO_QUEUE =     Text.literal("f").setStyle(ICONS).append(RESETTER);
+    public static final MutableText POPUP_OPEN =       Text.literal("g").setStyle(ICONS).append(RESETTER).append(" ");
 }
