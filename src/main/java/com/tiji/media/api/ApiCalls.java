@@ -109,14 +109,14 @@ public class ApiCalls {
         call(uri, getAuthorizationCode(), null, body -> {}, "PUT");
     }
     public static void nextTrack() {
-        if (!MediaClient.canSkip) {
+        if (!MediaClient.playbackState.canSkip) {
             MediaClient.showNotAllowedToast();
             return;
         }
         call("https://api.spotify.com/v1/me/player/next", getAuthorizationCode(), null, body -> {}, "POST");
     }
     public static void previousTrack() {
-        if (!MediaClient.canGoBack) {
+        if (!MediaClient.playbackState.canGoBack) {
             MediaClient.showNotAllowedToast();
             return;
         }
@@ -135,7 +135,7 @@ public class ApiCalls {
         }, "GET");
     }
     public static void setShuffle(boolean state) {
-        if (!MediaClient.canShuffle) {
+        if (!MediaClient.playbackState.canShuffle) {
             MediaClient.showNotAllowedToast();
             return;
         }
@@ -147,7 +147,7 @@ public class ApiCalls {
         );
     }
     public static void setRepeat(String state) {
-        if (!MediaClient.canRepeat) {
+        if (!MediaClient.playbackState.canRepeat) {
             MediaClient.showNotAllowedToast();
             return;
         }

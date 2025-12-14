@@ -32,20 +32,7 @@ public class MediaClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static SongData currentlyPlaying = new SongData();
-
-	public static String progressLabel = "00:00";
-	public static boolean isPlaying = false;
-	public static double progressValue = 0;
-
-	public static String repeat = "off";
-	public static boolean shuffle = false;
-	public static boolean isLiked = false;
-
-    public static boolean canShuffle = false;
-    public static boolean canRepeat = false;
-    public static boolean canSkip = false;
-    public static boolean canGoBack = false;
-    public static boolean canSeek = false;
+    public static PlaybackState playbackState = new PlaybackState();
 
     public static boolean isPremium = false;
 

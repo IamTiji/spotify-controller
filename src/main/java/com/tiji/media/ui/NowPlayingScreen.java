@@ -69,7 +69,7 @@ public class NowPlayingScreen extends BaseScreen {
         shuffleButton = new BorderlessButtonWidget(
                 Icons.SHUFFLE,
                 x, y,
-                () -> ApiCalls.setShuffle(!MediaClient.shuffle),
+                () -> ApiCalls.setShuffle(!MediaClient.playbackState.shuffle),
                 true
         );
         addDrawableChild(shuffleButton); // Shuffle
@@ -86,9 +86,9 @@ public class NowPlayingScreen extends BaseScreen {
 
         x += BorderlessButtonWidget.BUTTON_SIZE + 1;
         playPauseButton = new BorderlessButtonWidget(
-                MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME,
+                MediaClient.playbackState.isPlaying ? Icons.PAUSE : Icons.RESUME,
                 x, y,
-                () -> ApiCalls.playPause(!MediaClient.isPlaying),
+                () -> ApiCalls.playPause(!MediaClient.playbackState.isPlaying),
                 true
         );
         addDrawableChild(playPauseButton);
@@ -107,7 +107,7 @@ public class NowPlayingScreen extends BaseScreen {
         repeatButton = new BorderlessButtonWidget(
                 Icons.REPEAT,
                 x, y,
-                () -> ApiCalls.setRepeat(RepeatMode.getNextMode(MediaClient.repeat)),
+                () -> ApiCalls.setRepeat(RepeatMode.getNextMode(MediaClient.playbackState.repeat)),
                 true
         );
         addDrawableChild(repeatButton); // Repeat
@@ -115,7 +115,7 @@ public class NowPlayingScreen extends BaseScreen {
         // Progress bar
         progressBar = new ProgressWidget(
                 MARGIN + widgetsOffset, (int) (MARGIN * 1.5 + IMAGE_SIZE), PLAYBACK_SIZE,
-                (float) MediaClient.progressValue,
+                (float) MediaClient.playbackState.progressValue,
                 (v) -> ApiCalls.setPlaybackLoc((int) (MediaClient.currentlyPlaying.duration * v))
         );
         addDrawableChild(progressBar);
@@ -183,7 +183,7 @@ public class NowPlayingScreen extends BaseScreen {
         // Text for progress bar
         context.drawText(
                 textRenderer,
-                Text.of(MediaClient.progressLabel),
+                Text.of(MediaClient.playbackState.progressLabel),
                 MARGIN + widgetsOffset,
                 MARGIN + PLAYBACK_CONTROL_Y + 35,
                 0xFFFFFFFF, false
@@ -205,10 +205,10 @@ public class NowPlayingScreen extends BaseScreen {
     }
 
     public void updateStatus() {
-        playPauseButton.setLabel(MediaClient.isPlaying ? Icons.PAUSE : Icons.RESUME);
-        progressBar.setValue((float) MediaClient.progressValue);
-        repeatButton.setLabel(RepeatMode.getAsText(MediaClient.repeat));
-        shuffleButton.setLabel(MediaClient.shuffle ? Icons.SHUFFLE_ON : Icons.SHUFFLE);
+        playPauseButton.setLabel(MediaClient.playbackState.isPlaying ? Icons.PAUSE : Icons.RESUME);
+        progressBar.setValue((float) MediaClient.playbackState.progressValue);
+        repeatButton.setLabel(RepeatMode.getAsText(MediaClient.playbackState.repeat));
+        shuffleButton.setLabel(MediaClient.playbackState.shuffle ? Icons.SHUFFLE_ON : Icons.SHUFFLE);
     }
     public void updateNowPlaying() {}
     public void nothingPlaying() {}

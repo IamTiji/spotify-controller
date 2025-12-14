@@ -75,35 +75,35 @@ public class SongDataExtractor {
         ApiCalls.getNowPlayingTrack(data -> {
             if (data == null) {
                 MediaClient.currentlyPlaying = SongData.emptyData();
-                MediaClient.canGoBack = false;
-                MediaClient.canRepeat = false;
-                MediaClient.canSeek = false;
-                MediaClient.canSkip = false;
-                MediaClient.canShuffle = false;
+                MediaClient.playbackState.canGoBack = false;
+                MediaClient.playbackState.canRepeat = false;
+                MediaClient.playbackState.canSeek = false;
+                MediaClient.playbackState.canSkip = false;
+                MediaClient.playbackState.canShuffle = false;
                 return;
             }
             boolean isSongDifferent = !getId(data.getAsJsonObject("item")).equals(MediaClient.currentlyPlaying.Id);
 
-            MediaClient.progressLabel = getProgressLabel(data);
-            MediaClient.isPlaying = isPlaying(data);
-            MediaClient.progressValue = getDuration(data);
-            MediaClient.repeat = getRepeatState(data);
-            MediaClient.shuffle = getShuffleState(data);
+            MediaClient.playbackState.progressLabel = getProgressLabel(data);
+            MediaClient.playbackState.isPlaying = isPlaying(data);
+            MediaClient.playbackState.progressValue = getDuration(data);
+            MediaClient.playbackState.repeat = getRepeatState(data);
+            MediaClient.playbackState.shuffle = getShuffleState(data);
 
             JsonObject disallows = data.getAsJsonObject("actions").getAsJsonObject("disallows");
-            MediaClient.canShuffle = !disallows.has("toggling_shuffle");
-            MediaClient.canRepeat = !(disallows.has("toggling_repeat_context") ||
+            MediaClient.playbackState.canShuffle = !disallows.has("toggling_shuffle");
+            MediaClient.playbackState.canRepeat = !(disallows.has("toggling_repeat_context") ||
                                     disallows.has("toggling_repeat_track"));
-            MediaClient.canSkip = !disallows.has("skipping_next");
-            MediaClient.canGoBack = !disallows.has("skipping_prev");
-            MediaClient.canSeek = !disallows.has("seeking");
+            MediaClient.playbackState.canSkip = !disallows.has("skipping_next");
+            MediaClient.playbackState.canGoBack = !disallows.has("skipping_prev");
+            MediaClient.playbackState.canSeek = !disallows.has("seeking");
 
             if (isSongDifferent || forceFullReload) {
                 MediaClient.currentlyPlaying = getDataFor(data.getAsJsonObject("item"), onImageLoad);
             }
 
             ApiCalls.isSongLiked(MediaClient.currentlyPlaying.Id, isLiked ->
-                MediaClient.isLiked = isLiked
+                MediaClient.playbackState.isLiked = isLiked
             );
             if (isSongDifferent || forceFullReload) {
                 onDataUpdate.run();
