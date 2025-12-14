@@ -65,9 +65,12 @@ public class MediaConfig {
                 throw new RuntimeException(e);
             }
         } else {
-            return new MediaConfig();
+            MediaConfig newInstance = new MediaConfig();
+            newInstance.writeToFile(false);
+            return newInstance;
         }
     }
+
     public void writeToFile(boolean delete) {
         Path configPath = FabricLoader.getInstance().getConfigDir().resolve("media.json");
 
