@@ -1,6 +1,5 @@
 package com.tiji.media.api;
 
-import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import net.minecraft.client.texture.NativeImage;
 
@@ -14,20 +13,20 @@ public class ImageColorExtractor {
         HashMap<Integer, Integer> colorCount = getColorFrequency(image, MediaClient.CONFIG.sampleSize());
         int highestScoredColor = 0;
         double highestScore = -Double.MAX_VALUE;
-        Media.LOGGER.debug("Color frequencies (Found: {}): {}", colorCount.size(), colorCount);
+        MediaClient.LOGGER.debug("Color frequencies (Found: {}): {}", colorCount.size(), colorCount);
         for (Integer color : colorCount.keySet()) {
             double score = calcWeightByArea(colorCount.getOrDefault(color, 0), MediaClient.CONFIG.sampleSize())
                     * calcScore(color,
                     MediaClient.CONFIG.brightnessFactor(),
                     MediaClient.CONFIG.saturationFactor(),
                     MediaClient.CONFIG.targetBrightness());
-            Media.LOGGER.debug("Score for color {}: {}", color, score);
+            MediaClient.LOGGER.debug("Score for color {}: {}", color, score);
             if (score > highestScore) {
                 highestScore = score;
                 highestScoredColor = color;
             }
         }
-        Media.LOGGER.debug("Dominant color: {}", highestScoredColor);
+        MediaClient.LOGGER.debug("Dominant color: {}", highestScoredColor);
         return fixContrast(highestScoredColor);
     }
 
@@ -101,7 +100,7 @@ public class ImageColorExtractor {
                 }
                 if (!found) {
                     colorCount.put(color, 1);
-                    Media.LOGGER.debug("New color: {}", color);
+                    MediaClient.LOGGER.debug("New color: {}", color);
                 }
             }
         }
@@ -135,7 +134,7 @@ public class ImageColorExtractor {
 
         float score = saturationWeight * saturation
                 + (1 - Math.abs(brightness - TARGET_BRIGHTNESS)) * brightnessWeight;
-        Media.LOGGER.debug("color: {}, saturation: {}, brightness: {}, score: {}", color, saturation, brightness, score);
+        MediaClient.LOGGER.debug("color: {}, saturation: {}, brightness: {}, score: {}", color, saturation, brightness, score);
         return score;
     }
 

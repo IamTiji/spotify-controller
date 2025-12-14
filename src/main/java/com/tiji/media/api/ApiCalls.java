@@ -3,9 +3,11 @@ package com.tiji.media.api;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.WebGuideServer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.toast.SystemToast;
+import net.minecraft.text.Text;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -17,7 +19,6 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class ApiCalls {
     private static final HttpClient client = HttpClient.newHttpClient();
@@ -68,7 +69,7 @@ public class ApiCalls {
                     JsonObject data = new Gson().fromJson(body.body(), JsonObject.class);
 
                     if (data.has("error")) {
-                        Media.LOGGER.warn("Failed to refresh access token; Normally caused when developer app is deleted. {}: {}", data.get("error"), data.get("error_description"));
+                        MediaClient.LOGGER.warn("Failed to refresh access token; Normally caused when developer app is deleted. {}: {}", data.get("error"), data.get("error_description"));
                         MediaClient.CONFIG.reset();
                         return;
                     }
@@ -249,12 +250,12 @@ public class ApiCalls {
 
         client.sendAsync(request.build(), HttpResponse.BodyHandlers.ofString())
         .exceptionally(e -> {
-            Media.LOGGER.error("Failed to call API: {}", e.getMessage());
+            MediaClient.LOGGER.error("Failed to call API: {}", e.getMessage());
             return null;
         })
         .thenAccept(stringHttpResponse -> {
             if (stringHttpResponse == null) {
-                Media.LOGGER.warn("Empty response");
+                MediaClient.LOGGER.warn("Empty response");
                 return;
             }
             String responseBody = stringHttpResponse.body();
@@ -264,22 +265,42 @@ public class ApiCalls {
             }
             if (stringHttpResponse.statusCode() == 429) {
                 long retryAfter = stringHttpResponse.headers().firstValueAsLong("Retry-After").orElse(Long.MAX_VALUE);
-                Media.LOGGER.error("Rate limit hit for: endpoint: {}, retryAfter: {}", endpoint, retryAfter);
+                MediaClient.LOGGER.error("Rate limit hit for: endpoint: {}, retryAfter: {}", endpoint, retryAfter);
                 rateLimited.put(endpoint, System.currentTimeMillis() + retryAfter * 1000);
                 return;
             }
             else if (stringHttpResponse.statusCode() >= 400) {
-                Media.LOGGER.error("Failed to call API: {} (Status: {}, endpoint: {})", responseBody, stringHttpResponse.statusCode(), endpoint);
-                MediaClient.CONFIG.reset();
-                WebGuideServer.start();
+                JsonObject error = new Gson().fromJson(responseBody, JsonObject.class);
+                if (!handleError(error)) {
+                    MediaClient.CONFIG.reset();
+                    WebGuideServer.start();
+                }
                 return;
             }
             consumer.accept(stringHttpResponse);
         });
     }
+
+    private static final List<String> handledErrors = List.of("NO_ACTIVE_DEVICE", "PREMIUM_REQUIRED");
+    private static boolean handleError(JsonObject data) {
+        if (!data.get("error").getAsJsonObject().has("reason")) return false;
+        String reason = data.get("error").getAsJsonObject().get("reason").getAsString();
+
+        if (handledErrors.contains(reason)) {
+            MinecraftClient.getInstance().getToastManager().add(
+                    new SystemToast(new SystemToast.Type(), Text.empty(), Text.translatable("api.media.error."+reason))
+            );
+            return true;
+        } else {
+            MediaClient.LOGGER.error("Unhandled error: {}", reason);
+            return false;
+        }
+    }
+
     private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method) {
         call(endpoint, Authorization, ContentType, consumer, method, "");
     }
+
     private static String getAuthorizationHeader() {
         String clientId = MediaClient.CONFIG.clientId();
         String clientSecret = MediaClient.CONFIG.clientSecret();

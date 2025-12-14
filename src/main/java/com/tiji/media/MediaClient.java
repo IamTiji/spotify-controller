@@ -20,12 +20,16 @@ import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MediaClient implements ClientModInitializer {
 	public static final MediaConfig CONFIG = new MediaConfig();
 	private static final KeyBinding SETUP_KEY = new KeyBinding("key.media.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
 	public static int tickCount = 0;
 	public static NowPlayingScreen nowPlayingScreen = null;
+    public static final String MOD_ID = "media";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static SongData currentlyPlaying = new SongData();
 
@@ -48,13 +52,13 @@ public class MediaClient implements ClientModInitializer {
 	public static boolean isStarted = false;
 
 	public void onInitializeClient(){
-        FabricLoader.getInstance().getModContainer(Media.MOD_ID).ifPresent(modContainer -> {
+        FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
             if (!
                 ResourceManagerHelper.registerBuiltinResourcePack(
                         Identifier.of("media", "higher_res"),
                         modContainer,
                         Text.translatable("rp.media.highres.title"),
-                        ResourcePackActivationType.NORMAL)) Media.LOGGER.error("High Resolution RP failed load!");
+                        ResourcePackActivationType.NORMAL)) MediaClient.LOGGER.error("High Resolution RP failed load!");
             }
         );
 

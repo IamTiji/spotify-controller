@@ -41,5 +41,8 @@
   "ui.media.subscreens.search": "Search",
   "ui.media.subscreens.library": "Library",
   "ui.media.subscreens.queue": "Queue",
-  "ui.media.subscreens.lyrics": "Lyrics"
+  "ui.media.subscreens.lyrics": "Lyrics",
+
+  "api.media.error.NO_ACTIVE_DEVICE": "No active device: try playing via official app then try again",
+  "api.media.error.PREMIUM_REQUIRED": "Premium required: Spotify has disabled this feature for free accounts"
 }

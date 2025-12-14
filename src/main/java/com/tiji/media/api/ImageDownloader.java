@@ -2,7 +2,6 @@ package com.tiji.media.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.tiji.media.Media;
 import com.tiji.media.MediaClient;
 import com.tiji.media.util.ImageWithColor;
 import net.minecraft.client.MinecraftClient;
@@ -84,10 +83,10 @@ public class ImageDownloader {
             loadedCover.add(id);
             return new ImageWithColor(image, id);
         } catch (IOException e) {
-            Media.LOGGER.error("Failed to download album cover for {}: {}", getId(trackObj), e);
-            Media.LOGGER.error(trackObj.toString());
+            MediaClient.LOGGER.error("Failed to download album cover for {}: {}", getId(trackObj), e);
+            MediaClient.LOGGER.error(trackObj.toString());
         } catch (NullPointerException e) {
-            Media.LOGGER.error("Unexpected response from Spotify: {}\n{}", trackObj, e.getLocalizedMessage());
+            MediaClient.LOGGER.error("Unexpected response from Spotify: {}\n{}", trackObj, e.getLocalizedMessage());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (URISyntaxException e) {
@@ -98,13 +97,13 @@ public class ImageDownloader {
 
     public static void addDownloadTask(JsonObject data, Consumer<ImageWithColor> callback) {
         if (loadedCover.contains(Identifier.of("media", getId(data).toLowerCase()))){
-            Media.LOGGER.debug("Cache hit for {}", getId(data));
+            MediaClient.LOGGER.debug("Cache hit for {}", getId(data));
             CompletableFuture.runAsync(() ->
                 callback.accept(new ImageWithColor(Identifier.of("media", getId(data).toLowerCase())))
             );
             return;
         }
-        Media.LOGGER.debug("Adding download task lister for {}", getId(data));
+        MediaClient.LOGGER.debug("Adding download task lister for {}", getId(data));
         if (onComplete.containsKey(data)) {
             onComplete.get(data).add(callback);
             return;
@@ -113,7 +112,7 @@ public class ImageDownloader {
         callbacks.add(callback);
         onComplete.put(data, callbacks);
         queue.add(data);
-        Media.LOGGER.debug("Added download task for {} - Queue size: {}", getId(data), queue.size());
+        MediaClient.LOGGER.debug("Added download task for {} - Queue size: {}", getId(data), queue.size());
     }
 
     public static void startThreads() {
@@ -132,14 +131,14 @@ public class ImageDownloader {
                 for (Consumer<ImageWithColor> callback : onComplete.remove(task)) {
                     callback.accept(coverId);
                 }
-                Media.LOGGER.debug("Finished downloading cover for {}", getId(task));
+                MediaClient.LOGGER.debug("Finished downloading cover for {}", getId(task));
             } catch (Exception e) {
                 StringBuilder sb = new StringBuilder();
                 for (StackTraceElement element : e.getStackTrace()) {
                     sb.append("at ");
                     sb.append(element.toString()).append("\n");
                 }
-                Media.LOGGER.error("Error in Image-IO thread: {}\n{}", e.getLocalizedMessage(), sb);
+                MediaClient.LOGGER.error("Error in Image-IO thread: {}\n{}", e.getLocalizedMessage(), sb);
                 // Exception shouldn't stop thread
                 // They are mostly not from IO
             }

@@ -13,11 +13,8 @@
   ],
   "license": "CC-BY-NC-SA-4.0",
   "icon": "assets/media/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "com.tiji.media.Media"
-    ],
     "client": [
       "com.tiji.media.MediaClient"
     ],
