@@ -70,7 +70,7 @@ public class ApiCalls {
 
                     if (data.has("error")) {
                         MediaClient.LOGGER.warn("Failed to refresh access token; Normally caused when developer app is deleted. {}: {}", data.get("error"), data.get("error_description"));
-                        MediaClient.CONFIG.reset();
+                        MediaClient.CONFIG.resetConnection();
                         return;
                     }
 
@@ -272,7 +272,7 @@ public class ApiCalls {
             else if (stringHttpResponse.statusCode() >= 400) {
                 JsonObject error = new Gson().fromJson(responseBody, JsonObject.class);
                 if (!handleError(error)) {
-                    MediaClient.CONFIG.reset();
+                    MediaClient.CONFIG.resetConnection();
                     WebGuideServer.start();
                 }
                 return;

@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MediaClient implements ClientModInitializer {
-	public static final MediaConfig CONFIG = new MediaConfig();
+	public static MediaConfig CONFIG = new MediaConfig();
 	private static final KeyBinding SETUP_KEY = new KeyBinding("key.media.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
 	public static int tickCount = 0;
 	public static NowPlayingScreen nowPlayingScreen = null;
@@ -49,7 +49,7 @@ public class MediaClient implements ClientModInitializer {
             }
         );
 
-		CONFIG.generate();
+		CONFIG = MediaConfig.generate();
 		KeyBindingHelper.registerKeyBinding(SETUP_KEY);
 		ImageDownloader.startThreads();
 

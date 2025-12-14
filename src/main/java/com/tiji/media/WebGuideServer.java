@@ -60,7 +60,6 @@ public class WebGuideServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String Code = exchange.getRequestURI().getQuery().split("=")[1];
-            MediaClient.CONFIG.accessToken(Code);
 
             MediaClient.LOGGER.info("Callback Received: {}", Code);
 
