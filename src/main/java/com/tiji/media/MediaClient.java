@@ -80,14 +80,14 @@ public class MediaClient implements ClientModInitializer {
 					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
 						nowPlayingScreen.updateCoverImage();
 						if (CONFIG.shouldShowToasts() && isStarted) {
-							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
-						}
+                            showNewSongToast();
+                        }
 					});
 				} else {
 					SongDataExtractor.reloadData(false, () -> {}, () -> {}, () -> {
 						if (CONFIG.shouldShowToasts() && isStarted) {
-							new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
-						}
+                            showNewSongToast();
+                        }
 					});
 				}
 				if (CONFIG.lastRefresh() + 1.8e+6 < System.currentTimeMillis()) {
@@ -97,7 +97,12 @@ public class MediaClient implements ClientModInitializer {
 			tickCount++;
 		});
 	}
-	public static boolean isNotSetup() {
+
+    private static void showNewSongToast() {
+        new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
+    }
+
+    public static boolean isNotSetup() {
 		return CONFIG.clientId().isEmpty() || CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
 	}
     public static void showNotAllowedToast() {
