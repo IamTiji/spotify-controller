@@ -10,9 +10,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URI;
+import java.nio.file.Path;
 
 public class WebGuideServer {
     public static HttpServer server;
+
+    static String getMIMEType(String filename) {
+        String extension = filename.substring(filename.lastIndexOf('.') + 1);
+        return switch (extension) {
+            case "html" -> "text/html";
+            case "css" -> "text/css";
+            case "png" -> "image/png";
+            default -> "application/octet-stream";
+        };
+    }
 
     public static void start() {
         try {
@@ -34,25 +46,29 @@ public class WebGuideServer {
     private static class rootHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            String filepath = switch (MinecraftClient.getInstance().getLanguageManager().getLanguage()) {
-                case "ko_kr" -> "/guide/ko_kr.html";
-                default -> "/guide/en_us.html";
-            };
-
-            int length;
-            String response;
-            try (InputStream in = WebGuideServer.class.getResourceAsStream(filepath)) {
-                if (in == null) throw new RuntimeException("Guide file is not found!");
-                byte[] file = in.readAllBytes();
-                length = file.length;
-                response = new String(file);
+            URI path = exchange.getRequestURI();
+            String filepath;
+            if (path.getPath().equals("/")) {
+                 filepath = switch (MinecraftClient.getInstance().getLanguageManager().getLanguage()) {
+                    case "ko_kr" -> "/guide/ko_kr.html";
+                    default -> "/guide/en_us.html";
+                };
+            } else {
+                filepath = String.valueOf(Path.of("/guide/", path.getPath()));
+                filepath = filepath.replaceAll("\\\\", "/");
             }
 
-            exchange.getResponseHeaders().set("Content-Type", "text/html");
-            exchange.sendResponseHeaders(200, length);
+            byte[] data;
+            try (InputStream in = WebGuideServer.class.getResourceAsStream(filepath)) {
+                if (in == null) throw new RuntimeException("Guide file is not found!");
+                data = in.readAllBytes();
+            }
+
+            exchange.getResponseHeaders().set("Content-Type", getMIMEType(filepath));
+            exchange.sendResponseHeaders(200, data.length);
 
             OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
+            os.write(data);
             os.close();
         }
     }
