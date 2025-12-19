@@ -60,8 +60,11 @@ java {
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+	from("LICENSE_CODE") {
+		rename { "LICENSE_${project.base.archivesName.get()}_code"}
+	}
+	from("LICENSE_ASSETS") {
+		rename { "LICENSE_${project.base.archivesName.get()}_assets"}
 	}
 }
 
