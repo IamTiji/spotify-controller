@@ -2,6 +2,7 @@ package com.tiji.media.ui;
 
 import com.tiji.media.MediaClient;
 import com.tiji.media.MediaConfig;
+import com.tiji.media.WebGuideServer;
 import com.tiji.media.api.ApiCalls;
 import com.tiji.media.widgets.BorderedButtonWidget;
 import com.tiji.media.widgets.LabelWidget;
@@ -46,12 +47,14 @@ public class MediaConfigScreen extends BaseScreen {
         super(true);
 
         this.parent = parent;
-        ApiCalls.getUserName(name -> {
-            userName = name;
-            if (userNameWidget != null) {
-                userNameWidget.setText(Text.translatable("ui.media.status.setup", userName));
-            }
-        });
+        if (!MediaClient.isNotSetup()) {
+            ApiCalls.getUserName(name -> {
+                userName = name;
+                if (userNameWidget != null) {
+                    userNameWidget.setText(Text.translatable("ui.media.status.setup", userName));
+                }
+            });
+        }
     }
 
     public void init() {
@@ -62,8 +65,10 @@ public class MediaConfigScreen extends BaseScreen {
         Text statusText;
         if (MediaClient.isNotSetup()) {
             statusText = Text.translatable("ui.media.status.not_setup");
+        } else if (userName == null) {
+            statusText = Text.translatable("ui.media.loading");
         } else {
-            statusText = Text.translatable("ui.media.status.setup", Text.translatable("ui.media.loading"));
+            statusText = Text.translatable("ui.media.status.setup", userName);
         }
         userNameWidget = new LabelWidget(MARGIN + widgetsOffset, y, statusText);
         addDrawableChild(userNameWidget);
@@ -96,16 +101,17 @@ public class MediaConfigScreen extends BaseScreen {
 
             y += FIELD_HEIGHT + MARGIN + textRenderer.fontHeight;
         }
-
-        userNameWidget.setText(Text.translatable("ui.media.status.setup", userName));
     }
 
     private void onResetButtonPress() {
+        if (MediaClient.isNotSetup()) return;
+
         if (resetConfirmStatus == ResetConfirmStatus.IDLE) {
             resetConfirmStatus = ResetConfirmStatus.CONFIRM;
         } else if (resetConfirmStatus == ResetConfirmStatus.CONFIRM) {
             resetConfirmStatus = ResetConfirmStatus.CONFIRMED;
             MediaClient.CONFIG.resetConnection();
+            WebGuideServer.start();
         }
         resetButton.setLabel(resetConfirmStatus.text);
     }
