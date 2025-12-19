@@ -98,14 +98,3 @@ repositories {
 dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
-
-repositories {
-	maven {
-		name = "CottonMC"
-		url = "https://server.bbkr.space/artifactory/libs-release"
-	}
-}
-
-dependencies {
-	modImplementation include("io.github.cottonmc:LibGui:12.0.1+1.21.2")
-}

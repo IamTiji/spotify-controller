@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 
 import java.util.function.Consumer;
 
-public class StringInputWidget extends TextFieldWidget {
+public class StringInputWidget extends TextFieldWidget implements ValueHolder {
     private final Text icon;
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private long time = System.currentTimeMillis();
@@ -22,6 +22,10 @@ public class StringInputWidget extends TextFieldWidget {
         setMaxLength(Integer.MAX_VALUE);
         this.icon = icon;
         this.action = action;
+    }
+
+    public StringInputWidget(int x, int y, int width, int height) {
+        this(client.textRenderer, x, y, width, height, Text.literal(""), Text.literal(""), s -> {});
     }
 
     @Override
@@ -53,5 +57,15 @@ public class StringInputWidget extends TextFieldWidget {
         time = System.currentTimeMillis();
         didRunAction = false;
         super.write(text);
+    }
+
+    @Override
+    public Object getValue() {
+        return getText();
+    }
+
+    @Override
+    public void setValue(Object value) {
+        setText(value.toString());
     }
 }

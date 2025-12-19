@@ -1,25 +1,51 @@
 package com.tiji.media;
 
 import com.google.gson.Gson;
+import com.tiji.media.widgets.BooleanToggleWidget;
+import com.tiji.media.widgets.IntInputWidget;
+import com.tiji.media.widgets.ValueHolder;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class MediaConfig {
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public @interface EditableField {
+        String translationKey();
+        Class<? extends ValueHolder> widget();
+    }
+
     private String clientId = "";
     private String clientSecret = "";
     private String authToken = "";
     private String refreshToken = "";
     private long lastRefresh = 0;
+
+    @EditableField(translationKey = "ui.media.config.show_toast"       , widget = BooleanToggleWidget.class)
     private boolean shouldShowToasts = true;
-    private byte imageIoThreadCount = 4;
-    private int brightnessFactor = 20;
-    private int saturationFactor = 5;
-    private int targetBrightness = 70;
-    private int sampleSize = 10;
+
+    @EditableField(translationKey = "ui.media.config.thread_image_io"  , widget = IntInputWidget.class)
+    private int imageIoThreadCount  = 4;
+
+    @EditableField(translationKey = "ui.media.config.brightness_weight", widget = IntInputWidget.class)
+    private int brightnessFactor     = 20;
+
+    @EditableField(translationKey = "ui.media.config.saturation_weight", widget = IntInputWidget.class)
+    private int saturationFactor     = 5;
+
+    @EditableField(translationKey = "ui.media.config.target_brightness", widget = IntInputWidget.class)
+    private int targetBrightness     = 70;
+
+    @EditableField(translationKey = "ui.media.config.sample_size"      , widget = IntInputWidget.class)
+    private int sampleSize           = 10;
 
     public String clientId() {return clientId;}
     public void clientId(String value) {clientId = value; writeToFile();}
@@ -39,7 +65,7 @@ public class MediaConfig {
     public boolean shouldShowToasts() {return shouldShowToasts;}
     public void shouldShowToasts(boolean value) {shouldShowToasts = value; writeToFile();}
 
-    public byte imageIoThreadCount() {return imageIoThreadCount;}
+    public int imageIoThreadCount() {return imageIoThreadCount;}
     public void imageIoThreadCount(byte value) {imageIoThreadCount = value; writeToFile();}
 
     public int brightnessFactor() {return brightnessFactor;}

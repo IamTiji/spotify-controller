@@ -20,6 +20,9 @@
   "ui.media.not_allowed.title": "Not Allowed",
   "ui.media.not_allowed.message": "This action is not allowed",
 
+  "ui.media.toggle.off": "DISABLED",
+  "ui.media.toggle.on": "ENABLED",
+
   "ui.media.config.head": "Options",
   "ui.media.config.head_advanced": "Advanced Options",
   "ui.media.config.show_toast": "Show toast notifications when song changes",

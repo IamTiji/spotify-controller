@@ -5,7 +5,7 @@ import com.tiji.media.util.ImageWithColor;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -45,8 +45,8 @@ public class BaseScreen extends Screen {
         widgetsOffset = (int) (-ANIMATION_AMOUNT + easeInOut(normalized) * ANIMATION_AMOUNT);
 
         for (Element child : children()) {
-            if (child instanceof ClickableWidget clickable) {
-                clickable.setX(clickable.getX() + (widgetsOffset - previousOffset));
+            if (child instanceof Widget widget) {
+                widget.setX(widget.getX() + (widgetsOffset - previousOffset));
             }
         }
 

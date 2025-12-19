@@ -7,14 +7,14 @@ import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.text.Text;
 
 public class BorderlessButtonWidget extends PressableWidget {
-    private Text label;
-    private final Runnable action;
+    protected Text label;
+    protected final Runnable action;
     private final int width;
-    private static final int HOVERED_COLOR = 0xFFAAAAAA;
-    private static final int NORMAL_COLOR = 0xFFFFFFFF;
-    private static final MinecraftClient client = MinecraftClient.getInstance();
+    protected static final int HOVERED_COLOR = 0xFFAAAAAA;
+    protected static final int NORMAL_COLOR = 0xFFFFFFFF;
+    protected static final MinecraftClient client = MinecraftClient.getInstance();
     public static final int BUTTON_SIZE = 16;
-    private static final int LABEL_OFFSET = 4;
+    protected static final int LABEL_OFFSET = 4;
 
     public BorderlessButtonWidget(Text innerText, int x, int y, Runnable action, boolean isIcon) {
         super(x, y,
