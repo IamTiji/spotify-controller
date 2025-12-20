@@ -1,0 +1,50 @@
+{
+  "ui.spotify_controller.welcome": "Welcome to Spotify controller setup",
+  "ui.spotify_controller.welcome.subtext": "This link will guide you through the process of setting up your Spotify controller.",
+
+  "ui.spotify_controller.nothing_playing": "Nothing playing",
+  "ui.spotify_controller.unknown_artist": "Unknown artist",
+
+  "ui.spotify_controller.unknown_time": "00:00",
+  "ui.spotify_controller.unknown_duration": "00:00",
+
+  "ui.spotify_controller.reset_config": "Reset configuration / connection",
+  "ui.spotify_controller.reset_config_confirm": "Are you sure you want to reset?",
+  "ui.spotify_controller.reset_config_success": "Configuration reset successfully",
+
+  "ui.spotify_controller.status.not_setup": "Not set up",
+  "ui.spotify_controller.status.setup": "Linked with: %1$s",
+
+  "ui.spotify_controller.loading": "Loading...",
+
+  "ui.spotify_controller.not_allowed.title": "Not Allowed",
+  "ui.spotify_controller.not_allowed.message": "This action is not allowed",
+
+  "ui.spotify_controller.toggle.off": "DISABLED",
+  "ui.spotify_controller.toggle.on": "ENABLED",
+
+  "ui.spotify_controller.config.head": "Options",
+  "ui.spotify_controller.config.head_advanced": "Advanced Options",
+  "ui.spotify_controller.config.show_toast": "Show toast notifications when song changes",
+  "ui.spotify_controller.config.thread_image_io": "Number of thread for image downloading (Restart needed)",
+  "ui.spotify_controller.config.brightness_weight": "Brightness weight",
+  "ui.spotify_controller.config.saturation_weight": "Saturation weight",
+  "ui.spotify_controller.config.target_brightness": "Target Brightness",
+  "ui.spotify_controller.config.sample_size": "Sample size",
+
+  "key.spotify_controller.general": "Open Config / Controller",
+
+  "modmenu.nameTranslation.spotify_controller": "Spotify Controller",
+  "modmenu.descriptionTranslation.spotify_controller": "Control Spotify in-game",
+
+  "rp.spotify_controller.highres": "High Resolution Icons RP\nRequires Caxton to be functional",
+  "rp.spotify_controller.highres.title": "High Resolution Icons RP",
+
+  "ui.spotify_controller.subscreens.search": "Search",
+  "ui.spotify_controller.subscreens.library": "Library",
+  "ui.spotify_controller.subscreens.queue": "Queue",
+  "ui.spotify_controller.subscreens.lyrics": "Lyrics",
+
+  "api.spotify_controller.error.NO_ACTIVE_DEVICE": "No active device: try playing via official app then try again",
+  "api.spotify_controller.error.PREMIUM_REQUIRED": "Premium required: Spotify has disabled this feature for free accounts"
+}

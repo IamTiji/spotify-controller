@@ -1,0 +1,21 @@
+{
+    "providers": [
+      {
+        "type": "bitmap",
+        "file": "spotify_controller:font/icons.png",
+        "height": 16,
+        "ascent": 12,
+        "chars": [
+          "01234567",
+          "89abcdef",
+          "ghijklmn"
+        ]
+      },
+      {
+        "type": "space",
+        "advances": {
+          " ": 4
+        }
+      }
+    ]
+  }
