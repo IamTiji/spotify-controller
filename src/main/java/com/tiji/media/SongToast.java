@@ -14,7 +14,7 @@ import net.minecraft.util.Colors;
 public class SongToast implements Toast {
     private static final int TITLE_Y = 6;
     private static final int ARTIST_Y = 18;
-    private static final int TOAST_WIDTH = 180;
+    private static final int TOAST_WIDTH = Toast.BASE_WIDTH;
     private static final int TOAST_HEIGHT = 32;
     private static final int MARGIN = 5;
     private static final int IMAGE_WIDTH = TOAST_HEIGHT;
@@ -27,8 +27,6 @@ public class SongToast implements Toast {
     private Toast.Visibility visibility;
 
     public SongToast(ImageWithColor cover, String artist, Text title) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-
         this.cover = cover;
         this.artist = TextUtils.getTrantedText(Text.of(artist), TEXT_WIDTH);
         this.title =  TextUtils.getTrantedText(title          , TEXT_WIDTH);
