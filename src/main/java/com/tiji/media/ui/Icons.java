@@ -6,7 +6,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class Icons {
-    private static final Style ICONS = Style.EMPTY.withFont(Identifier.of("media", "icon"));
+    public static final Identifier ICON_ID = Identifier.of("media", "icon");
+    private static final Style ICONS = Style.EMPTY.withFont(ICON_ID);
     private static final Text RESETTER = Text.literal("").setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT_ID));
 
 
