@@ -71,4 +71,16 @@ tasks.register("buildAll") {
     for (version in versions) {
         dependsOn(":$version:build")
     }
+
+    doLast {
+        for (version in versions) {
+            val dir = file("build/libs/")
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+            for (file in file("versions/$version/build/libs").listFiles()!!) {
+                file.copyTo(dir.resolve(file.name), true)
+            }
+        }
+    }
 }

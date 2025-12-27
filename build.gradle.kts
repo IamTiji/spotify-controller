@@ -20,7 +20,11 @@ plugins {
 val modVersion: String by project
 
 base {
-	archivesName.set(project.property("archives_base_name") as String)
+	val name = project.property("archives_base_name") as String +
+			"-${project.property("mod_version")}" +
+			"+mc${project.property("minecraft_version")}"
+
+	archivesName.set(name)
 }
 
 loom {
@@ -57,12 +61,11 @@ java {
 	targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.jar {
-	destinationDirectory.set(file("../../build/libs"))
-	archiveFileName.set(
-		"${project.property("archives_base_name")}-${project.property("mod_version")}+mc${project.property("minecraft_version")}.jar"
-	)
+tasks.remapJar {
+	archiveClassifier.set(null as String?)
+}
 
+tasks.jar {
 	from("LICENSE_CODE") {
 		rename { "LICENSE_${project.base.archivesName.get()}_code"}
 	}
