@@ -196,6 +196,8 @@ public class NowPlayingScreen extends BaseScreen {
                 MARGIN + PLAYBACK_CONTROL_Y + 35,
                 0xFFFFFFFF, false
         ); // duration label
+
+        drawFullName(context, mouseX, mouseY, nextX, nextX);
     }
 
     @Override
@@ -213,4 +215,21 @@ public class NowPlayingScreen extends BaseScreen {
     public void updateNowPlaying() {}
     public void nothingPlaying() {}
     public void updateCoverImage() {}
+
+    private void drawFullName(DrawContext context,
+                              int mouseX, int mouseY,
+                              int titleX, int artistX) {
+        int textHeight = textRenderer.fontHeight;
+        int textWidth = PLAYBACK_SIZE - MARGIN*2 - IMAGE_SIZE;
+
+        if (isInsideOf(mouseX, mouseY, titleX, TITLE_Y + MARGIN, textWidth, textHeight))
+            context.drawTooltip(textRenderer, Text.of(Main.currentlyPlaying.title), mouseX, mouseY);
+        else if (isInsideOf(mouseX, mouseY, artistX, ARTIST_Y + MARGIN, textWidth, textHeight))
+            context.drawTooltip(textRenderer, Text.of(Main.currentlyPlaying.artist), mouseX, mouseY);
+    }
+
+    private static boolean isInsideOf(int mouseX, int mouseY, int x, int y, int w, int h) {
+        return  mouseX >= x && mouseX <= x + w &&
+                mouseY >= y && mouseY <= y + h;
+    }
 }
