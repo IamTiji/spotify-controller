@@ -1,0 +1,24 @@
+{
+  "ui.spotify_controller.welcome": "Bienvenido a la configuración del controlador de Spotify",
+  "ui.spotify_controller.welcome.subtext": "Este enlace te guiará a través de la configuración del controlador de Spotify.",
+
+  "ui.spotify_controller.nothing_playing": "Nada está sonando",
+  "ui.spotify_controller.unknown_artist": "Artista desconocido",
+
+  "ui.spotify_controller.unknown_time": "00:00",
+  "ui.spotify_controller.unknown_duration": "00:00",
+
+  "ui.spotify_controller.reset_config": "Restablecer configuración / conexión",
+  "ui.spotify_controller.reset_config_confirm": "¿Estás seguro de que deseas restablecer?",
+  "ui.spotify_controller.reset_config_success": "Configuración restablecida correctamente",
+
+  "ui.spotify_controller.status.not_setup": "No configurado",
+  "ui.spotify_controller.status.setup": "Vinculado con: %1$s",
+
+  "ui.spotify_controller.loading": "Cargando...",
+
+  "key.spotify_controller.general": "Abrir configuración / controlador",
+
+  "modmenu.nameTranslation.spotify_controller": "Controlador de Spotify",
+  "modmenu.descriptionTranslation.spotify_controller": "Controla Spotify en el juego"
+}
