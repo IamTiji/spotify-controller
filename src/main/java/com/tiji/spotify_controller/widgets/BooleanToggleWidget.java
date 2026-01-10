@@ -1,24 +1,24 @@
 package com.tiji.spotify_controller.widgets;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 
-public class BooleanToggleWidget extends ClickableWidget implements ValueHolder {
+public class BooleanToggleWidget extends AbstractWidget implements ValueHolder {
     private boolean state;
-    private static final Text OFF_TEXT = Text.translatable("ui.spotify_controller.toggle.off").formatted(Formatting.RED);
-    private static final Text ON_TEXT = Text.translatable("ui.spotify_controller.toggle.on").formatted(Formatting.GREEN);
+    private static final Component OFF_TEXT = Component.translatable("ui.spotify_controller.toggle.off").withStyle(ChatFormatting.RED);
+    private static final Component ON_TEXT = Component.translatable("ui.spotify_controller.toggle.on").withStyle(ChatFormatting.GREEN);
 
     public BooleanToggleWidget(int x, int y, int width, int height) {
-        super(x, y, width, height, Text.literal(""));
+        super(x, y, width, height, Component.literal(""));
     }
 
     @Override
-    public Object getValue() {
+    public Object getValue_() {
         return state;
     }
 
@@ -32,20 +32,20 @@ public class BooleanToggleWidget extends ClickableWidget implements ValueHolder 
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        Font textRenderer = Minecraft.getInstance().font;
 
-        int yOffset = (getHeight() - textRenderer.fontHeight) / 2;
-        Text text = state ? ON_TEXT : OFF_TEXT;
+        int yOffset = (getHeight() - textRenderer.lineHeight) / 2;
+        Component text = state ? ON_TEXT : OFF_TEXT;
 
         if (isHovered(mouseX, mouseY))
-            text = text.copy().formatted(Formatting.UNDERLINE);
+            text = text.copy().withStyle(ChatFormatting.UNDERLINE);
 
-        context.drawText(textRenderer, text, getX(), getY() + yOffset, 0xFFFFFFFF, false);
+        context.drawString(textRenderer, text, getX(), getY() + yOffset, 0xFFFFFFFF, false);
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+    protected void updateWidgetNarration(NarrationElementOutput builder) {}
 
     @Override
     public void onClick(double mouseX, double mouseY) {

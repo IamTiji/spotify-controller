@@ -1,13 +1,13 @@
 package com.tiji.spotify_controller.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
 public class ImageDrawer {
-    public static void drawImage(DrawContext context,
-                                 Identifier sprite,
+    public static void drawImage(GuiGraphics context,
+                                 ResourceLocation sprite,
                                  int x,
                                  int y,
                                  float u,
@@ -19,11 +19,11 @@ public class ImageDrawer {
                                  int textureWidth,
                                  int textureHeight) {
         //#if MC>=12102
-        context.drawTexture(
+        context.blit(
                 //#if MC>=12107
-                //$$ net.minecraft.client.gl.RenderPipelines.GUI_TEXTURED,
+                //$$ net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED,
                 //#else
-                RenderLayer::getGuiTextured,
+                RenderType::guiTextured,
                 //#endif
                 sprite,
                 x, y, u, v,
@@ -31,7 +31,7 @@ public class ImageDrawer {
                 regionWith, regionHeight, textureWidth, textureHeight
         );
         //#else
-        //$$ context.drawTexture(
+        //$$ context.blit(
         //$$         sprite,
         //$$         x, y,
         //$$         width, height, u, v,
@@ -40,8 +40,8 @@ public class ImageDrawer {
         //#endif
     }
 
-    public static void drawImage(DrawContext context,
-                                 Identifier sprite,
+    public static void drawImage(GuiGraphics context,
+                                 ResourceLocation sprite,
                                  int x,
                                  int y,
                                  float u,
@@ -54,11 +54,11 @@ public class ImageDrawer {
                                  int textureHeight,
                                  int tint) {
         //#if MC>=12102
-        context.drawTexture(
+        context.blit(
                 //#if MC>=12106
-                //$$ net.minecraft.client.gl.RenderPipelines.GUI_TEXTURED,
+                //$$ net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED,
                 //#else
-                RenderLayer::getGuiTextured,
+                RenderType::guiTextured,
                 //#endif
                 sprite,
                 x, y, u, v,
@@ -74,20 +74,20 @@ public class ImageDrawer {
         //$$ float g = (tint >> 8  & 0xFF) / 255.0f;
         //$$ float b = (tint >> 16 & 0xFF) / 255.0f;
         //$$
-        //$$ context.setShaderColor(r, g, b, a);
-        //$$ context.drawTexture(
+        //$$ context.setColor(r, g, b, a);
+        //$$ context.blit(
         //$$         sprite,
         //$$         x, y,
         //$$         width, height, u, v,
         //$$         regionWith, regionHeight, textureWidth, textureHeight
         //$$ );
-        //$$ context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //$$ context.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         //$$ RenderSystem.disableBlend();
         //#endif
     }
 
-    public static void drawImage(DrawContext context,
-                                 Identifier sprite,
+    public static void drawImage(GuiGraphics context,
+                                 ResourceLocation sprite,
                                  int x,
                                  int y,
                                  float u,
@@ -97,8 +97,8 @@ public class ImageDrawer {
         drawImage(context, sprite, x, y, u, v, width, height, 1, 1, 1, 1);
     }
 
-    public static void drawImage(DrawContext context,
-                                 Identifier sprite,
+    public static void drawImage(GuiGraphics context,
+                                 ResourceLocation sprite,
                                  int x,
                                  int y,
                                  float u,

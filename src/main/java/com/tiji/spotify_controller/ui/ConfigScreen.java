@@ -7,25 +7,24 @@ import com.tiji.spotify_controller.api.ApiCalls;
 import com.tiji.spotify_controller.widgets.BorderedButtonWidget;
 import com.tiji.spotify_controller.widgets.LabelWidget;
 import com.tiji.spotify_controller.widgets.ValueHolder;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class ConfigScreen extends BaseScreen {
     private enum ResetConfirmStatus {
-        IDLE(Text.translatable("ui.spotify_controller.reset_config")),
-        CONFIRM(Text.translatable("ui.spotify_controller.reset_config_confirm")),
-        CONFIRMED(Text.translatable("ui.spotify_controller.reset_config_success"));
+        IDLE(Component.translatable("ui.spotify_controller.reset_config")),
+        CONFIRM(Component.translatable("ui.spotify_controller.reset_config_confirm")),
+        CONFIRMED(Component.translatable("ui.spotify_controller.reset_config_success"));
 
-        public final Text text;
-        ResetConfirmStatus(Text text) {
+        public final Component text;
+        ResetConfirmStatus(Component text) {
             this.text = text;
         }
     }
@@ -51,7 +50,7 @@ public class ConfigScreen extends BaseScreen {
             ApiCalls.getUserName(name -> {
                 userName = name;
                 if (userNameWidget != null) {
-                    userNameWidget.setText(Text.translatable("ui.spotify_controller.status.setup", userName));
+                    userNameWidget.setText(Component.translatable("ui.spotify_controller.status.setup", userName));
                 }
             });
         }
@@ -62,20 +61,20 @@ public class ConfigScreen extends BaseScreen {
 
         int y = MARGIN;
 
-        Text statusText;
+        Component statusText;
         if (Main.isNotSetup()) {
-            statusText = Text.translatable("ui.spotify_controller.status.not_setup");
+            statusText = Component.translatable("ui.spotify_controller.status.not_setup");
         } else if (userName == null) {
-            statusText = Text.translatable("ui.spotify_controller.loading");
+            statusText = Component.translatable("ui.spotify_controller.loading");
         } else {
-            statusText = Text.translatable("ui.spotify_controller.status.setup", userName);
+            statusText = Component.translatable("ui.spotify_controller.status.setup", userName);
         }
         userNameWidget = new LabelWidget(MARGIN + widgetsOffset, y, statusText);
-        addDrawableChild(userNameWidget);
-        y += textRenderer.fontHeight + MARGIN;
+        addRenderableWidget(userNameWidget);
+        y += font.lineHeight + MARGIN;
 
         resetButton = new BorderedButtonWidget(resetConfirmStatus.text, MARGIN + widgetsOffset, y, this::onResetButtonPress, false, WIDTH);
-        addDrawableChild(resetButton);
+        addRenderableWidget(resetButton);
         y += resetButton.getHeight() + MARGIN*3;
 
         for (Field field : SpotifyControllerConfig.class.getDeclaredFields()) {
@@ -85,21 +84,21 @@ public class ConfigScreen extends BaseScreen {
             try {
                 ValueHolder widget = metadata.widget()
                         .getConstructor(int.class, int.class, int.class, int.class)
-                        .newInstance(MARGIN + widgetsOffset, y + textRenderer.fontHeight, WIDTH, FIELD_HEIGHT);
+                        .newInstance(MARGIN + widgetsOffset, y + font.lineHeight, WIDTH, FIELD_HEIGHT);
 
                 field.setAccessible(true);
                 widget.setValue(field.get(Main.CONFIG));
 
-                addDrawableChild((Element & Drawable & Selectable) widget);
+                addRenderableWidget((GuiEventListener & Renderable & NarratableEntry) widget);
 
-                addDrawableChild(new LabelWidget(MARGIN + widgetsOffset, y, Text.translatable(metadata.translationKey())));
+                addRenderableWidget(new LabelWidget(MARGIN + widgetsOffset, y, Component.translatable(metadata.translationKey())));
 
                 map.put(field, widget);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
 
-            y += FIELD_HEIGHT + MARGIN + textRenderer.fontHeight;
+            y += FIELD_HEIGHT + MARGIN + font.lineHeight;
         }
     }
 
@@ -116,17 +115,17 @@ public class ConfigScreen extends BaseScreen {
         resetButton.setLabel(resetConfirmStatus.text);
     }
 
-    public void close() {
+    public void onClose() {
         for (Field field : map.keySet()) {
             field.setAccessible(true);
             try {
-                field.set(Main.CONFIG, map.get(field).getValue());
+                field.set(Main.CONFIG, map.get(field).getValue_());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
         Main.CONFIG.writeToFile();
 
-        MinecraftClient.getInstance().setScreen(parent);
+        Minecraft.getInstance().setScreen(parent);
     }
 }

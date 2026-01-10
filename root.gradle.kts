@@ -54,8 +54,16 @@ preprocess {
 dependencies {
     // Dummy dependencies so that it runs without being depressed
 
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", project.property("fabric_version") as String))
+    modImplementation(fabricApi.module("fabric-resource-loader-v0",  project.property("fabric_version") as String))
+    modImplementation(fabricApi.module("fabric-key-binding-api-v1",  project.property("fabric_version") as String))
+
+    modImplementation(project.property("essential.defaults.loom.fabric-loader")!! as String)
+
+    modCompileOnly("com.terraformersmc:modmenu:3.0.0") // wise word from random person: don't touch it if it works
+
     minecraft("com.mojang:minecraft:${project.property("essential.defaults.loom.minecraft")!! as String}")
-    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")!! as String}:v2")
+    mappings(loom.officialMojangMappings())
 }
 
 val versions = listOf(

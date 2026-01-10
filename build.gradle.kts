@@ -40,7 +40,7 @@ dependencies {
 
 	modCompileOnly("com.terraformersmc:modmenu:3.0.0") // wise word from random person: don't touch it if it works
 
-	mappings("net.fabricmc:yarn:${project.property("yarn_mappings")!! as String}:v2")
+    mappings(loom.officialMojangMappings())
 	minecraft(project.property("essential.defaults.loom.minecraft")!! as String)
 
 }

@@ -3,14 +3,11 @@ package com.tiji.spotify_controller.ui;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.ImageDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 
 public class SecondaryBaseScreen extends BaseScreen {
     private static final int IMAGE_SIZE = 30;
@@ -20,14 +17,14 @@ public class SecondaryBaseScreen extends BaseScreen {
 
     protected static final int INFO_HEIGHT = MARGIN*2 + IMAGE_SIZE;
 
-    private final ArrayList<Drawable> drawables = new ArrayList<>();
+    private final ArrayList<Renderable> drawables = new ArrayList<>();
 
     public SecondaryBaseScreen() {
         super(false);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
         // Playback info
@@ -41,14 +38,14 @@ public class SecondaryBaseScreen extends BaseScreen {
         );
         int nextX = (int) (MARGIN*1.5 + widgetsOffset + IMAGE_SIZE + 3);
 
-        context.drawText(
-                textRenderer,
+        context.drawString(
+                font,
                 Main.currentlyPlaying.title,
                 nextX, height - (MARGIN + TITLE_Y),
                 0xFFFFFFFF, false
         ); // title
-        context.drawText(
-                textRenderer,
+        context.drawString(
+                font,
                 Main.currentlyPlaying.artist,
                 nextX, height - (MARGIN + ARTIST_Y),
                 0xFFFFFFFF, false
@@ -60,13 +57,13 @@ public class SecondaryBaseScreen extends BaseScreen {
     }
 
     @Override
-    public void close() {
-        assert client != null;
-        client.setScreen(Main.nowPlayingScreen);
+    public void onClose() {
+        assert minecraft != null;
+        minecraft.setScreen(Main.nowPlayingScreen);
     }
 
     @Override
-    protected <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement) {
+    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T drawableElement) {
         return drawables.add(drawableElement) ? drawableElement : null;
     }
 }

@@ -13,28 +13,24 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-// For those who want to work with this
-// You will need to add dependencies to classpath
-// manually. I was too lazy to fix them
 
 public class Main implements ClientModInitializer {
 	public static final String            MOD_ID    = "spotify_controller";
 	public static final Logger            LOGGER    = LoggerFactory.getLogger(MOD_ID);
 	public static SpotifyControllerConfig CONFIG    = new SpotifyControllerConfig();
-	private static final KeyBinding       SETUP_KEY =
+	private static final KeyMapping       SETUP_KEY =
 			//#if MC<=12108
-			new KeyBinding("key.spotify_controller.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
+			new KeyMapping("key.spotify_controller.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
 			//#else
-			//$$ new KeyBinding("key.spotify_controller.general", GLFW.GLFW_KEY_Z, KeyBinding.Category.MISC);
+			//$$ new KeyMapping("key.spotify_controller.general", GLFW.GLFW_KEY_Z, KeyMapping.Category.MISC);
 			//#endif
 
 	public static int tickCount = 0;
@@ -51,7 +47,7 @@ public class Main implements ClientModInitializer {
         FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
             if (!
                 ResourceManagerHelper.registerBuiltinResourcePack(
-                        Identifier.of(MOD_ID, "higher_res"),
+                        ResourceLocation.fromNamespaceAndPath(MOD_ID, "higher_res"),
                         modContainer,
                         ResourcePackActivationType.NORMAL)) Main.LOGGER.error("High Resolution RP failed load!");
             }
@@ -73,7 +69,7 @@ public class Main implements ClientModInitializer {
             }
         });
 		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-			while (SETUP_KEY.wasPressed()) {
+			while (SETUP_KEY.consumeClick()) {
 				if (isNotSetup()) {
 					client.setScreen(new SetupScreen());
 				} else {
@@ -107,17 +103,17 @@ public class Main implements ClientModInitializer {
 	}
 
     private static void showNewSongToast() {
-        new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(MinecraftClient.getInstance().getToastManager());
+        new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(Minecraft.getInstance().getToastManager());
     }
 
     public static boolean isNotSetup() {
 		return CONFIG.clientId().isEmpty() || CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
 	}
     public static void showNotAllowedToast() {
-        MinecraftClient.getInstance().getToastManager().add(
-                new SystemToast(new SystemToast.Type(),
-                        Text.translatable("ui.spotify_controller.not_allowed.title"),
-                        Text.translatable("ui.spotify_controller.not_allowed.message"))
+        Minecraft.getInstance().getToastManager().addToast(
+                new SystemToast(new SystemToast.SystemToastId(),
+                        Component.translatable("ui.spotify_controller.not_allowed.title"),
+                        Component.translatable("ui.spotify_controller.not_allowed.message"))
         );
     }
 }

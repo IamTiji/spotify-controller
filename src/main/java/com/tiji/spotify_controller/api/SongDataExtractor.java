@@ -1,14 +1,15 @@
 package com.tiji.spotify_controller.api;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.ui.Icons;
 import com.tiji.spotify_controller.util.ImageWithColor;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class SongDataExtractor {
     public static String getName(JsonObject trackObj) {
@@ -115,9 +116,9 @@ public class SongDataExtractor {
     public static SongData getDataFor(JsonObject data, @Nullable Runnable onImageLoad) {
         SongData song = new SongData();
 
-        song.title = Text.empty()
-                .append(isExplicit(data) ? Icons.EXPLICT : Text.literal(""))
-                .append(Text.literal(getName(data)));
+        song.title = Component.empty()
+                .append(isExplicit(data) ? Icons.EXPLICT : Component.literal(""))
+                .append(Component.literal(getName(data)));
         song.artist = getArtist(data);
         song.durationLabel = getDurationLabel(data);
         song.Id = getId(data);
@@ -126,7 +127,7 @@ public class SongDataExtractor {
 
         if (!song.coverImage.image.getPath().equals("ui/nothing.png")) {
             //MinecraftClient.getInstance().getTextureManager().destroyTexture(SongData.coverImage);        //Deleted line as they are used on toasts. Will be re-visited
-            song.coverImage = new ImageWithColor(0xffffffff, Identifier.of(Main.MOD_ID, "ui/nothing.png"));
+            song.coverImage = new ImageWithColor(0xffffffff, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/nothing.png"));
         }
 
         ImageDownloader.addDownloadTask(data, image -> {

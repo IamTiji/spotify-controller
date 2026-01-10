@@ -8,14 +8,14 @@ import com.tiji.spotify_controller.util.RepeatMode;
 import com.tiji.spotify_controller.util.TextUtils;
 import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
 import com.tiji.spotify_controller.widgets.ProgressWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
 public class NowPlayingScreen extends BaseScreen {
     private static final int MARGIN = 10;
@@ -34,15 +34,15 @@ public class NowPlayingScreen extends BaseScreen {
 
     private boolean isFirstInit = true;
 
-    private static final Map<Text, Class<? extends SecondaryBaseScreen>> SUBSCREENS = Map.of(
+    private static final Map<Component, Class<? extends SecondaryBaseScreen>> SUBSCREENS = Map.of(
             subscreenText(Icons.SEARCH, "ui.spotify_controller.subscreens.search"), SearchScreen.class
     );
     private static final int SUBSCREEN_BUTTONS_HEIGHT = 16;
-    private static Text subscreenText(Text Icon, String description) {
+    private static Component subscreenText(Component Icon, String description) {
         return Icon.copy()
                 .append(" ")
-                .append(Text.translatable(description)
-                        .setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT_ID)));
+                .append(Component.translatable(description)
+                        .setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT)));
     }
 
     public NowPlayingScreen() {
@@ -53,10 +53,10 @@ public class NowPlayingScreen extends BaseScreen {
     protected void init() {
         super.init();
 
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
 
         if (isFirstInit) {
-            GLFW.glfwSetCursorPos(client.getWindow().getHandle(), 0, 0);
+            GLFW.glfwSetCursorPos(client.getWindow().getWindow(), 0, 0);
                     //IMAGE_SIZE + borderlessButtonWidget.BUTTON_SIZE * 2 * client.options.getGuiScale().getValue(),
                     //PLAYBACK_CONTROL_Y * client.options.getGuiScale().getValue());
             isFirstInit = false;
@@ -72,10 +72,10 @@ public class NowPlayingScreen extends BaseScreen {
                 () -> ApiCalls.setShuffle(!Main.playbackState.shuffle),
                 true
         );
-        addDrawableChild(shuffleButton); // Shuffle
+        addRenderableWidget(shuffleButton); // Shuffle
 
         x += BorderlessButtonWidget.BUTTON_SIZE + 1;
-        addDrawableChild(
+        addRenderableWidget(
                 new BorderlessButtonWidget(
                         Icons.PREVIOUS,
                         x, y,
@@ -91,10 +91,10 @@ public class NowPlayingScreen extends BaseScreen {
                 () -> ApiCalls.playPause(!Main.playbackState.isPlaying),
                 true
         );
-        addDrawableChild(playPauseButton);
+        addRenderableWidget(playPauseButton);
 
         x += BorderlessButtonWidget.BUTTON_SIZE + 1;
-        addDrawableChild(
+        addRenderableWidget(
                 new BorderlessButtonWidget(
                         Icons.NEXT,
                         x, y,
@@ -110,7 +110,7 @@ public class NowPlayingScreen extends BaseScreen {
                 () -> ApiCalls.setRepeat(RepeatMode.getNextMode(Main.playbackState.repeat)),
                 true
         );
-        addDrawableChild(repeatButton); // Repeat
+        addRenderableWidget(repeatButton); // Repeat
 
         // Progress bar
         progressBar = new ProgressWidget(
@@ -118,12 +118,12 @@ public class NowPlayingScreen extends BaseScreen {
                 (float) Main.playbackState.progressValue,
                 (v) -> ApiCalls.setPlaybackLoc((int) (Main.currentlyPlaying.duration * v))
         );
-        addDrawableChild(progressBar);
+        addRenderableWidget(progressBar);
 
         // Subscreen button
         y = height - MARGIN - SUBSCREEN_BUTTONS_HEIGHT;
-        for (Map.Entry<Text, Class<? extends SecondaryBaseScreen>> entry : SUBSCREENS.entrySet()) {
-            addDrawableChild(
+        for (Map.Entry<Component, Class<? extends SecondaryBaseScreen>> entry : SUBSCREENS.entrySet()) {
+            addRenderableWidget(
                     new BorderlessButtonWidget(
                             entry.getKey(),
                             MARGIN + widgetsOffset, y,
@@ -141,7 +141,7 @@ public class NowPlayingScreen extends BaseScreen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
         // Playback info
@@ -156,8 +156,8 @@ public class NowPlayingScreen extends BaseScreen {
 
         int nextX = MARGIN *2 + widgetsOffset + IMAGE_SIZE + 3;
 
-        Text title = Text.of(Main.currentlyPlaying.title);
-        Text artist = Text.of(Main.currentlyPlaying.artist);
+        Component title = Component.translationArg(Main.currentlyPlaying.title);
+        Component artist = Component.nullToEmpty(Main.currentlyPlaying.artist);
 
         title = TextUtils.getTrantedText(title, INFO_TEXT_SIZE);
         artist = TextUtils.getTrantedText(artist, INFO_TEXT_SIZE);
@@ -166,14 +166,14 @@ public class NowPlayingScreen extends BaseScreen {
                 IMAGE_SIZE + MARGIN*2 + 2 + widgetsOffset, 0,
                 PLAYBACK_SIZE + widgetsOffset, height
         );
-        context.drawText(
-                textRenderer,
+        context.drawString(
+                font,
                 title,
                 nextX, MARGIN + TITLE_Y,
                 0xFFFFFFFF, false
         ); // title
-        context.drawText(
-                textRenderer,
+        context.drawString(
+                font,
                 artist,
                 nextX, MARGIN + ARTIST_Y,
                 0xFFFFFFFF, false
@@ -181,18 +181,18 @@ public class NowPlayingScreen extends BaseScreen {
         context.disableScissor();
 
         // Text for progress bar
-        context.drawText(
-                textRenderer,
-                Text.of(Main.playbackState.progressLabel),
+        context.drawString(
+                font,
+                Component.nullToEmpty(Main.playbackState.progressLabel),
                 MARGIN + widgetsOffset,
                 MARGIN + PLAYBACK_CONTROL_Y + 35,
                 0xFFFFFFFF, false
         ); // progress label
 
-        context.drawText(
-                textRenderer,
-                Text.of(Main.currentlyPlaying.durationLabel),
-                MARGIN + widgetsOffset + PLAYBACK_SIZE - textRenderer.getWidth(Text.of(Main.currentlyPlaying.durationLabel)) + 1,
+        context.drawString(
+                font,
+                Component.nullToEmpty(Main.currentlyPlaying.durationLabel),
+                MARGIN + widgetsOffset + PLAYBACK_SIZE - font.width(Component.nullToEmpty(Main.currentlyPlaying.durationLabel)) + 1,
                 MARGIN + PLAYBACK_CONTROL_Y + 35,
                 0xFFFFFFFF, false
         ); // duration label
@@ -201,8 +201,8 @@ public class NowPlayingScreen extends BaseScreen {
     }
 
     @Override
-    public void close() {
-        super.close();
+    public void onClose() {
+        super.onClose();
         Main.nowPlayingScreen = null;
     }
 
@@ -216,16 +216,16 @@ public class NowPlayingScreen extends BaseScreen {
     public void nothingPlaying() {}
     public void updateCoverImage() {}
 
-    private void drawFullName(DrawContext context,
+    private void drawFullName(GuiGraphics context,
                               int mouseX, int mouseY,
                               int titleX, int artistX) {
-        int textHeight = textRenderer.fontHeight;
+        int textHeight = font.lineHeight;
         int textWidth = PLAYBACK_SIZE - MARGIN*2 - IMAGE_SIZE;
 
         if (isInsideOf(mouseX, mouseY, titleX, TITLE_Y + MARGIN, textWidth, textHeight))
-            context.drawTooltip(textRenderer, Text.of(Main.currentlyPlaying.title), mouseX, mouseY);
+            context.renderTooltip(font, Component.translationArg(Main.currentlyPlaying.title), mouseX, mouseY);
         else if (isInsideOf(mouseX, mouseY, artistX, ARTIST_Y + MARGIN, textWidth, textHeight))
-            context.drawTooltip(textRenderer, Text.of(Main.currentlyPlaying.artist), mouseX, mouseY);
+            context.renderTooltip(font, Component.nullToEmpty(Main.currentlyPlaying.artist), mouseX, mouseY);
     }
 
     private static boolean isInsideOf(int mouseX, int mouseY, int x, int y, int w, int h) {
