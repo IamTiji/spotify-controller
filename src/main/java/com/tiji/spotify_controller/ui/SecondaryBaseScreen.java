@@ -1,7 +1,7 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.util.ImageDrawer;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import java.util.ArrayList;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,7 +29,7 @@ public class SecondaryBaseScreen extends BaseScreen {
 
         // Playback info
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
-        ImageDrawer.drawImage(
+        SafeDrawer.drawImage(
                 context,
                 cover.image,
                 MARGIN, height - IMAGE_SIZE - MARGIN,

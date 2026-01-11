@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Style;
 
 public class SetupScreen extends BaseScreen {
     private static final int MARGIN = 10;
-    private static final Style LINK = Style.EMPTY.withFont(Style.DEFAULT_FONT).withUnderlined(true);
+    private static final Style LINK = Style.EMPTY.withFont(TextUtils.DEFAULT).withUnderlined(true);
 
     public SetupScreen() {
         super(true);

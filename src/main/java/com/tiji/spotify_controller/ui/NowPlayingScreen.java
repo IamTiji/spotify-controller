@@ -2,7 +2,7 @@ package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.ApiCalls;
-import com.tiji.spotify_controller.util.ImageDrawer;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.util.RepeatMode;
 import com.tiji.spotify_controller.util.TextUtils;
@@ -42,7 +42,7 @@ public class NowPlayingScreen extends BaseScreen {
         return Icon.copy()
                 .append(" ")
                 .append(Component.translatable(description)
-                        .setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT)));
+                        .setStyle(Style.EMPTY.withFont(TextUtils.DEFAULT)));
     }
 
     public NowPlayingScreen() {
@@ -146,7 +146,7 @@ public class NowPlayingScreen extends BaseScreen {
 
         // Playback info
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
-        ImageDrawer.drawImage(
+        SafeDrawer.drawImage(
                 context,
                 cover.image,
                 MARGIN + widgetsOffset, MARGIN,

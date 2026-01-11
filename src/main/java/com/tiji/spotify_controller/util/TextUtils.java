@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.util;
 
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Optional;
@@ -11,7 +12,13 @@ import net.minecraft.network.chat.Style;
 
 public class TextUtils {
     private static final Font textRenderer = Minecraft.getInstance().font;
-
+    
+    //#if MC<=12108
+    public static final ResourceLocation DEFAULT = Style.DEFAULT_FONT;
+    //#else
+    //$$ public static final net.minecraft.network.chat.FontDescription DEFAULT = net.minecraft.network.chat.FontDescription.DEFAULT;
+    //#endif
+    
     @Contract(value = "null, _ -> fail; _, _ -> new")
     public static Component getTrantedText(Component title, int maxWidth) {
         if (textRenderer.width(title) <= maxWidth) {

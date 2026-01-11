@@ -34,7 +34,8 @@ preprocess {
     //val fabric12106 = createNode("1.21.6-fabric", 12106, "yarn") // hotfixed version
     //val fabric12107 = createNode("1.21.7-fabric", 12107, "yarn")
     val fabric12108 = createNode("1.21.8-fabric", 12108, "yarn")
-    //val fabric12109 = createNode("1.21.9-fabric", 12109, "yarn")
+    val fabric12109 = createNode("1.21.9-fabric", 12109, "yarn")
+    val fabric12111 = createNode("1.21.11-fabric", 12111, "yarn")
 
     // And then you need to tell the preprocessor which versions it should directly convert between.
     // This should form a directed graph with no cycles (i.e. a tree), which the preprocessor will then traverse to
@@ -48,7 +49,8 @@ preprocess {
     fabric12103.link(fabric12104)
     fabric12104.link(fabric12105)
     fabric12108.link(fabric12105)
-    //fabric12109.link(fabric12108, file("./versions/tempyarn.txt"))
+    fabric12109.link(fabric12108)
+    fabric12111.link(fabric12109)
 }
 
 dependencies {
@@ -57,6 +59,7 @@ dependencies {
     modImplementation(fabricApi.module("fabric-lifecycle-events-v1", project.property("fabric_version") as String))
     modImplementation(fabricApi.module("fabric-resource-loader-v0",  project.property("fabric_version") as String))
     modImplementation(fabricApi.module("fabric-key-binding-api-v1",  project.property("fabric_version") as String))
+    modImplementation(fabricApi.module("fabric-command-api-v2",      project.property("fabric_version") as String))
 
     modImplementation(project.property("essential.defaults.loom.fabric-loader")!! as String)
 
@@ -71,8 +74,8 @@ val versions = listOf(
     "1.21.3-fabric",
     "1.21.4-fabric",
     "1.21.5-fabric",
-    "1.21.8-fabric"
-    //"1.21.9-fabric"
+    "1.21.8-fabric",
+    "1.21.9-fabric"
 )
 
 tasks.register("buildAll") {

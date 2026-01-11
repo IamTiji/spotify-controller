@@ -1,6 +1,6 @@
 package com.tiji.spotify_controller;
 
-import com.tiji.spotify_controller.util.ImageDrawer;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.util.TextUtils;
 import net.minecraft.client.gui.Font;
@@ -57,6 +57,6 @@ public class SongToast implements Toast {
         context.drawString(textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
         context.drawString(textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
 
-        ImageDrawer.drawImage(context, cover.image, 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT);
+        SafeDrawer.drawImage(context, cover.image, 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT);
     }
 }

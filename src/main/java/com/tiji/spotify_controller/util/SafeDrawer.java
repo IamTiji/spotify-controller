@@ -1,11 +1,10 @@
 package com.tiji.spotify_controller.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-public class ImageDrawer {
+public class SafeDrawer {
     public static void drawImage(GuiGraphics context,
                                  ResourceLocation sprite,
                                  int x,
@@ -107,5 +106,16 @@ public class ImageDrawer {
                                  int height,
                                  int color) {
         drawImage(context, sprite, x, y, u, v, width, height, 1, 1, 1, 1, color);
+    }
+
+    public static void drawOutline(GuiGraphics context,
+                                   int x, int y,
+                                   int w, int h,
+                                   int color) {
+        //#if MC<=12108
+        context.renderOutline(x, y, w, h, color);
+        //#else
+        //$$ context.submitOutline(x, y, w, h, color);
+        //#endif
     }
 }

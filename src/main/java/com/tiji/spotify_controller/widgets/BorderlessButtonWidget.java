@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
-public class BorderlessButtonWidget extends AbstractButton {
+public class BorderlessButtonWidget extends SafeAbstractButton {
     protected Component label;
     protected final Runnable action;
     private final int width;
@@ -32,7 +32,7 @@ public class BorderlessButtonWidget extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         context.drawString(client.font, label, getX(), getY() + LABEL_OFFSET, isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR, false);
     }
 

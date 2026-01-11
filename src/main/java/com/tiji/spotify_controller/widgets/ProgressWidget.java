@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
-public class ProgressWidget extends AbstractWidget {
+public class ProgressWidget extends SafeAbstractWidget {
     private static final int h = 10;
     private static final int RAIL_HEIGHT = 2;
     private static final int RAIL_Y = (h - RAIL_HEIGHT) / 2;
@@ -38,7 +38,7 @@ public class ProgressWidget extends AbstractWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (dragging) {
             value = getValue(mouseX - getX());
         }

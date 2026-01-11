@@ -1,2 +1,0 @@
-net.minecraft.client.option.KeyBinding$class_11900 net.minecraft.client.option.KeyBinding$Category
-net.minecraft.client.option.KeyBinding$class_11900 field_62556 MISC

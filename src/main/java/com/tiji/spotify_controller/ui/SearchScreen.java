@@ -11,6 +11,10 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 
+//#if MC>=12109
+//$$ import net.minecraft.client.input.MouseButtonEvent;
+//#endif
+
 public class SearchScreen extends SecondaryBaseScreen {
     private static final int WIDTH = 300;
     private static final int MARGIN = 10;
@@ -112,6 +116,7 @@ public class SearchScreen extends SecondaryBaseScreen {
         return true;
     }
 
+    //#if MC<=12108
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!super.mouseClicked(mouseX, mouseY, button)) {
@@ -123,4 +128,18 @@ public class SearchScreen extends SecondaryBaseScreen {
         }
         return false;
     }
+    //#else
+    //$$ @Override
+    //$$ public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClicked) {
+    //$$     if (!super.mouseClicked(mouseButtonEvent, doubleClicked)) {
+    //$$         for (Renderable searchResult : searchResults) {
+    //$$             GuiEventListener selectable = (GuiEventListener) searchResult;
+    //$$             if (selectable.mouseClicked(mouseButtonEvent, doubleClicked))
+    //$$                 return true;
+    //$$         }
+    //$$     }
+    //$$
+    //$$     return false;
+    //$$ }
+    //#endif
 }

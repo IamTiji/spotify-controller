@@ -1,6 +1,7 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.util.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -8,8 +9,14 @@ import net.minecraft.resources.ResourceLocation;
 
 public class Icons {
     public static final ResourceLocation ICON_ID = ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "icon");
+
+    //#if MC<=12108
     private static final Style ICONS = Style.EMPTY.withFont(ICON_ID);
-    private static final Component RESETTER = Component.literal("").setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT));
+    //#else
+    //$$ private static final Style ICONS = Style.EMPTY.withFont(new net.minecraft.network.chat.FontDescription.Resource(ICON_ID));
+    //#endif
+
+    private static final Component RESETTER = Component.literal("").setStyle(Style.EMPTY.withFont(TextUtils.DEFAULT));
 
 
     public static final MutableComponent NEXT =             Component.literal("1").setStyle(ICONS).append(RESETTER);

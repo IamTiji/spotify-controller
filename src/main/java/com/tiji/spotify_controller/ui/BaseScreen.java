@@ -1,7 +1,7 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.util.ImageDrawer;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -46,7 +46,7 @@ public class BaseScreen extends Screen {
         //$$ color |= r << 16 | g << 8 | b;
         //#endif
 
-        ImageDrawer.drawImage(
+        SafeDrawer.drawImage(
                 context,
                 ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/gradient.png"),
                 widgetsOffset, 0,

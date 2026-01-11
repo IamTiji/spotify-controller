@@ -1,6 +1,8 @@
 package com.tiji.spotify_controller.widgets;
 
 import java.util.function.Consumer;
+
+import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,7 +31,7 @@ public class StringInputWidget extends EditBox implements ValueHolder {
 
     @Override
     public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        context.renderOutline(getX(), getY(), width, height, 0xFFFFFFFF);
+        SafeDrawer.drawOutline(context, getX(), getY(), width, height, 0xFFFFFFFF);
 
         int y = (height - client.font.lineHeight) / 2 + getY();
         context.drawString(client.font, icon, width - 18 + getX(), y+2, 0xFFFFFFFF, false);

@@ -8,7 +8,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
-public class BooleanToggleWidget extends AbstractWidget implements ValueHolder {
+public class BooleanToggleWidget extends SafeAbstractWidget implements ValueHolder {
     private boolean state;
     private static final Component OFF_TEXT = Component.translatable("ui.spotify_controller.toggle.off").withStyle(ChatFormatting.RED);
     private static final Component ON_TEXT = Component.translatable("ui.spotify_controller.toggle.on").withStyle(ChatFormatting.GREEN);
@@ -32,7 +32,7 @@ public class BooleanToggleWidget extends AbstractWidget implements ValueHolder {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         Font textRenderer = Minecraft.getInstance().font;
 
         int yOffset = (getHeight() - textRenderer.lineHeight) / 2;
