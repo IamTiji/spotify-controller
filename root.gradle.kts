@@ -69,6 +69,10 @@ dependencies {
     mappings(loom.officialMojangMappings())
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/.accesswidener")
+}
+
 val versions = listOf(
     "1.21.1-fabric",
     "1.21.3-fabric",

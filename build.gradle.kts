@@ -29,6 +29,8 @@ loom {
 			sourceSet(sourceSets["main"])
 		}
 	}
+
+    accessWidenerPath = file("../../src/main/resources/.accesswidener")
 }
 
 dependencies {

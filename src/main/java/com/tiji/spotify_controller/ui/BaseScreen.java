@@ -27,6 +27,10 @@ public class BaseScreen extends Screen {
 
     @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        //#if MC<=12106
+        super.renderBackground(context, mouseX, mouseY, delta);
+        //#endif
+
         totalTime += delta / 10f;
         float normalized = Math.min(totalTime, animationTime) / animationTime;
         int previousOffset = widgetsOffset;
@@ -34,17 +38,6 @@ public class BaseScreen extends Screen {
         // Glow
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
         int color = cover.color;
-
-        //#if MC>=12106
-        //$$ // In this version, background darkening seems to be broken, so we need to do it ourselves
-        //$$ final float darkenAmount = 1 - (1/64f);
-        //$$ final int mask = 0xFF000000;
-        //$$ int r = (int) (((color >> 16) & 0xff) * darkenAmount);
-        //$$ int g = (int) (((color >> 8)  & 0xff) * darkenAmount);
-        //$$ int b = (int) (( color        & 0xff) * darkenAmount);
-        //$$ color &= mask;
-        //$$ color |= r << 16 | g << 8 | b;
-        //#endif
 
         SafeDrawer.drawImage(
                 context,
@@ -65,7 +58,7 @@ public class BaseScreen extends Screen {
             }
         }
 
-        super.render(context, mouseX, mouseY, delta);
+        renderables.forEach(it -> it.render(context, mouseX, mouseY, delta));
     }
 
     private float easeInOut(float t) {
