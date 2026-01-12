@@ -79,10 +79,14 @@ val versions = listOf(
     "1.21.4-fabric",
     "1.21.5-fabric",
     "1.21.8-fabric",
-    "1.21.9-fabric"
+    "1.21.9-fabric",
+    "1.21.11-fabric"
 )
 
 tasks.register("buildAll") {
+    group = "build"
+    description = "Builds all versions"
+
     for (version in versions) {
         dependsOn(":$version:build")
     }
