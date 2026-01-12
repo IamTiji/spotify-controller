@@ -5,10 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.WebGuideServer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
-import net.minecraft.text.Text;
-
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -19,6 +15,9 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
 
 public class ApiCalls {
     private static final HttpClient client = HttpClient.newHttpClient();
@@ -287,8 +286,8 @@ public class ApiCalls {
         String reason = data.get("error").getAsJsonObject().get("reason").getAsString();
 
         if (handledErrors.contains(reason)) {
-            MinecraftClient.getInstance().getToastManager().add(
-                    new SystemToast(new SystemToast.Type(), Text.empty(), Text.translatable("api.spotify_controller.error."+reason))
+            Minecraft.getInstance().getToastManager().addToast(
+                    new SystemToast(new SystemToast.SystemToastId(), Component.empty(), Component.translatable("api.spotify_controller.error."+reason))
             );
             return true;
         } else {

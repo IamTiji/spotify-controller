@@ -1,18 +1,17 @@
 package com.tiji.spotify_controller.util;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import com.tiji.spotify_controller.api.ImageColorExtractor;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.Identifier;
-
 import java.util.HashMap;
+import net.minecraft.resources.ResourceLocation;
 
 public class ImageWithColor {
-    public Identifier image;
+    public ResourceLocation image;
     public final int color;
-    private static final HashMap<Identifier, Integer> cachedColors = new HashMap<>();
+    private static final HashMap<ResourceLocation, Integer> cachedColors = new HashMap<>();
     public boolean shouldUseDarkUI;
 
-    public ImageWithColor(NativeImage image, Identifier id) {
+    public ImageWithColor(NativeImage image, ResourceLocation id) {
         this.image = id;
         if (cachedColors.containsKey(id)) {
             this.color = cachedColors.get(id);
@@ -22,12 +21,12 @@ public class ImageWithColor {
         this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
         cachedColors.put(id, color);
     }
-    public ImageWithColor(int color, Identifier id) {
+    public ImageWithColor(int color, ResourceLocation id) {
         this.image = id;
         this.color = color;
         this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
     }
-    public ImageWithColor(Identifier id) {
+    public ImageWithColor(ResourceLocation id) {
         this.image = id;
         this.color = cachedColors.getOrDefault(id, 0xffEFE4B0);
         this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);

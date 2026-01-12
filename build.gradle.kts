@@ -33,18 +33,21 @@ loom {
 			sourceSet(sourceSets["main"])
 		}
 	}
+
+    accessWidenerPath = file("../../src/main/resources/.accesswidener")
 }
 
 dependencies {
 	modImplementation(fabricApi.module("fabric-lifecycle-events-v1", project.property("fabric_version") as String))
 	modImplementation(fabricApi.module("fabric-resource-loader-v0",  project.property("fabric_version") as String))
 	modImplementation(fabricApi.module("fabric-key-binding-api-v1",  project.property("fabric_version") as String))
+    modImplementation(fabricApi.module("fabric-command-api-v2",      project.property("fabric_version") as String))
 
 	modImplementation(project.property("essential.defaults.loom.fabric-loader")!! as String)
 
 	modCompileOnly("com.terraformersmc:modmenu:3.0.0") // wise word from random person: don't touch it if it works
 
-	mappings("net.fabricmc:yarn:${project.property("yarn_mappings")!! as String}:v2")
+    mappings(loom.officialMojangMappings())
 	minecraft(project.property("essential.defaults.loom.minecraft")!! as String)
 
 }

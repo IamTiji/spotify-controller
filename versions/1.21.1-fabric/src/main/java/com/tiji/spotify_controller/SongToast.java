@@ -2,13 +2,13 @@ package com.tiji.spotify_controller;
 
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.util.TextUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
 public class SongToast implements Toast {
     private static final int TITLE_Y = 6;
@@ -21,30 +21,30 @@ public class SongToast implements Toast {
     private static final int TEXT_WIDTH = TOAST_WIDTH - MARGIN*2 - IMAGE_WIDTH;
 
     private final ImageWithColor cover;
-    private final Text artist;
-    private final Text title;
+    private final Component artist;
+    private final Component title;
 
-    public SongToast(ImageWithColor cover, String artist, Text title) {
+    public SongToast(ImageWithColor cover, String artist, Component title) {
         this.cover = cover;
-        this.artist = TextUtils.getTrantedText(Text.of(artist), TEXT_WIDTH);
+        this.artist = TextUtils.getTrantedText(Component.nullToEmpty(artist), TEXT_WIDTH);
         this.title =  TextUtils.getTrantedText(title          , TEXT_WIDTH);
     }
 
-    public void show(ToastManager manager) {
-        manager.add(this);
+    public void show(ToastComponent manager) {
+        manager.addToast(this);
     }
 
     @Override
-    public Visibility draw(DrawContext context, ToastManager manager, long timePast) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+    public Visibility render(GuiGraphics context, ToastComponent manager, long timePast) {
+        Font textRenderer = Minecraft.getInstance().font;
 
         context.fill(0, 0, TOAST_WIDTH, TOAST_HEIGHT, cover.color);
 
-        int labelColor = cover.shouldUseDarkUI ? Colors.WHITE : Colors.BLACK;
-        context.drawText(textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
-        context.drawText(textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
+        int labelColor = cover.shouldUseDarkUI ? CommonColors.WHITE : CommonColors.BLACK;
+        context.drawString(textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
+        context.drawString(textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
 
-        context.drawTexture(cover.image, 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT, IMAGE_WIDTH, TOAST_HEIGHT);
+        context.blit(cover.image, 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT, IMAGE_WIDTH, TOAST_HEIGHT);
 
         return DISPLAY_DURATION_MS * manager.getNotificationDisplayTimeMultiplier() <= timePast
                 ? Visibility.HIDE

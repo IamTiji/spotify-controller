@@ -1,27 +1,30 @@
 package com.tiji.spotify_controller.widgets;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.text.Text;
-
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.network.chat.Component;
 import java.util.function.Consumer;
 
-public class LabelWidget implements Drawable, Element, Selectable, Widget {
+public class LabelWidget implements Renderable, GuiEventListener, NarratableEntry, LayoutElement {
     private int x, y;
-    private Text text;
+    private Component text;
 
-    public LabelWidget(int x, int y, Text text) {
+    public LabelWidget(int x, int y, Component text) {
         this.x = x;
         this.y = y;
         this.text = text;
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawText(MinecraftClient.getInstance().textRenderer, text, x, y, 0xFFFFFFFF, false);
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        context.drawString(Minecraft.getInstance().font, text, x, y, 0xFFFFFFFF, false);
     }
 
     public int getX() {
@@ -47,7 +50,7 @@ public class LabelWidget implements Drawable, Element, Selectable, Widget {
     }
 
     @Override
-    public void forEachChild(Consumer<ClickableWidget> consumer) {}
+    public void visitWidgets(Consumer<AbstractWidget> consumer) {}
 
     @Override
     public void setFocused(boolean focused) {}
@@ -56,11 +59,11 @@ public class LabelWidget implements Drawable, Element, Selectable, Widget {
         this.y = y;
     }
 
-    public Text getText() {
+    public Component getText() {
         return text;
     }
 
-    public void setText(Text text) {
+    public void setText(Component text) {
         this.text = text;
     }
 
@@ -71,15 +74,15 @@ public class LabelWidget implements Drawable, Element, Selectable, Widget {
     }
 
     @Override
-    public ScreenRect getNavigationFocus() {
-        return Element.super.getNavigationFocus();
+    public ScreenRectangle getRectangle() {
+        return GuiEventListener.super.getRectangle();
     }
 
     @Override
-    public SelectionType getType() {
-        return SelectionType.NONE;
+    public NarrationPriority narrationPriority() {
+        return NarrationPriority.NONE;
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {}
+    public void updateNarration(NarrationElementOutput builder) {}
 }

@@ -1,15 +1,14 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.util.ImageDrawer;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class BaseScreen extends Screen {
     protected float totalTime = 0f;
@@ -18,7 +17,7 @@ public class BaseScreen extends Screen {
     private static final float animationTime = 0.5f;
 
     public BaseScreen(boolean animate) {
-        super(Text.of(""));
+        super(Component.nullToEmpty(""));
 
         if (!animate) {
             totalTime += animationTime;
@@ -27,7 +26,11 @@ public class BaseScreen extends Screen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        //#if MC<=12106
+        super.renderBackground(context, mouseX, mouseY, delta);
+        //#endif
+
         totalTime += delta / 10f;
         float normalized = Math.min(totalTime, animationTime) / animationTime;
         int previousOffset = widgetsOffset;
@@ -36,20 +39,9 @@ public class BaseScreen extends Screen {
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
         int color = cover.color;
 
-        //#if MC>=12106
-        //$$ // In this version, background darkening seems to be broken, so we need to do it ourselves
-        //$$ final float darkenAmount = 1 - (1/64f);
-        //$$ final int mask = 0xFF000000;
-        //$$ int r = (int) (((color >> 16) & 0xff) * darkenAmount);
-        //$$ int g = (int) (((color >> 8)  & 0xff) * darkenAmount);
-        //$$ int b = (int) (( color        & 0xff) * darkenAmount);
-        //$$ color &= mask;
-        //$$ color |= r << 16 | g << 8 | b;
-        //#endif
-
-        ImageDrawer.drawImage(
+        SafeDrawer.drawImage(
                 context,
-                Identifier.of(Main.MOD_ID, "ui/gradient.png"),
+                ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/gradient.png"),
                 widgetsOffset, 0,
                 0, 0,
                 255, height,
@@ -60,13 +52,13 @@ public class BaseScreen extends Screen {
 
         widgetsOffset = (int) (-ANIMATION_AMOUNT + easeInOut(normalized) * ANIMATION_AMOUNT);
 
-        for (Element child : children()) {
-            if (child instanceof Widget widget) {
+        for (GuiEventListener child : children()) {
+            if (child instanceof LayoutElement widget) {
                 widget.setX(widget.getX() + (widgetsOffset - previousOffset));
             }
         }
 
-        super.render(context, mouseX, mouseY, delta);
+        renderables.forEach(it -> it.render(context, mouseX, mouseY, delta));
     }
 
     private float easeInOut(float t) {

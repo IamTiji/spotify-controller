@@ -1,29 +1,36 @@
 package com.tiji.spotify_controller.util;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Optional;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 
 public class TextUtils {
-    private static final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-
+    private static final Font textRenderer = Minecraft.getInstance().font;
+    
+    //#if MC<=12108
+    public static final ResourceLocation DEFAULT = Style.DEFAULT_FONT;
+    //#else
+    //$$ public static final net.minecraft.network.chat.FontDescription DEFAULT = net.minecraft.network.chat.FontDescription.DEFAULT;
+    //#endif
+    
     @Contract(value = "null, _ -> fail; _, _ -> new")
-    public static Text getTrantedText(Text title, int maxWidth) {
-        if (textRenderer.getWidth(title) <= maxWidth) {
+    public static Component getTrantedText(Component title, int maxWidth) {
+        if (textRenderer.width(title) <= maxWidth) {
             return title;
         }
-        int ellipsisSize = textRenderer.getWidth("...");
+        int ellipsisSize = textRenderer.width("...");
         int remainingWidth = maxWidth - ellipsisSize;
 
-        MutableText result = Text.literal("");
+        MutableComponent result = Component.literal("");
         title.visit((style, asString) -> {
-            Text textToAppend = Text.literal(asString).setStyle(style);
-            int width = textRenderer.getWidth(textToAppend);
+            Component textToAppend = Component.literal(asString).setStyle(style);
+            int width = textRenderer.width(textToAppend);
             if (width <= remainingWidth) {
                 result.append(textToAppend);
                 return Optional.empty();
@@ -36,23 +43,23 @@ public class TextUtils {
         return result.append("...");
     }
 
-    private static Text trimToWidth(String text, Style style, int maxWidth) {
-        Text styledText = Text.literal(text).setStyle(style);
-        int width = textRenderer.getWidth(styledText);
+    private static Component trimToWidth(String text, Style style, int maxWidth) {
+        Component styledText = Component.literal(text).setStyle(style);
+        int width = textRenderer.width(styledText);
         if (width <= maxWidth) {
             return styledText;
         } else {
             int cutoff = (int) Math.ceil(text.length() / 2f);
             String halfString = text.substring(0, cutoff);
-            MutableText halfText = Text.literal(halfString).setStyle(style);
-            int halfWidth = textRenderer.getWidth(halfText);
+            MutableComponent halfText = Component.literal(halfString).setStyle(style);
+            int halfWidth = textRenderer.width(halfText);
 
             if (halfWidth >= maxWidth) {
-                if (text.equals(halfString)) return Text.literal("");
+                if (text.equals(halfString)) return Component.literal("");
 
                 return trimToWidth(halfString, style, maxWidth);
             } else {
-                Text otherHalf = trimToWidth(text.substring(cutoff), style, maxWidth - halfWidth);
+                Component otherHalf = trimToWidth(text.substring(cutoff), style, maxWidth - halfWidth);
                 return halfText.append(otherHalf);
             }
         }
@@ -66,7 +73,7 @@ public class TextUtils {
             char c = text.charAt(i);
             currentWord.append(c);
             if (Character.isWhitespace(c)) {
-                if (textRenderer.getWidth(textSoFar + currentWord.toString()) > maxWidth) {
+                if (textRenderer.width(textSoFar + currentWord.toString()) > maxWidth) {
                     sb.append(textSoFar).append("\n");
                     textSoFar.setLength(0);
                 }

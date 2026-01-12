@@ -5,19 +5,22 @@ import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.api.ApiCalls;
 import com.tiji.spotify_controller.widgets.SongListItem;
 import com.tiji.spotify_controller.widgets.StringInputWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.Component;
+
+//#if MC>=12109
+//$$ import net.minecraft.client.input.MouseButtonEvent;
+//#endif
 
 public class SearchScreen extends SecondaryBaseScreen {
     private static final int WIDTH = 300;
     private static final int MARGIN = 10;
     private static final int SCROLLBAR_WIDTH = 4;
 
-    private final ArrayList<Drawable> searchResults = new ArrayList<>(20);
+    private final ArrayList<Renderable> searchResults = new ArrayList<>(20);
     private float scrollBarPos;
     private int offset;
 
@@ -25,16 +28,16 @@ public class SearchScreen extends SecondaryBaseScreen {
     protected void init() {
         super.init();
 
-        StringInputWidget searchField = new StringInputWidget(textRenderer,
+        StringInputWidget searchField = new StringInputWidget(font,
                 MARGIN, MARGIN,
-                WIDTH - MARGIN * 2, 20, Text.empty(),
+                WIDTH - MARGIN * 2, 20, Component.empty(),
                 Icons.SEARCH, this::search);
-        addDrawableChild(searchField);
+        addRenderableWidget(searchField);
         setFocused(searchField);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
         int resultSpace     = height - MARGIN*2 - 20 - INFO_HEIGHT;
@@ -60,23 +63,23 @@ public class SearchScreen extends SecondaryBaseScreen {
         //#endif
 
         //#if MC>=12106
-        //$$ context.getMatrices().pushMatrix();
-        //$$ context.getMatrices().translate(0, offset);
+        //$$ context.pose().pushMatrix();
+        //$$ context.pose().translate(0, offset);
         //#else
-        context.getMatrices().push();
-        context.getMatrices().translate(0, offset, 0);
+        context.pose().pushPose();
+        context.pose().translate(0, offset, 0);
         //#endif
 
         synchronized (searchResults) {
-            for (Drawable searchResult : searchResults) {
+            for (Renderable searchResult : searchResults) {
                 searchResult.render(context, mouseX, mouseY - offset, delta);
             }
         }
 
         //#if MC>=12106
-        //$$ context.getMatrices().popMatrix();
+        //$$ context.pose().popMatrix();
         //#else
-        context.getMatrices().pop();
+        context.pose().popPose();
         //#endif
 
         context.disableScissor();
@@ -85,8 +88,8 @@ public class SearchScreen extends SecondaryBaseScreen {
     private void search(String query) {
         if (query.isEmpty()) return;
 
-        for (Drawable searchResult : searchResults) {
-            remove((Element) searchResult);
+        for (Renderable searchResult : searchResults) {
+            removeWidget((GuiEventListener) searchResult);
         }
         synchronized (searchResults) {
             searchResults.clear();
@@ -113,15 +116,30 @@ public class SearchScreen extends SecondaryBaseScreen {
         return true;
     }
 
+    //#if MC<=12108
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!super.mouseClicked(mouseX, mouseY, button)) {
-            for (Drawable searchResult : searchResults) {
-                Element selectable = (Element) searchResult;
+            for (Renderable searchResult : searchResults) {
+                GuiEventListener selectable = (GuiEventListener) searchResult;
                 if (selectable.mouseClicked(mouseX, mouseY - offset, button))
                     return true;
             }
         }
         return false;
     }
+    //#else
+    //$$ @Override
+    //$$ public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClicked) {
+    //$$     if (!super.mouseClicked(mouseButtonEvent, doubleClicked)) {
+    //$$         for (Renderable searchResult : searchResults) {
+    //$$             GuiEventListener selectable = (GuiEventListener) searchResult;
+    //$$             if (selectable.mouseClicked(mouseButtonEvent, doubleClicked))
+    //$$                 return true;
+    //$$         }
+    //$$     }
+    //$$
+    //$$     return false;
+    //$$ }
+    //#endif
 }

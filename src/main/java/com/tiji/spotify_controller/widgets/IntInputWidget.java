@@ -1,12 +1,11 @@
 package com.tiji.spotify_controller.widgets;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.text.Text;
-
 import java.util.function.Consumer;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
 
 public class IntInputWidget extends StringInputWidget {
-    public IntInputWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, Text icon, Consumer<String> action) {
+    public IntInputWidget(Font textRenderer, int x, int y, int width, int height, Component text, Component icon, Consumer<String> action) {
         super(textRenderer, x, y, width, height, text, icon, action);
     }
 
@@ -15,12 +14,12 @@ public class IntInputWidget extends StringInputWidget {
     }
 
     @Override
-    public void write(String text) {
+    public void insertText(String text) {
         if (text.length() != 1) return;
 
         char c = text.charAt(0);
         if (c >= '0' && c <= '9') {
-            super.write(text);
+            super.insertText(text);
         }
     }
 
@@ -34,7 +33,7 @@ public class IntInputWidget extends StringInputWidget {
     }
 
     @Override
-    public Object getValue() {
-        return Integer.parseInt(getText());
+    public Object getValue_() {
+        return Integer.parseInt(getValue());
     }
 }

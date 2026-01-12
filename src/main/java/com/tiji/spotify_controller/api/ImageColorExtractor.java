@@ -1,8 +1,7 @@
 package com.tiji.spotify_controller.api;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import com.tiji.spotify_controller.Main;
-import net.minecraft.client.texture.NativeImage;
-
 import java.util.HashMap;
 
 public class ImageColorExtractor {
@@ -36,14 +35,14 @@ public class ImageColorExtractor {
         int b =  color        & 0xFF;
         double brightness = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0;
 
-        if (brightness < 0.5 && brightness > 0.4) {
-            r = (int) (r * 0.5);
-            g = (int) (g * 0.5);
-            b = (int) (b * 0.5);
-        } else if (brightness > 0.5 && brightness < 0.6) {
-            r = (int) (r * 1.5);
-            g = (int) (g * 1.5);
-            b = (int) (b * 1.5);
+        if (brightness > 0.9) {
+            r = (int) (r * 0.7);
+            g = (int) (g * 0.7);
+            b = (int) (b * 0.7);
+        } else if (brightness < 0.1) {
+            r = (int) (r * 1.7);
+            g = (int) (g * 1.7);
+            b = (int) (b * 1.7);
         }
         return (r << 16) | (g << 8) | b | (0xFF << 24);
     }
@@ -66,10 +65,10 @@ public class ImageColorExtractor {
         for (int x = 0; x < sampleSize; x++) {
             for (int y = 0; y < sampleSize; y++) {
                 //#if MC>=12103
-                int color = image.getColorArgb((int) (x * multiplier_width) + multiplier_width_half,
+                int color = image.getPixel((int) (x * multiplier_width) + multiplier_width_half,
                         (int) (y * multiplier_height) + multiplier_height_half);
                 //#else
-                //$$ int color = image.getColor((int) (x * multiplier_width) + multiplier_width_half,
+                //$$ int color = image.getPixelRGBA((int) (x * multiplier_width) + multiplier_width_half,
                 //$$        (int) (y * multiplier_height) + multiplier_height_half);
                 //#endif
                 int r = (color >> 16) & 0xFF;

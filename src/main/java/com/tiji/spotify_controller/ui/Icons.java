@@ -1,32 +1,39 @@
 package com.tiji.spotify_controller.ui;
 
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.util.TextUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 
 public class Icons {
-    public static final Identifier ICON_ID = Identifier.of(Main.MOD_ID, "icon");
+    public static final ResourceLocation ICON_ID = ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "icon");
+
+    //#if MC<=12108
     private static final Style ICONS = Style.EMPTY.withFont(ICON_ID);
-    private static final Text RESETTER = Text.literal("").setStyle(Style.EMPTY.withFont(Style.DEFAULT_FONT_ID));
+    //#else
+    //$$ private static final Style ICONS = Style.EMPTY.withFont(new net.minecraft.network.chat.FontDescription.Resource(ICON_ID));
+    //#endif
+
+    private static final Component RESETTER = Component.literal("").setStyle(Style.EMPTY.withFont(TextUtils.DEFAULT));
 
 
-    public static final MutableText NEXT =             Text.literal("1").setStyle(ICONS).append(RESETTER);
-    public static final MutableText PREVIOUS =         Text.literal("0").setStyle(ICONS).append(RESETTER);
-    public static final MutableText PAUSE =            Text.literal("2").setStyle(ICONS).append(RESETTER);
-    public static final MutableText RESUME =           Text.literal("3").setStyle(ICONS).append(RESETTER);
-    public static final MutableText SHUFFLE =          Text.literal("4").setStyle(ICONS).append(RESETTER);
-    public static final MutableText SHUFFLE_ON =       Text.literal("5").setStyle(ICONS).append(RESETTER);
-    public static final MutableText REPEAT =           Text.literal("6").setStyle(ICONS).append(RESETTER);
-    public static final MutableText REPEAT_ON =        Text.literal("7").setStyle(ICONS).append(RESETTER);
-    public static final MutableText REPEAT_SINGLE =    Text.literal("8").setStyle(ICONS).append(RESETTER);
-    public static final MutableText EXPLICT =          Text.literal("9").setStyle(ICONS).append(RESETTER).append(" ");
-    public static final MutableText ADD_TO_FAV =       Text.literal("a").setStyle(ICONS).append(RESETTER);
-    public static final MutableText REMOVE_FROM_FAV =  Text.literal("b").setStyle(ICONS).append(RESETTER);
-    public static final MutableText SEARCH =           Text.literal("c").setStyle(ICONS).append(RESETTER);
-    public static final MutableText ADD =              Text.literal("d").setStyle(ICONS).append(RESETTER);
-    public static final MutableText PLAY =             Text.literal("e").setStyle(ICONS).append(RESETTER);
-    public static final MutableText ADD_TO_QUEUE =     Text.literal("f").setStyle(ICONS).append(RESETTER);
-    public static final MutableText POPUP_OPEN =       Text.literal("g").setStyle(ICONS).append(RESETTER).append(" ");
+    public static final MutableComponent NEXT =             Component.literal("1").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent PREVIOUS =         Component.literal("0").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent PAUSE =            Component.literal("2").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent RESUME =           Component.literal("3").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent SHUFFLE =          Component.literal("4").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent SHUFFLE_ON =       Component.literal("5").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent REPEAT =           Component.literal("6").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent REPEAT_ON =        Component.literal("7").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent REPEAT_SINGLE =    Component.literal("8").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent EXPLICT =          Component.literal("9").setStyle(ICONS).append(RESETTER).append(" ");
+    public static final MutableComponent ADD_TO_FAV =       Component.literal("a").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent REMOVE_FROM_FAV =  Component.literal("b").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent SEARCH =           Component.literal("c").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent ADD =              Component.literal("d").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent PLAY =             Component.literal("e").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent ADD_TO_QUEUE =     Component.literal("f").setStyle(ICONS).append(RESETTER);
+    public static final MutableComponent POPUP_OPEN =       Component.literal("g").setStyle(ICONS).append(RESETTER).append(" ");
 }

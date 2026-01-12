@@ -1,13 +1,12 @@
 package com.tiji.spotify_controller.widgets;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
-
 import java.util.function.Consumer;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 
-public class ProgressWidget extends ClickableWidget {
+public class ProgressWidget extends SafeAbstractWidget {
     private static final int h = 10;
     private static final int RAIL_HEIGHT = 2;
     private static final int RAIL_Y = (h - RAIL_HEIGHT) / 2;
@@ -20,7 +19,7 @@ public class ProgressWidget extends ClickableWidget {
     private boolean dragging;
 
     public ProgressWidget(int x, int y, int w, float value, Consumer<Float> action) {
-        super(x, y, w, h, Text.empty());
+        super(x, y, w, h, Component.empty());
         this.value = value;
         this.action = action;
     }
@@ -39,7 +38,7 @@ public class ProgressWidget extends ClickableWidget {
     }
 
     @Override
-    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (dragging) {
             value = getValue(mouseX - getX());
         }
@@ -66,5 +65,5 @@ public class ProgressWidget extends ClickableWidget {
     }
 
     @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {}
+    protected void updateWidgetNarration(NarrationElementOutput builder) {}
 }

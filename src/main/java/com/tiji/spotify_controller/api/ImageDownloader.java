@@ -2,15 +2,15 @@ package com.tiji.spotify_controller.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.ImageWithColor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.resources.ResourceLocation;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,16 +27,16 @@ import java.util.function.Consumer;
 
 import static com.tiji.spotify_controller.api.SongDataExtractor.getId;
 public class ImageDownloader {
-    private static final ArrayList<Identifier> loadedCover = new ArrayList<>();
+    private static final ArrayList<ResourceLocation> loadedCover = new ArrayList<>();
     private static final ArrayBlockingQueue<JsonObject> queue = new ArrayBlockingQueue<>(200);
     private static final HashMap<JsonObject, ArrayList<Consumer<ImageWithColor>>> onComplete = new HashMap<>();
-    public static final MinecraftClient client = MinecraftClient.getInstance();
+    public static final Minecraft client = Minecraft.getInstance();
 
     private static ImageWithColor getAlbumCover(JsonObject trackObj) {
         try {
-            Identifier id = Identifier.of(Main.MOD_ID, getId(trackObj).toLowerCase());
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, getId(trackObj).toLowerCase());
 
-            int wantedSize = 100 * client.options.getGuiScale().getValue();
+            int wantedSize = 100 * client.options.guiScale().get();
             if (wantedSize == 0) wantedSize = Integer.MAX_VALUE;
             int closest = Integer.MAX_VALUE;
             JsonArray ImageList = trackObj.getAsJsonObject("album")
@@ -67,11 +67,11 @@ public class ImageDownloader {
             NativeImage image = NativeImage.read(imageStream);
             client.execute(() -> {
                 //#if MC<=12104
-                //$$ client.getTextureManager().registerTexture(id,
-                //$$             new NativeImageBackedTexture(image));
+                //$$ client.getTextureManager().register(id,
+                //$$             new DynamicTexture(image));
                 //#else
-                client.getTextureManager().registerTexture(id,
-                        new NativeImageBackedTexture(id::getPath, image));
+                client.getTextureManager().register(id,
+                        new DynamicTexture(id::getPath, image));
                 //#endif
 
                 latch.countDown();
@@ -94,14 +94,14 @@ public class ImageDownloader {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        return new ImageWithColor(0xffffffff, Identifier.of(Main.MOD_ID, "ui/nothing.png"));
+        return new ImageWithColor(0xffffffff, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/nothing.png"));
     }
 
     public static void addDownloadTask(JsonObject data, Consumer<ImageWithColor> callback) {
-        if (loadedCover.contains(Identifier.of(Main.MOD_ID, getId(data).toLowerCase()))){
+        if (loadedCover.contains(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, getId(data).toLowerCase()))){
             Main.LOGGER.debug("Cache hit for {}", getId(data));
             CompletableFuture.runAsync(() ->
-                callback.accept(new ImageWithColor(Identifier.of(Main.MOD_ID, getId(data).toLowerCase())))
+                callback.accept(new ImageWithColor(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, getId(data).toLowerCase())))
             );
             return;
         }

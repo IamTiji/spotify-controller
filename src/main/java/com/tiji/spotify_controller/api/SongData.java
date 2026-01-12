@@ -2,15 +2,14 @@ package com.tiji.spotify_controller.api;
 
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.Main;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.net.URI;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class SongData {
-    public Text title;
+    public Component title;
     public String artist;
-    public ImageWithColor coverImage = new ImageWithColor(Identifier.of(Main.MOD_ID, "ui/nothing.png")); // Avoid NPE
+    public ImageWithColor coverImage = new ImageWithColor(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/nothing.png")); // Avoid NPE
     public String durationLabel;
     public Integer duration;
     public String Id = "";
@@ -30,8 +29,8 @@ public class SongData {
     public static SongData emptyData() {
         SongData songData = new SongData();
 
-        songData.title = Text.translatable("ui.spotify_controller.nothing_playing");
-        songData.artist = Text.translatable("ui.spotify_controller.unknown_artist").toString();
+        songData.title = Component.translatable("ui.spotify_controller.nothing_playing");
+        songData.artist = Component.translatable("ui.spotify_controller.unknown_artist").toString();
         songData.durationLabel = "00:00";
         songData.duration = 0;
         songData.Id = "";

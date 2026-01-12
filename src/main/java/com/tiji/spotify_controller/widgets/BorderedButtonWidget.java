@@ -1,7 +1,8 @@
 package com.tiji.spotify_controller.widgets;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
+import com.tiji.spotify_controller.util.SafeDrawer;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 public class BorderedButtonWidget extends BorderlessButtonWidget {
     private static final int PADDING = 2;
@@ -9,37 +10,37 @@ public class BorderedButtonWidget extends BorderlessButtonWidget {
     private final boolean needsCentering;
     private final int labelWidth;
 
-    public BorderedButtonWidget(Text innerText, int x, int y, Runnable action, boolean isIcon) {
+    public BorderedButtonWidget(Component innerText, int x, int y, Runnable action, boolean isIcon) {
         super(innerText, x, y, action, isIcon);
 
         if (isIcon) {
             width = BUTTON_SIZE + PADDING*2;
         } else {
-            width = client.textRenderer.getWidth(innerText) + PADDING*2;
+            width = client.font.width(innerText) + PADDING*2;
         }
 
         needsCentering = false;
         labelWidth = -1;
     }
 
-    public BorderedButtonWidget(Text innerText, int x, int y, Runnable action, boolean isIcon, int width) {
+    public BorderedButtonWidget(Component innerText, int x, int y, Runnable action, boolean isIcon, int width) {
         super(innerText, x, y, action, isIcon);
         this.width = width;
-        this.labelWidth = client.textRenderer.getWidth(innerText);
+        this.labelWidth = client.font.width(innerText);
 
         needsCentering = true;
     }
 
     @Override
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawBorder(getX(), getY(), width, BUTTON_SIZE + PADDING*2, isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR);
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        SafeDrawer.drawOutline(context, getX(), getY(), width, BUTTON_SIZE + PADDING*2, isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR);
 
         int x = getX() + PADDING;
         if (needsCentering) {
             x += (width - labelWidth) / 2;
         }
 
-        context.drawText(client.textRenderer, label,
+        context.drawString(client.font, label,
                 x, getY() + LABEL_OFFSET + PADDING,
                 isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR,
                 false);
@@ -50,9 +51,7 @@ public class BorderedButtonWidget extends BorderlessButtonWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        if (isHovered((int) mouseX, (int) mouseY)) {
-            this.onPress();
-        }
+    public void onPress() {
+        super.onPress();
     }
 }
