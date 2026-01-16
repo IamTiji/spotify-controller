@@ -34,7 +34,17 @@ loom {
 		}
 	}
 
-    accessWidenerPath = file("../../src/main/resources/.accesswidener")
+    accessWidenerPath.set(file("../../src/main/resources/.accesswidener"))
+}
+
+sourceSets {
+    main {
+        resources.srcDir(file("../../src/main/resources"))
+    }
+}
+
+tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 dependencies {

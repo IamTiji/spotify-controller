@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "spotify_controller",
-  "version": "3.1",
+  "version": "3.2",
   "name": "Spotify Controller",
   "description": "Provides media control of Spotify in Minecraft\n\nSpotify is trademark of Spotify AB. This software is not endorsed by Spotify AB and is not owned by Spotify AB.",
   "authors": [
