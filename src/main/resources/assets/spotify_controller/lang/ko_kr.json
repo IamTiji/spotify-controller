@@ -10,6 +10,7 @@
   "ui.spotify_controller.status.not_setup": "연결 되지 않음",
   "ui.spotify_controller.status.setup": "%1$s와 연결됨",
   "ui.spotify_controller.loading": "로딩중...",
+  "ui.spotify_controller.failed": "로딩 실패 :(",
   "ui.spotify_controller.not_allowed.title": "허용되지 않음",
   "ui.spotify_controller.not_allowed.message": "이 행동은 허용되지 않습니다",
   "ui.spotify_controller.config.head": "옵션",

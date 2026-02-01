@@ -16,6 +16,7 @@
   "ui.spotify_controller.status.setup": "Linked with: %1$s",
 
   "ui.spotify_controller.loading": "Loading...",
+  "ui.spotify_controller.failed": "Failed to load :(",
 
   "ui.spotify_controller.not_allowed.title": "Not Allowed",
   "ui.spotify_controller.not_allowed.message": "This action is not allowed",

@@ -36,4 +36,5 @@ public class Icons {
     public static final MutableComponent PLAY =             Component.literal("e").setStyle(ICONS).append(RESETTER);
     public static final MutableComponent ADD_TO_QUEUE =     Component.literal("f").setStyle(ICONS).append(RESETTER);
     public static final MutableComponent POPUP_OPEN =       Component.literal("g").setStyle(ICONS).append(RESETTER).append(" ");
+    public static final MutableComponent LYRICS =           Component.literal("h").setStyle(ICONS).append(RESETTER);
 }

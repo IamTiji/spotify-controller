@@ -35,7 +35,8 @@ public class NowPlayingScreen extends BaseScreen {
     private boolean isFirstInit = true;
 
     private static final Map<Component, Class<? extends SecondaryBaseScreen>> SUBSCREENS = Map.of(
-            subscreenText(Icons.SEARCH, "ui.spotify_controller.subscreens.search"), SearchScreen.class
+            subscreenText(Icons.SEARCH, "ui.spotify_controller.subscreens.search"), SearchScreen.class,
+            subscreenText(Icons.LYRICS, "ui.spotify_controller.subscreens.lyrics"), LyricScreen.class
     );
     private static final int SUBSCREEN_BUTTONS_HEIGHT = 20;
     private static Component subscreenText(Component Icon, String description) {
