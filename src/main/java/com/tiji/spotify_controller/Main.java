@@ -1,6 +1,6 @@
 package com.tiji.spotify_controller;
 
-import com.tiji.spotify_controller.api.ApiCalls;
+import com.tiji.spotify_controller.api.SpotifyApi;
 import com.tiji.spotify_controller.api.ImageDownloader;
 import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
@@ -60,7 +60,7 @@ public class Main implements ClientModInitializer {
 		if (isNotSetup()) {
             WebGuideServer.start();
 		} else {
-			ApiCalls.refreshAccessToken();
+			SpotifyApi.refreshAccessToken();
 		}
 		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> {
             isStarted = true;
@@ -95,7 +95,7 @@ public class Main implements ClientModInitializer {
 					});
 				}
 				if (CONFIG.lastRefresh() + 1.8e+6 < System.currentTimeMillis()) {
-					ApiCalls.refreshAccessToken();
+					SpotifyApi.refreshAccessToken();
 				}
 			}
 			tickCount++;

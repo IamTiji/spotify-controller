@@ -1,7 +1,7 @@
 package com.tiji.spotify_controller.widgets;
 
 import com.google.gson.JsonObject;
-import com.tiji.spotify_controller.api.ApiCalls;
+import com.tiji.spotify_controller.api.SpotifyApi;
 import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
 import com.tiji.spotify_controller.ui.Icons;
@@ -71,7 +71,7 @@ public class SongListItem extends SafeAbstractWidget {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean isHovered = mouseX >= x && mouseY >= y && mouseX < x + WIDTH && mouseY < y + HEIGHT;
         if (isHovered && button == 0) {
-            ApiCalls.addSongToQueue(song.Id);
+            SpotifyApi.addSongToQueue(song.Id);
             client.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             return true;
         }

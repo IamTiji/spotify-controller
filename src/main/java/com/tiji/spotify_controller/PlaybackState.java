@@ -4,6 +4,7 @@ public class PlaybackState {
     public String progressLabel = "00:00";
     public boolean isPlaying = false;
     public double progressValue = 0;
+    public int progress = 0;
 
     public String repeat = "off";
     public boolean shuffle = false;

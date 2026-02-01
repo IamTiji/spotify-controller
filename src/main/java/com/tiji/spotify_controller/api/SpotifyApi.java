@@ -4,24 +4,36 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.WebGuideServer;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 
-public class ApiCalls {
-    private static final HttpClient client = HttpClient.newHttpClient();
+import java.net.URLEncoder;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
+public class SpotifyApi {
+    private static final ApiHandler API = new ApiHandler() {
+        @Override
+        protected void call(String endpoint,
+                                   Map<String, String> headers,
+                                   String ContentType,
+                                   Consumer<HttpResponse<String>> onSuccess,
+                                   String method,
+                                   String requestBody) {
+            API.call(endpoint, headers, ContentType, onSuccess, result -> {
+                JsonObject errorData = new Gson().fromJson(result.body(), JsonObject.class);
+
+                if (!handleError(errorData)) {
+                    Main.LOGGER.error("Error response: {}", errorData);
+                }
+            }, method, requestBody);
+        }
+    };
+    
     private static final List<String> REQUIRED_SCOPES = List.of(
             "user-read-playback-state",
             "user-modify-playback-state",
@@ -32,7 +44,7 @@ public class ApiCalls {
     );
 
     public static void convertAccessToken(String accessToken) {
-        call("https://accounts.spotify.com/api/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:25566/callback&code=" + accessToken,
+        API.call("https://accounts.spotify.com/api/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:25566/callback&code=" + accessToken,
                 getAuthorizationHeader(),
                 "application/x-www-form-urlencoded",
                 body -> {
@@ -61,7 +73,7 @@ public class ApiCalls {
     }
 
     public static void refreshAccessToken() {
-        call("https://accounts.spotify.com/api/token?grant_type=refresh_token&refresh_token=" + Main.CONFIG.refreshToken(),
+        API.call("https://accounts.spotify.com/api/token?grant_type=refresh_token&refresh_token=" + Main.CONFIG.refreshToken(),
                 getAuthorizationHeader(),
                 "application/x-www-form-urlencoded",
                 body -> {
@@ -82,22 +94,25 @@ public class ApiCalls {
                     getSubscription();
                 }, "POST");
     }
+
     public static void getNowPlayingTrack(Consumer<JsonObject> callback) {
-        call("https://api.spotify.com/v1/me/player",
+        API.call("https://api.spotify.com/v1/me/player",
                 getAuthorizationCode(),
                 null,
                 body -> callback.accept(new Gson().fromJson(body.body(), JsonObject.class)),
                 "GET"
         );
     }
+
     public static void setPlaybackLoc(int position_ms) {
-        call("https://api.spotify.com/v1/me/player/seek?position_ms=" + position_ms,
+        API.call("https://api.spotify.com/v1/me/player/seek?position_ms=" + position_ms,
                 getAuthorizationCode(),
                 null,
                 body -> {},
                 "PUT"
         );
     }
+
     public static void playPause(boolean state) {
         String uri;
         if (state) {
@@ -105,52 +120,58 @@ public class ApiCalls {
         }else {
             uri = "https://api.spotify.com/v1/me/player/pause";
         }
-        call(uri, getAuthorizationCode(), null, body -> {}, "PUT");
+        API.call(uri, getAuthorizationCode(), null, body -> {}, "PUT");
     }
+
     public static void nextTrack() {
         if (!Main.playbackState.canSkip) {
             Main.showNotAllowedToast();
             return;
         }
-        call("https://api.spotify.com/v1/me/player/next", getAuthorizationCode(), null, body -> {}, "POST");
+        API.call("https://api.spotify.com/v1/me/player/next", getAuthorizationCode(), null, body -> {}, "POST");
     }
+
     public static void previousTrack() {
         if (!Main.playbackState.canGoBack) {
             Main.showNotAllowedToast();
             return;
         }
-        call("https://api.spotify.com/v1/me/player/previous", getAuthorizationCode(), null, body -> {}, "POST");
+        API.call("https://api.spotify.com/v1/me/player/previous", getAuthorizationCode(), null, body -> {}, "POST");
     }
+
     public static void getUserName(Consumer<String> consumer) {
-        call("https://api.spotify.com/v1/me", getAuthorizationCode(), null, body -> {
+        API.call("https://api.spotify.com/v1/me", getAuthorizationCode(), null, body -> {
             String name = new Gson().fromJson(body.body(), JsonObject.class).get("display_name").getAsString();
             consumer.accept(name);
         }, "GET");
     }
+
     public static void getSubscription() {
-        call("https://api.spotify.com/v1/me", getAuthorizationCode(), null, body -> {
+        API.call("https://api.spotify.com/v1/me", getAuthorizationCode(), null, body -> {
             String name = new Gson().fromJson(body.body(), JsonObject.class).get("product").getAsString();
             Main.isPremium = name.equals("premium");
         }, "GET");
     }
+
     public static void setShuffle(boolean state) {
         if (!Main.playbackState.canShuffle) {
             Main.showNotAllowedToast();
             return;
         }
-        call("https://api.spotify.com/v1/me/player/shuffle?state=" + (state ? "true" : "false"),
+        API.call("https://api.spotify.com/v1/me/player/shuffle?state=" + (state ? "true" : "false"),
                 getAuthorizationCode(),
                 null,
                 body -> {},
                 "PUT"
         );
     }
+
     public static void setRepeat(String state) {
         if (!Main.playbackState.canRepeat) {
             Main.showNotAllowedToast();
             return;
         }
-        call("https://api.spotify.com/v1/me/player/repeat?state=" + state,
+        API.call("https://api.spotify.com/v1/me/player/repeat?state=" + state,
                 getAuthorizationCode(),
                 null,
                 body -> {},
@@ -171,7 +192,7 @@ public class ApiCalls {
             consumer.accept(cachedLikeStatus);
         }
 
-        call("https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId,
+        API.call("https://api.spotify.com/v1/me/tracks/contains?ids=" + trackId,
                 getAuthorizationCode(),
                 null,
                 body -> {
@@ -184,120 +205,44 @@ public class ApiCalls {
                 , "GET"
         );
     }
+
     public static void toggleLikeSong(String trackId, boolean state) {
-        call("https://api.spotify.com/v1/me/tracks?ids=" + trackId,
+        API.call("https://api.spotify.com/v1/me/tracks?ids=" + trackId,
                 getAuthorizationCode(),
                 null,
                 body -> {},
                 state ? "PUT" : "DELETE"
         );
     }
+
     public static void getSearch(String query, Consumer<JsonArray> consumer) {
-        call("https://api.spotify.com/v1/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8) + "&type=track",
+        API.call("https://api.spotify.com/v1/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8) + "&type=track",
                 getAuthorizationCode(),
                 null,
-                body -> consumer.accept(new Gson().fromJson(body.body(), JsonObject.class)
-                        .getAsJsonObject("tracks")
-                        .getAsJsonArray("items")),
+                body ->
+                        consumer.accept(new Gson().fromJson(body.body(), JsonObject.class)
+                            .getAsJsonObject("tracks")
+                            .getAsJsonArray("items")),
                 "GET"
         );
     }
+
     public static void setPlayingSong(String trackId) {
-        call("https://api.spotify.com/v1/me/player/play",
+        API.call("https://api.spotify.com/v1/me/player/play",
                 getAuthorizationCode(),
-                null,
                 body -> {},
                 "PUT",
                 "{\"uris\": [\"spotify:track:" + trackId + "\"]}"
         );
     }
-    public static void addSongToQueue(String trackId){
-        call("https://api.spotify.com/v1/me/player/queue?uri=spotify:track:" + trackId,
+
+    public static void addSongToQueue(String trackId) {
+        API.call("https://api.spotify.com/v1/me/player/queue?uri=spotify:track:" + trackId,
                 getAuthorizationCode(),
                 null,
                 body -> {},
                 "POST"
         );
-    }
-
-    private static final HashMap<String, Long> rateLimited = new HashMap<>();
-    private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method, String requestBody) {
-        if (rateLimited.containsKey(endpoint)) {
-            if (rateLimited.get(endpoint) > System.currentTimeMillis()) {
-                return; // Drop calls that will be rate-limited
-            } else {
-                rateLimited.remove(endpoint);
-            }
-        }
-
-        HttpRequest.Builder request = HttpRequest.newBuilder()
-                .uri(URI.create(endpoint))
-                .timeout(Duration.ofSeconds(10))
-                .header("Authorization", Authorization);
-        if (ContentType != null) request.header("Content-Type", ContentType);
-
-        HttpRequest.BodyPublisher publisher = HttpRequest.BodyPublishers.ofString(requestBody);
-
-        request = switch (method) {
-            case "GET" -> request.GET();
-            case "POST" -> request.POST(publisher);
-            case "PUT" -> request.PUT(publisher);
-            case "DELETE" -> request.DELETE();
-            default -> null;
-        };
-        if (request == null) throw new RuntimeException("Invalid request method");
-
-        client.sendAsync(request.build(), HttpResponse.BodyHandlers.ofString())
-        .exceptionally(e -> {
-            Main.LOGGER.error("Failed to call API: {}", e.getMessage());
-            return null;
-        })
-        .thenAccept(stringHttpResponse -> {
-            if (stringHttpResponse == null) {
-                Main.LOGGER.warn("Empty response");
-                return;
-            }
-            String responseBody = stringHttpResponse.body();
-            if (responseBody.isEmpty()) {
-                consumer.accept(null);
-                return;
-            }
-            if (stringHttpResponse.statusCode() == 429) {
-                long retryAfter = stringHttpResponse.headers().firstValueAsLong("Retry-After").orElse(Long.MAX_VALUE);
-                Main.LOGGER.error("Rate limit hit for: endpoint: {}, retryAfter: {}", endpoint, retryAfter);
-                rateLimited.put(endpoint, System.currentTimeMillis() + retryAfter * 1000);
-                return;
-            }
-            else if (stringHttpResponse.statusCode() >= 400) {
-                JsonObject error = new Gson().fromJson(responseBody, JsonObject.class);
-                if (!handleError(error)) {
-                    Main.CONFIG.resetConnection();
-                    WebGuideServer.start();
-                }
-                return;
-            }
-            consumer.accept(stringHttpResponse);
-        });
-    }
-
-    private static final List<String> handledErrors = List.of("NO_ACTIVE_DEVICE", "PREMIUM_REQUIRED");
-    private static boolean handleError(JsonObject data) {
-        if (!data.get("error").getAsJsonObject().has("reason")) return false;
-        String reason = data.get("error").getAsJsonObject().get("reason").getAsString();
-
-        if (handledErrors.contains(reason)) {
-            Minecraft.getInstance().getToastManager().addToast(
-                    new SystemToast(new SystemToast.SystemToastId(), Component.empty(), Component.translatable("api.spotify_controller.error."+reason))
-            );
-            return true;
-        } else {
-            Main.LOGGER.error("Unhandled error: {}", reason);
-            return false;
-        }
-    }
-
-    private static void call(String endpoint, String Authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method) {
-        call(endpoint, Authorization, ContentType, consumer, method, "");
     }
 
     private static String getAuthorizationHeader() {
@@ -311,5 +256,21 @@ public class ApiCalls {
 
     private static String getAuthorizationCode() {
         return "Bearer " + Main.CONFIG.authToken();
+    }
+
+    private static final List<String> handledErrors = List.of("NO_ACTIVE_DEVICE", "PREMIUM_REQUIRED");
+    protected static boolean handleError(JsonObject data) {
+        if (!data.get("error").getAsJsonObject().has("reason")) return false;
+        String reason = data.get("error").getAsJsonObject().get("reason").getAsString();
+
+        if (handledErrors.contains(reason)) {
+            Minecraft.getInstance().getToastManager().addToast(
+                    new SystemToast(new SystemToast.SystemToastId(), Component.empty(), Component.translatable("api.spotify_controller.error."+reason))
+            );
+            return true;
+        } else {
+            Main.LOGGER.error("Unhandled error: {}", reason);
+            return false;
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.api.ApiCalls;
+import com.tiji.spotify_controller.api.SpotifyApi;
 import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.util.RepeatMode;
@@ -37,7 +37,7 @@ public class NowPlayingScreen extends BaseScreen {
     private static final Map<Component, Class<? extends SecondaryBaseScreen>> SUBSCREENS = Map.of(
             subscreenText(Icons.SEARCH, "ui.spotify_controller.subscreens.search"), SearchScreen.class
     );
-    private static final int SUBSCREEN_BUTTONS_HEIGHT = 16;
+    private static final int SUBSCREEN_BUTTONS_HEIGHT = 20;
     private static Component subscreenText(Component Icon, String description) {
         return Icon.copy()
                 .append(" ")
@@ -69,7 +69,7 @@ public class NowPlayingScreen extends BaseScreen {
         shuffleButton = new BorderlessButtonWidget(
                 Icons.SHUFFLE,
                 x, y,
-                () -> ApiCalls.setShuffle(!Main.playbackState.shuffle),
+                () -> SpotifyApi.setShuffle(!Main.playbackState.shuffle),
                 true
         );
         addRenderableWidget(shuffleButton); // Shuffle
@@ -79,7 +79,7 @@ public class NowPlayingScreen extends BaseScreen {
                 new BorderlessButtonWidget(
                         Icons.PREVIOUS,
                         x, y,
-                        ApiCalls::previousTrack,
+                        SpotifyApi::previousTrack,
                         true
                 )
         ); // Previous
@@ -88,7 +88,7 @@ public class NowPlayingScreen extends BaseScreen {
         playPauseButton = new BorderlessButtonWidget(
                 Main.playbackState.isPlaying ? Icons.PAUSE : Icons.RESUME,
                 x, y,
-                () -> ApiCalls.playPause(!Main.playbackState.isPlaying),
+                () -> SpotifyApi.playPause(!Main.playbackState.isPlaying),
                 true
         );
         addRenderableWidget(playPauseButton);
@@ -98,7 +98,7 @@ public class NowPlayingScreen extends BaseScreen {
                 new BorderlessButtonWidget(
                         Icons.NEXT,
                         x, y,
-                        ApiCalls::nextTrack,
+                        SpotifyApi::nextTrack,
                         true
                 )
         ); // Next
@@ -107,7 +107,7 @@ public class NowPlayingScreen extends BaseScreen {
         repeatButton = new BorderlessButtonWidget(
                 Icons.REPEAT,
                 x, y,
-                () -> ApiCalls.setRepeat(RepeatMode.getNextMode(Main.playbackState.repeat)),
+                () -> SpotifyApi.setRepeat(RepeatMode.getNextMode(Main.playbackState.repeat)),
                 true
         );
         addRenderableWidget(repeatButton); // Repeat
@@ -116,7 +116,7 @@ public class NowPlayingScreen extends BaseScreen {
         progressBar = new ProgressWidget(
                 MARGIN + widgetsOffset, (int) (MARGIN * 1.5 + IMAGE_SIZE), PLAYBACK_SIZE,
                 (float) Main.playbackState.progressValue,
-                (v) -> ApiCalls.setPlaybackLoc((int) (Main.currentlyPlaying.duration * v))
+                (v) -> SpotifyApi.setPlaybackLoc((int) (Main.currentlyPlaying.duration * v))
         );
         addRenderableWidget(progressBar);
 

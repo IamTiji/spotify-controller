@@ -3,7 +3,7 @@ package com.tiji.spotify_controller;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.tiji.spotify_controller.api.ApiCalls;
+import com.tiji.spotify_controller.api.SpotifyApi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -99,7 +99,7 @@ public class WebGuideServer {
             os.write(response.getBytes());
             os.close();
 
-            ApiCalls.convertAccessToken(Code);
+            SpotifyApi.convertAccessToken(Code);
 
             Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(null));
 

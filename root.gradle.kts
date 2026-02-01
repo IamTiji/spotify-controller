@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.psi.addRemoveModifier.removeModifier
+
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -71,6 +73,12 @@ dependencies {
 
 loom {
     accessWidenerPath = file("src/main/resources/.accesswidener")
+
+    runs { clear() } // This loom config is only for IDE autocomplete
+}
+
+tasks.build {
+    throw UnsupportedOperationException("Root project cannot be built; use build in subproject or use buildAll")
 }
 
 val versions = listOf(

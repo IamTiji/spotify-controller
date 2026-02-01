@@ -3,7 +3,7 @@ package com.tiji.spotify_controller.ui;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.SpotifyControllerConfig;
 import com.tiji.spotify_controller.WebGuideServer;
-import com.tiji.spotify_controller.api.ApiCalls;
+import com.tiji.spotify_controller.api.SpotifyApi;
 import com.tiji.spotify_controller.widgets.BorderedButtonWidget;
 import com.tiji.spotify_controller.widgets.LabelWidget;
 import com.tiji.spotify_controller.widgets.ValueHolder;
@@ -47,7 +47,7 @@ public class ConfigScreen extends BaseScreen {
 
         this.parent = parent;
         if (!Main.isNotSetup()) {
-            ApiCalls.getUserName(name -> {
+            SpotifyApi.getUserName(name -> {
                 userName = name;
                 if (userNameWidget != null) {
                     userNameWidget.setText(Component.translatable("ui.spotify_controller.status.setup", userName));
