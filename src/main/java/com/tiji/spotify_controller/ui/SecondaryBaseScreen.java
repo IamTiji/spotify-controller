@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import org.jetbrains.annotations.NotNull;
 
 public class SecondaryBaseScreen extends BaseScreen {
     private static final int IMAGE_SIZE = 30;
@@ -21,6 +22,13 @@ public class SecondaryBaseScreen extends BaseScreen {
 
     public SecondaryBaseScreen() {
         super(false);
+    }
+
+    @Override
+    protected void clearWidgets() {
+        super.clearWidgets();
+
+        drawables.clear();
     }
 
     @Override
@@ -63,7 +71,9 @@ public class SecondaryBaseScreen extends BaseScreen {
     }
 
     @Override
-    protected <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T drawableElement) {
-        return drawables.add(drawableElement) ? drawableElement : null;
+    protected <T extends GuiEventListener & Renderable & NarratableEntry> @NotNull T addRenderableWidget(T drawableElement) {
+        super.addWidget(drawableElement);
+        drawables.add(drawableElement);
+        return drawableElement;
     }
 }
