@@ -60,7 +60,7 @@ public class ApiHandler {
 
         HttpRequest.Builder request = HttpRequest.newBuilder()
                 .uri(URI.create(endpoint))
-                .timeout(Duration.ofSeconds(10))
+                .timeout(Duration.ofSeconds(30))
                 .header("User-Agent", userAgent);
 
         for (Map.Entry<String, String> header : headers.entrySet()) {
