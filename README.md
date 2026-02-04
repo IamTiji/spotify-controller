@@ -4,13 +4,12 @@
 
 Spotify in Minecraft
 
-Requires [LibGui](https://github.com/CottonMC/LibGui/releases)
-
 ## How to set up
 
 Follow [official wiki on creating app](https://developer.spotify.com/documentation/web-api/concepts/apps). Set `Redirect URI` to `http://127.0.0.1:25566/callback`.
-Press Z to start setting up. On the bottom of the page, there are input for Client ID and Client Secret. Paste Client ID and Client Secret you got from creating app
-into input. Sign in normally. After this, you may press Z again to control your playback.
+Press Z to start setting up. On the bottom of the page, there are input for Client ID and Client Secret. 
+Paste Client ID and Client Secret you got from creating app into input. Sign in normally. After this, you 
+may press Z again to control your playback.
 
 ## License
 
@@ -19,3 +18,17 @@ The project code and asset has different license.
 Code is licensed under [`CC-BY-SA-NC 4.0 International`](LICENSE_CODE)
 
 Image assets is licensed under [`CC-BY 4.0 International`](LICENSE_ASSETS)
+
+## Editing the source code
+
+Unlike normal Gradle environment, `gradle build` is disabled. Use `gradle buildAll`
+or use `gradle :<version>:build`.
+
+This project currently has:
+ - 1.21.1
+ - 1.21.3
+ - 1.21.4
+ - 1.21.5
+ - 1.21.8
+ - 1.21.9
+ - 1.21.11
