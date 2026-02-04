@@ -43,4 +43,8 @@ public class Lyrics {
 
         return new Lyrics(List.of(lines), Collections.nCopies(lines.length, 0));
     }
+
+    public static Lyrics empty() {
+        return new Lyrics(List.of(), List.of());
+    }
 }

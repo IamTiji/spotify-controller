@@ -111,6 +111,15 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
         }
     }
 
+    public void checkHeight() {
+        synchronized (widgets) {
+            contentHeight = 0;
+            widgets.forEach(widget -> {
+                contentHeight = Math.max(contentHeight, widget.getHeight() + widget.getY());
+            });
+        }
+    }
+
     public void clearWidgets() {
         synchronized (widgets) {
             widgets.clear();

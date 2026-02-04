@@ -3,20 +3,37 @@ package com.tiji.spotify_controller.ui;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.LRCLibApi;
 import com.tiji.spotify_controller.api.Lyrics;
+import com.tiji.spotify_controller.widgets.LyricWidget;
+import com.tiji.spotify_controller.widgets.ScrollableArea;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class LyricScreen extends SecondaryBaseScreen {
-    private Lyrics lyric;
+    private boolean isLoading = true;
     private String failedMessage;
 
     private static final int MARGIN = 8;
-    private static final int LYRIC_MARGIN = 2;
+    private static final int WIDTH = 300;
+
+    private LyricWidget lyricWidget;
+    private ScrollableArea scrollableArea;
 
     public LyricScreen() {
         super();
 
-        LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> lyric = lyrics, error -> failedMessage = error);
+        LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
+            isLoading = false;
+            lyricWidget.setLyric(lyrics);
+            scrollableArea.checkHeight();
+        }, error -> failedMessage = error);
+    }
+
+    @Override
+    public void init() {
+        scrollableArea = new ScrollableArea(MARGIN, MARGIN, WIDTH, height - MARGIN*2 - INFO_HEIGHT);
+        lyricWidget = new LyricWidget(Lyrics.empty(), 0, 0, WIDTH);
+        scrollableArea.addWidget(lyricWidget);
+        addRenderableWidget(scrollableArea);
     }
 
     @Override
@@ -28,19 +45,10 @@ public class LyricScreen extends SecondaryBaseScreen {
             context.drawString(font, Component.literal(failedMessage), MARGIN, MARGIN*2 + font.lineHeight*2, 0xFFFFFFFF, false);
 
             return;
-        } else if (lyric == null) {
+        } else if (isLoading) {
             bigText(context, "ui.spotify_controller.loading");
 
             return;
-        }
-
-        int y = MARGIN;
-        boolean isPast = false;
-        for (int i = 0; i < lyric.lines.size(); i++) {
-            if (lyric.timestamps.get(i) >= Main.playbackState.progress) isPast = true;
-
-            context.drawString(font, lyric.lines.get(i), MARGIN, y, isPast ? 0x77FFFFFF : 0xFFFFFFFF, false);
-            y += font.lineHeight + LYRIC_MARGIN;
         }
     }
 
