@@ -88,36 +88,7 @@ tasks.jar {
 }
 
 loom {
-    runConfigs.configureEach {
-        property("com.tiji.development", "true")
-
-        var gitState: String
-
-        try {
-            val gitStatus = git("status", "--porcelain=v2", "--branch")
-
-            val branch = gitStatus.lines()
-                .filter { it.startsWith("# branch.head") }[0].substring("# branch.head ".length)
-            val ab = gitStatus.lines()
-                .filter { it.startsWith("# branch.ab") }[0] == "# branch.ab +0 -0"
-            val latestCommit = git("log", "--pretty=format:%h", "-1")
-
-            gitState = "$branch@$latestCommit${if (ab) "" else "*"}"
-        } catch (e: Exception) {
-            logger.error("Failed to get Git information: $e")
-            gitState = "unknown"
-        }
-
-        property("com.tiji.git_state", gitState)
-    }
-
     runs {
         findByName("server")?.let { remove(it) }
     }
-}
-
-fun git(vararg command: String): String {
-    return providers.exec {
-        commandLine("git", *command)
-    }.standardOutput.asText.get().trim()
 }

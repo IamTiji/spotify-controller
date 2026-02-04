@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.psi.addRemoveModifier.removeModifier
-
 repositories {
     mavenCentral()
     gradlePluginPortal()

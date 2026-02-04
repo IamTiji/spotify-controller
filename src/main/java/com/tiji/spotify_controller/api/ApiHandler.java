@@ -23,16 +23,17 @@ public class ApiHandler {
 
         String devState = DevStateProvider.getDevState();
 
+        String loaderBrand = ClientBrandRetriever.getClientModName();
+
         String minecraftVersion =
-                ClientBrandRetriever.getClientModName() +
-                " " +
                 //#if MC>=12106
                 //$$ SharedConstants.getCurrentVersion().name();
                 //#else
                 SharedConstants.getCurrentVersion().getName();
                 //#endif
 
-        String ua = "Spotify Controller v%s %s(Minecraft %s) https://modrinth.com/mod/spotify-controller".formatted(version, devState, minecraftVersion);
+        String ua = "Spotify-Controller/%s (Minecraft/%s; %s; %s) +https://modrinth.com/mod/spotify-controller"
+                .formatted(version, minecraftVersion, loaderBrand, devState);
         userAgent = ua;
 
         Main.LOGGER.info("API initialized with user-agent: {}", ua);
