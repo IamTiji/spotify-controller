@@ -40,7 +40,7 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
         if (height < contentHeight) {
             context.fill(width - SCROLLBAR_WIDTH + x, y,
                     width + x, height + y,
-                    0xAAFFFFFF);
+                    0x77FFFFFF);
             context.fill(width - SCROLLBAR_WIDTH + x, scrollBarPos + y,
                     width + x, scrollBarPos + scrollBarSize + y,
                     0xFFFFFFFF);
@@ -114,9 +114,8 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
     public void checkHeight() {
         synchronized (widgets) {
             contentHeight = 0;
-            widgets.forEach(widget -> {
-                contentHeight = Math.max(contentHeight, widget.getHeight() + widget.getY());
-            });
+            widgets.forEach(widget ->
+                    contentHeight = Math.max(contentHeight, widget.getHeight() + widget.getY()));
         }
     }
 
