@@ -67,12 +67,12 @@ public class ImageDownloader {
             NativeImage image = NativeImage.read(imageStream);
             client.execute(() -> {
                 //#if MC<=12104
-                //$$ client.getTextureManager().register(id,
-                //$$             new DynamicTexture(image));
+                //$$ new DynamicTexture(image);
                 //#else
-                client.getTextureManager().register(id,
-                        new DynamicTexture(id::getPath, image));
+                DynamicTexture texture = new DynamicTexture(id::getPath, image);
                 //#endif
+
+                client.getTextureManager().register(id, texture);
 
                 latch.countDown();
             });

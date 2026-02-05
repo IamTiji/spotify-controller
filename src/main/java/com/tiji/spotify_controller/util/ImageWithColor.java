@@ -21,11 +21,13 @@ public class ImageWithColor {
         this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
         cachedColors.put(id, color);
     }
+
     public ImageWithColor(int color, ResourceLocation id) {
         this.image = id;
         this.color = color;
         this.shouldUseDarkUI = ImageColorExtractor.shouldUseDarkMode(this.color);
     }
+
     public ImageWithColor(ResourceLocation id) {
         this.image = id;
         this.color = cachedColors.getOrDefault(id, 0xffEFE4B0);
