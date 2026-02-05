@@ -6,6 +6,7 @@ repositories {
 	maven("https://maven.fabricmc.net/") { name = "Fabric" }
 	maven("https://maven.architectury.dev/") { name = "Architectury" }
 	maven("https://mvnrepository.com")
+    maven("https://maven.parchmentmc.org") { name = "Parchment" }
 }
 
 plugins {
@@ -57,9 +58,11 @@ dependencies {
 
 	modCompileOnly("com.terraformersmc:modmenu:3.0.0") // wise word from random person: don't touch it if it works
 
-    mappings(loom.officialMojangMappings())
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment(project.property("parchment_mapping"))
+    })
 	minecraft(project.property("essential.defaults.loom.minecraft")!! as String)
-
 }
 
 tasks.processResources {
