@@ -57,6 +57,6 @@ public class SongToast implements Toast {
         context.drawString(textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
         context.drawString(textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
 
-        SafeDrawer.drawImage(context, cover.image, 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT);
+        SafeDrawer.drawImage(context, cover.getImage(), 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT);
     }
 }

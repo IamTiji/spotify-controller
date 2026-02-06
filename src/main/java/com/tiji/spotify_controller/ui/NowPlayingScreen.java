@@ -149,7 +149,7 @@ public class NowPlayingScreen extends BaseScreen {
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
         SafeDrawer.drawImage(
                 context,
-                cover.image,
+                cover.getImage(),
                 MARGIN + widgetsOffset, MARGIN,
                 0, 0,
                 IMAGE_SIZE, IMAGE_SIZE

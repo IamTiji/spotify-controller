@@ -154,7 +154,7 @@ public class SongDataExtractor {
         song.duration = getMaxDuration(data);
         song.songURI = getSpotifyLink(data);
 
-        if (!song.coverImage.image.getPath().equals("ui/nothing.png")) {
+        if (!song.coverImage.getImage().getPath().equals("ui/nothing.png")) {
             //MinecraftClient.getInstance().getTextureManager().destroyTexture(SongData.coverImage);        //Deleted line as they are used on toasts. Will be re-visited (someday...)
             song.coverImage = new ImageWithColor(0xffffffff, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/nothing.png"));
         }

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import net.minecraft.resources.ResourceLocation;
 
 public class ImageWithColor {
-    public ResourceLocation image;
+    private final ResourceLocation image;
     public final int color;
     private static final HashMap<ResourceLocation, Integer> cachedColors = new HashMap<>();
     public boolean shouldUseDarkUI;
@@ -39,5 +39,10 @@ public class ImageWithColor {
                 "image=" + image +
                 ", color=" + Integer.toHexString(color) +
                 '}';
+    }
+
+    public ResourceLocation getImage() {
+        ImageUsageTracker.registerImage(image);
+        return image;
     }
 }

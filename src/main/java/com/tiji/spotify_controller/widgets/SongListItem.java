@@ -54,7 +54,7 @@ public class SongListItem extends SafeAbstractWidget {
         int imageColor = ((int) (255 - fadePos * IMAGE_FADE_OUT) * 0x00010101) | 0xFF000000;
         SafeDrawer.drawImage(
                 context,
-                song.coverImage.image,
+                song.coverImage.getImage(),
                 x, y,
                 0, 0,
                 IMAGE_SIZE, IMAGE_SIZE,

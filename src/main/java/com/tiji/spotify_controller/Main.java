@@ -6,6 +6,7 @@ import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
 import com.tiji.spotify_controller.ui.NowPlayingScreen;
 import com.tiji.spotify_controller.ui.SetupScreen;
+import com.tiji.spotify_controller.util.ImageUsageTracker;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -80,6 +81,7 @@ public class Main implements ClientModInitializer {
 				}
 			}
 			if (!isNotSetup() && tickCount % 10 == 0){
+                ImageUsageTracker.runGC();
 				if (nowPlayingScreen != null) {
 					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
 						nowPlayingScreen.updateCoverImage();

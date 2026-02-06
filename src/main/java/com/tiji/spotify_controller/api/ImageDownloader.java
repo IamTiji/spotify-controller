@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.ImageWithColor;
-import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
@@ -145,5 +144,9 @@ public class ImageDownloader {
                 // They are mostly not from IO
             }
         }
+    }
+
+    public static void removeFromCache(ResourceLocation id) {
+        loadedCover.remove(id);
     }
 }
