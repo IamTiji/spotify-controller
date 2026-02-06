@@ -27,7 +27,7 @@ public class Main implements ClientModInitializer {
 	public static final String            MOD_ID    = "spotify_controller";
 	public static final Logger            LOGGER    = LoggerFactory.getLogger(MOD_ID);
 	public static SpotifyControllerConfig CONFIG    = new SpotifyControllerConfig();
-	private static final KeyMapping       SETUP_KEY =
+	public static final KeyMapping        SETUP_KEY =
 			//#if MC<=12108
 			new KeyMapping("key.spotify_controller.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
 			//#else

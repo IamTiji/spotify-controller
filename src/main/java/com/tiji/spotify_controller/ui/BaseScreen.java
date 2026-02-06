@@ -64,4 +64,16 @@ public class BaseScreen extends Screen {
     private float easeInOut(float t) {
         return t * t * (3 - 2 * t);
     }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) return true;
+
+        if (Main.SETUP_KEY.matches(keyCode, scanCode)) {
+            assert minecraft != null;
+            minecraft.setScreen(null);
+            return true;
+        }
+        return false;
+    }
 }

@@ -69,4 +69,9 @@ public class StringInputWidget extends EditBox implements ValueHolder {
     public void setValue(Object value) {
         setValue(value.toString());
     }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return isFocused();
+    }
 }
