@@ -12,7 +12,7 @@ public class LyricScreen extends SecondaryBaseScreen {
     private boolean isLoading = true;
     private String failedMessage;
 
-    private static final int MARGIN = 8;
+    private static final int MARGIN = 10;
     private static final int WIDTH = 300;
 
     private LyricWidget lyricWidget;
