@@ -44,7 +44,7 @@
   "ui.spotify_controller.subscreens.search": "Search",
   "ui.spotify_controller.subscreens.library": "Library",
   "ui.spotify_controller.subscreens.queue": "Queue",
-  "ui.spotify_controller.subscreens.lyrics": "Lyrics",
+  "ui.spotify_controller.subscreens.lyrics": "Lyrics (Beta)",
 
   "api.spotify_controller.error.NO_ACTIVE_DEVICE": "No active device: try playing via official app then try again",
   "api.spotify_controller.error.PREMIUM_REQUIRED": "Premium required: Spotify has disabled this feature for free accounts"

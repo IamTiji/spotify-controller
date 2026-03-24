@@ -32,7 +32,7 @@
   "ui.spotify_controller.subscreens.search": "검색",
   "ui.spotify_controller.subscreens.library": "라이브러리",
   "ui.spotify_controller.subscreens.queue": "재생될 곡들",
-  "ui.spotify_controller.subscreens.lyrics": "가사",
+  "ui.spotify_controller.subscreens.lyrics": "가사 (베타)",
   "api.spotify_controller.error.NO_ACTIVE_DEVICE": "활성화된 기기 없음: 공식 앱을 통해 재생수 다시 시도해보세요",
   "api.spotify_controller.error.PREMIUM_REQUIRED": "프리미엄 필요: 이 기능은 스포티파이가 유료 계정만 쓸수 있도록 지정되어 있습니다"
 }
