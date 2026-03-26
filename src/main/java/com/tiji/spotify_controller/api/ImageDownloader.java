@@ -66,7 +66,7 @@ public class ImageDownloader {
             NativeImage image = NativeImage.read(imageStream);
             client.execute(() -> {
                 //#if MC<=12104
-                //$$ new DynamicTexture(image);
+                //$$ DynamicTexture texture = new DynamicTexture(image);
                 //#else
                 DynamicTexture texture = new DynamicTexture(id::getPath, image);
                 //#endif
