@@ -80,4 +80,6 @@ public class SecondaryBaseScreen extends BaseScreen {
         drawables.add(drawableElement);
         return drawableElement;
     }
+
+    public void songChangeCallback() {}
 }

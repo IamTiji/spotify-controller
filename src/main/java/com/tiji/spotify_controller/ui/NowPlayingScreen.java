@@ -217,8 +217,12 @@ public class NowPlayingScreen extends BaseScreen {
         repeatButton.setLabel(RepeatMode.getAsText(Main.playbackState.repeat));
         shuffleButton.setLabel(Main.playbackState.shuffle ? Icons.SHUFFLE_ON : Icons.SHUFFLE);
     }
-    public void updateNowPlaying() {}
-    public void nothingPlaying() {}
+    public void updateNowPlaying() {
+        if (minecraft == null) return;
+        if (minecraft.screen instanceof SecondaryBaseScreen subscreen) {
+            subscreen.songChangeCallback();
+        }
+    }
     public void updateCoverImage() {}
 
     private void drawFullName(GuiGraphics context,

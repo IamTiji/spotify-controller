@@ -23,12 +23,14 @@ public class Lyrics {
 
         for (int i = 0; i < linesAndTimestamps.length; i++) {
             String line = linesAndTimestamps[i];
+            if (line.charAt(0) == '\uFEFF') { line = line.substring(1); } // why bom not whitespace
+            line = line.strip() + " ";
 
             int time     = Integer.parseInt(line.substring(1, 3)) * 60 * 1000;
             time        += Integer.parseInt(line.substring(4, 6)) * 1000;
             time        += Integer.parseInt(line.substring(7, 9)) * 10;
 
-            String text = line.substring(10).trim();
+            String text = line.substring(11).strip();
 
             lines[i] = text;
             timestamps[i] = time;

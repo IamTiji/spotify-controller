@@ -19,22 +19,20 @@ public class LyricScreen extends SecondaryBaseScreen {
     private LyricWidget lyricWidget;
     private ScrollableArea scrollableArea;
 
-    public LyricScreen() {
-        super();
-
-        LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
-            isLoading = false;
-            lyricWidget.setLyric(lyrics);
-            scrollableArea.checkHeight();
-        }, error -> failedMessage = error);
-    }
-
     @Override
     public void init() {
         scrollableArea = new ScrollableArea(MARGIN, MARGIN, WIDTH, height - MARGIN*2 - INFO_HEIGHT);
         lyricWidget = new LyricWidget(Lyrics.empty(), 0, 0, WIDTH);
         scrollableArea.addWidget(lyricWidget);
         addRenderableWidget(scrollableArea);
+
+        LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
+            isLoading = false;
+            lyricWidget.setLyric(lyrics);
+            scrollableArea.clearWidgets();
+            scrollableArea.checkHeight();
+            scrollableArea.addWidget(lyricWidget);
+        }, error -> failedMessage = error);
     }
 
     @Override
@@ -44,12 +42,8 @@ public class LyricScreen extends SecondaryBaseScreen {
         if (failedMessage != null) {
             bigText(context, "ui.spotify_controller.failed");
             SafeDrawer.drawString(context, font, Component.literal(failedMessage), MARGIN, MARGIN*2 + font.lineHeight*2, 0xFFFFFFFF, false);
-
-            return;
         } else if (isLoading) {
             bigText(context, "ui.spotify_controller.loading");
-
-            return;
         }
     }
 
@@ -69,5 +63,14 @@ public class LyricScreen extends SecondaryBaseScreen {
         //#else
         context.pose().popPose();
         //#endif
+    }
+
+    @Override
+    public void songChangeCallback() {
+        LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
+            isLoading = false;
+            lyricWidget.setLyric(lyrics);
+            scrollableArea.checkHeight();
+        }, error -> failedMessage = error);
     }
 }

@@ -25,10 +25,15 @@ public class LRCLibApi {
                     JsonObject response = new Gson().fromJson(stringHttpResponse.body(), JsonObject.class);
 
                     Lyrics lyrics;
-                    if (!response.get("syncedLyrics").isJsonNull()) {
-                        lyrics = Lyrics.synced(response.get("syncedLyrics").getAsString());
-                    } else {
-                        lyrics = Lyrics.plain(response.get("plainLyrics").getAsString());
+                    try {
+                        if (!response.get("syncedLyrics").isJsonNull()) {
+                            lyrics = Lyrics.synced(response.get("syncedLyrics").getAsString());
+                        } else {
+                            lyrics = Lyrics.plain(response.get("plainLyrics").getAsString());
+                        }
+                    } catch (Exception e) {
+                        onFail.accept("Failed to parse lyrics: " + e.getMessage());
+                        return;
                     }
 
                     callback.accept(lyrics);
