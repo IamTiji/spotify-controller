@@ -35,7 +35,7 @@ loom {
 		}
 	}
 
-    accessWidenerPath.set(file("../../src/main/resources/.accesswidener"))
+    accessWidenerPath.set(file("../../src/main/resources/old.accesswidener"))
 }
 
 sourceSets {
@@ -45,7 +45,7 @@ sourceSets {
 }
 
 tasks.processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies {
@@ -60,16 +60,39 @@ dependencies {
 
     mappings(loom.layered {
         officialMojangMappings()
-        parchment(project.property("parchment_mapping"))
+        parchment(project.property("parchment_mapping")!!)
     })
 	minecraft(project.property("essential.defaults.loom.minecraft")!! as String)
 }
 
 tasks.processResources {
-    inputs.property("version", project.property("version") as String)
-    filesMatching("fabric.mod.json") {
-        expand("version" to project.property("version") as String)
+    filesMatching("**/fabric.mod.json") {
+        var mcVersionRange = StringBuilder()
+        val rawVer = project.property("minecraft_version") as String
+        if (rawVer.contains("-")) {
+            val left = rawVer.substringBefore("-")
+            val right = rawVer.substringAfter("-")
+
+            mcVersionRange.append(">=")
+                .append(left)
+                .append(" <=")
+                .append(right)
+        } else {
+            mcVersionRange.append("=")
+                .append(rawVer)
+        }
+
+        expand(
+            "version" to (project.property("mod_version") as String),
+            "accesswidener" to "old.accesswidener",
+            "keybindingName" to "fabric-key-binding-api-v1",
+            "mc" to mcVersionRange
+        )
     }
+}
+
+tasks.matching { it.name == "preprocessResources"} .configureEach {
+    onlyIf { false } // nothing is done, and somehow causes crash so its disabled
 }
 
 java {

@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.ui;
 
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.TextUtils;
 import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
 import net.minecraft.Util;
@@ -29,17 +30,17 @@ public class SetupScreen extends BaseScreen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        super.safeRender(context, mouseX, mouseY, delta);
 
-        context.drawString(font, Component.translatable("ui.spotify_controller.welcome"), MARGIN + widgetsOffset, MARGIN, 0xFFFFFFFF, false);
+        SafeDrawer.drawString(context, font, Component.translatable("ui.spotify_controller.welcome"), MARGIN + widgetsOffset, MARGIN, 0xFFFFFFFF, false);
 
         String rawText = I18n.get("ui.spotify_controller.welcome.subtext");
         String[] warpedText = TextUtils.warpText(rawText, 200);
         int y = MARGIN*2 + font.lineHeight;
 
         for (String line : warpedText) {
-            context.drawString(font, line, MARGIN + widgetsOffset, y, 0xFFFFFFFF, false);
+            SafeDrawer.drawString(context, font, line, MARGIN + widgetsOffset, y, 0xFFFFFFFF, false);
             y += font.lineHeight;
         }
     }

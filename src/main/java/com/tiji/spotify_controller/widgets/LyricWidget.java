@@ -2,6 +2,7 @@ package com.tiji.spotify_controller.widgets;
 
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.Lyrics;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -34,11 +35,8 @@ public class LyricWidget extends SafeAbstractWidget {
         for (int i = 0; i < lyric.lines.size(); i++) {
             if (lyric.timestamps.get(i) >= Main.playbackState.progress) isPast = true;
 
-            context.drawString(font, lyric.lines.get(i), getX(), y, isPast ? 0x77FFFFFF : 0xFFFFFFFF, false);
+            SafeDrawer.drawString(context, font, lyric.lines.get(i), getX(), y, isPast ? 0x77FFFFFF : 0xFFFFFFFF, false);
             y += font.lineHeight + LYRIC_MARGIN;
         }
     }
-
-    @Override
-    public void onClick(double d, double e) {} // Override default behavior so that it doesn't make silly clicking noise
 }

@@ -3,6 +3,7 @@ package com.tiji.spotify_controller.ui;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.LRCLibApi;
 import com.tiji.spotify_controller.api.Lyrics;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.widgets.LyricWidget;
 import com.tiji.spotify_controller.widgets.ScrollableArea;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,12 +38,12 @@ public class LyricScreen extends SecondaryBaseScreen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        super.safeRender(context, mouseX, mouseY, delta);
 
         if (failedMessage != null) {
             bigText(context, "ui.spotify_controller.failed");
-            context.drawString(font, Component.literal(failedMessage), MARGIN, MARGIN*2 + font.lineHeight*2, 0xFFFFFFFF, false);
+            SafeDrawer.drawString(context, font, Component.literal(failedMessage), MARGIN, MARGIN*2 + font.lineHeight*2, 0xFFFFFFFF, false);
 
             return;
         } else if (isLoading) {
@@ -61,7 +62,7 @@ public class LyricScreen extends SecondaryBaseScreen {
         context.pose().scale(2, 2, 2);
         //#endif
 
-        context.drawString(font, Component.translatable(text), MARGIN / 2, MARGIN / 2, 0xFFFFFFFF, false);
+        SafeDrawer.drawString(context, font, Component.translatable(text), MARGIN / 2, MARGIN / 2, 0xFFFFFFFF, false);
 
         //#if MC>=12106
         //$$ context.pose().popMatrix();

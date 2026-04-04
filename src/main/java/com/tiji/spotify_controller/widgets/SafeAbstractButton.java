@@ -4,6 +4,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.network.chat.Component;
 
+//#if MC>=12109
+//$$ import net.minecraft.client.input.InputWithModifiers;
+//#endif
+
 public abstract class SafeAbstractButton extends AbstractButton {
     public SafeAbstractButton(int i, int j, int k, int l, Component component) {
         super(i, j, k, l, component);
@@ -17,4 +21,11 @@ public abstract class SafeAbstractButton extends AbstractButton {
     protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         safeRender(guiGraphics, i, j, f);
     }
+
+    //#if MC>=12109
+    //$$ @Override
+    //$$ public void onPress(InputWithModifiers input) {
+    //$$     onPress();
+    //$$ }
+    //#endif
 }

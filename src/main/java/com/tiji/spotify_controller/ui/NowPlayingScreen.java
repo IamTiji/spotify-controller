@@ -142,8 +142,8 @@ public class NowPlayingScreen extends BaseScreen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        super.safeRender(context, mouseX, mouseY, delta);
 
         // Playback info
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
@@ -167,13 +167,15 @@ public class NowPlayingScreen extends BaseScreen {
                 IMAGE_SIZE + MARGIN*2 + 2 + widgetsOffset, 0,
                 PLAYBACK_SIZE + widgetsOffset, height
         );
-        context.drawString(
+        SafeDrawer.drawString(
+                context,
                 font,
                 title,
                 nextX, MARGIN + TITLE_Y,
                 0xFFFFFFFF, false
         ); // title
-        context.drawString(
+        SafeDrawer.drawString(
+                context,
                 font,
                 artist,
                 nextX, MARGIN + ARTIST_Y,
@@ -182,7 +184,8 @@ public class NowPlayingScreen extends BaseScreen {
         context.disableScissor();
 
         // Text for progress bar
-        context.drawString(
+        SafeDrawer.drawString(
+                context,
                 font,
                 Component.nullToEmpty(Main.playbackState.progressLabel),
                 MARGIN + widgetsOffset,
@@ -190,7 +193,8 @@ public class NowPlayingScreen extends BaseScreen {
                 0xFFFFFFFF, false
         ); // progress label
 
-        context.drawString(
+        SafeDrawer.drawString(
+                context,
                 font,
                 Component.nullToEmpty(Main.currentlyPlaying.durationLabel),
                 MARGIN + widgetsOffset + PLAYBACK_SIZE - font.width(Component.nullToEmpty(Main.currentlyPlaying.durationLabel)) + 1,

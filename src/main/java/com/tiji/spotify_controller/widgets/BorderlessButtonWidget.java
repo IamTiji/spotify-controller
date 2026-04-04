@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.widgets;
 
+import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -33,7 +34,7 @@ public class BorderlessButtonWidget extends SafeAbstractButton {
 
     @Override
     public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        context.drawString(client.font, label, getX(), getY() + LABEL_OFFSET, isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR, false);
+        SafeDrawer.drawString(context, client.font, label, getX(), getY() + LABEL_OFFSET, isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR, false);
     }
 
     @Override

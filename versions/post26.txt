@@ -1,0 +1,4 @@
+net.minecraft.client.gui.GuiGraphicsExtractor net.minecraft.client.gui.GuiGraphics
+net.minecraft.resources.Identifier net.minecraft.resources.ResourceLocation
+net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+net.minecraft.util.Util net.minecraft.Util

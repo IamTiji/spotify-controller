@@ -54,8 +54,13 @@ public class Main implements ClientModInitializer {
             }
         );
 
-		CONFIG = SpotifyControllerConfig.generate();
-		KeyBindingHelper.registerKeyBinding(SETUP_KEY);
+        CONFIG = SpotifyControllerConfig.generate();
+		KeyBindingHelper
+                //#if MC<=12111
+                .registerKeyBinding(SETUP_KEY);
+                //#else
+                //$$ .registerKeyMapping(SETUP_KEY);
+                //#endif
 		ImageDownloader.startThreads();
 
 		if (isNotSetup()) {

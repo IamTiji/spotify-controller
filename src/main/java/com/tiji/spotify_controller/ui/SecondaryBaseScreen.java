@@ -32,8 +32,8 @@ public class SecondaryBaseScreen extends BaseScreen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        super.safeRender(context, mouseX, mouseY, delta);
 
         // Playback info
         ImageWithColor cover = Main.currentlyPlaying.coverImage;
@@ -46,13 +46,13 @@ public class SecondaryBaseScreen extends BaseScreen {
         );
         int nextX = (int) (MARGIN*1.5 + widgetsOffset + IMAGE_SIZE + 3);
 
-        context.drawString(
+        SafeDrawer.drawString(context, 
                 font,
                 Main.currentlyPlaying.title,
                 nextX, height - (MARGIN + TITLE_Y),
                 0xFFFFFFFF, false
         ); // title
-        context.drawString(
+        SafeDrawer.drawString(context, 
                 font,
                 Main.currentlyPlaying.artist,
                 nextX, height - (MARGIN + ARTIST_Y),
@@ -60,7 +60,11 @@ public class SecondaryBaseScreen extends BaseScreen {
         ); // artist
 
         context.enableScissor(0, 0, width, height - INFO_HEIGHT);
+        //#if MC<26100
         drawables.forEach(drawable -> drawable.render(context, mouseX, mouseY, delta));
+        //#else
+        //$$ drawables.forEach(drawable -> drawable.extractRenderState(context, mouseX, mouseY, delta));
+        //#endif
         context.disableScissor();
     }
 

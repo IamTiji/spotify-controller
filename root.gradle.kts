@@ -1,7 +1,7 @@
 repositories {
     mavenCentral()
     gradlePluginPortal()
-    maven("https://server.bbkr.space/artifactory/libs-release")
+    maven("https://repo.essential.gg/repository/maven-public")
     maven("https://maven.terraformersmc.com/")
     maven("https://maven.fabricmc.net/") { name = "Fabric" }
     maven("https://maven.architectury.dev/") { name = "Architectury" }
@@ -14,7 +14,7 @@ plugins {
     // Advanced users may use multiple (potentially independent) multi-version trees in different sub-projects.
     // This is currently equivalent to applying `com.replaymod.preprocess-root`.
 
-    id("gg.essential.multi-version.root") version "0.6.2"
+    id("gg.essential.multi-version.root") version "0.7.0-alpha.4"
     id("gg.essential.loom") version "1.7.35"
 }
 
@@ -25,7 +25,6 @@ preprocess {
     // The mappings value is currently meaningless.
 
     // Unique versions: 1.21.1, 1.21.3, 1.21.4, 1.21.5, 1.21.7, 1.21.9
-    // TODO: Work on new versions like 1.21.9, 1.21.11
 
     val fabric12101 = createNode("1.21.1-fabric", 12101, "yarn")
     //val fabric12102 = createNode("1.21.2-fabric", 12102, "yarn") // hotfixed version
@@ -37,6 +36,7 @@ preprocess {
     val fabric12108 = createNode("1.21.8-fabric", 12108, "yarn")
     val fabric12109 = createNode("1.21.9-fabric", 12109, "yarn")
     val fabric12111 = createNode("1.21.11-fabric", 12111, "yarn")
+    val fabric26100 = createNode("26.1-fabric", 26100, "yarn")
 
     // And then you need to tell the preprocessor which versions it should directly convert between.
     // This should form a directed graph with no cycles (i.e. a tree), which the preprocessor will then traverse to
@@ -52,6 +52,7 @@ preprocess {
     fabric12108.link(fabric12105)
     fabric12109.link(fabric12108)
     fabric12111.link(fabric12109)
+    fabric26100.link(fabric12111, file("versions/post26.txt"))
 }
 
 dependencies {
@@ -69,12 +70,12 @@ dependencies {
     minecraft("com.mojang:minecraft:${project.property("essential.defaults.loom.minecraft")!! as String}")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment(project.property("parchment_mapping"))
+        parchment(project.property("parchment_mapping")!!)
     })
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/.accesswidener")
+    accessWidenerPath = file("src/main/resources/old.accesswidener")
 
     runs { clear() } // This loom config is only for IDE autocomplete
 }
@@ -90,7 +91,8 @@ val versions = listOf(
     "1.21.5-fabric",
     "1.21.8-fabric",
     "1.21.9-fabric",
-    "1.21.11-fabric"
+    "1.21.11-fabric",
+    "26.1-fabric"
 )
 
 tasks.register("buildAll") {

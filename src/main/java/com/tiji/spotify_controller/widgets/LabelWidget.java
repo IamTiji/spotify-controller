@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.widgets;
 
+import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,51 +13,20 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import java.util.function.Consumer;
 
-public class LabelWidget implements Renderable, GuiEventListener, NarratableEntry, LayoutElement {
-    private int x, y;
+public class LabelWidget extends SafeAbstractWidget {
     private Component text;
 
     public LabelWidget(int x, int y, Component text) {
-        this.x = x;
-        this.y = y;
+        super(x, y,
+                Minecraft.getInstance().font.width(text),
+                Minecraft.getInstance().font.lineHeight,
+                text);
         this.text = text;
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        context.drawString(Minecraft.getInstance().font, text, x, y, 0xFFFFFFFF, false);
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    @Override
-    public int getWidth() {
-        return 0;
-    }
-
-    @Override
-    public int getHeight() {
-        return 0;
-    }
-
-    @Override
-    public void visitWidgets(Consumer<AbstractWidget> consumer) {}
-
-    @Override
-    public void setFocused(boolean focused) {}
-
-    public void setY(int y) {
-        this.y = y;
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        SafeDrawer.drawString(context, Minecraft.getInstance().font, text, getX(), getY(), 0xFFFFFFFF, false);
     }
 
     public Component getText() {
@@ -67,22 +37,11 @@ public class LabelWidget implements Renderable, GuiEventListener, NarratableEntr
         this.text = text;
     }
 
-
-    @Override
-    public boolean isFocused() {
-        return false;
-    }
-
-    @Override
-    public ScreenRectangle getRectangle() {
-        return GuiEventListener.super.getRectangle();
-    }
-
     @Override
     public NarrationPriority narrationPriority() {
         return NarrationPriority.NONE;
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput builder) {}
+    public void updateWidgetNarration(NarrationElementOutput builder) {}
 }

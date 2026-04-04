@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.widgets;
 
+import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -41,7 +42,7 @@ public class BooleanToggleWidget extends SafeAbstractWidget implements ValueHold
         if (isHovered(mouseX, mouseY))
             text = text.copy().withStyle(ChatFormatting.UNDERLINE);
 
-        context.drawString(textRenderer, text, getX(), getY() + yOffset, 0xFFFFFFFF, false);
+        SafeDrawer.drawString(context, textRenderer, text, getX(), getY() + yOffset, 0xFFFFFFFF, false);
     }
 
     @Override

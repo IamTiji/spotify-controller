@@ -1,9 +1,16 @@
 package com.tiji.spotify_controller.util;
 
+//#if MC>=12107
+//$$ import net.minecraft.client.renderer.RenderPipelines;
+//#else
+import net.minecraft.client.renderer.RenderType;
+//#endif
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.Font;
 
 public class SafeDrawer {
     public static void drawImage(GuiGraphics context,
@@ -21,7 +28,7 @@ public class SafeDrawer {
         //#if MC>=12102
         context.blit(
                 //#if MC>=12107
-                //$$ net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED,
+                //$$ RenderPipelines.GUI_TEXTURED,
                 //#else
                 RenderType::guiTextured,
                 //#endif
@@ -56,7 +63,7 @@ public class SafeDrawer {
         //#if MC>=12102
         context.blit(
                 //#if MC>=12106
-                //$$ net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED,
+                //$$ RenderPipelines.GUI_TEXTURED,
                 //#else
                 RenderType::guiTextured,
                 //#endif
@@ -115,8 +122,42 @@ public class SafeDrawer {
                                    int color) {
         //#if MC<=12108
         context.renderOutline(x, y, w, h, color);
-        //#else
+        //#elseif MC<=12111
         //$$ context.submitOutline(x, y, w, h, color);
+        //#else
+        //$$ context.outline(x, y, w, h, color);
+        //#endif
+    }
+
+    public static void drawString(GuiGraphics context,
+                                  Font font,
+                                  Component text,
+                                  int x, int y,
+                                  int color, boolean shadow) {
+        //#if MC<=12111
+        context.drawString(font, text, x, y, color, shadow);
+        //#else
+        //$$ context.text(font, text, x, y, color, shadow);
+        //#endif
+    }
+
+    public static void drawString(GuiGraphics context,
+                                  Font font,
+                                  String text,
+                                  int x, int y,
+                                  int color, boolean shadow) {
+        //#if MC<=12111
+        context.drawString(font, text, x, y, color, shadow);
+        //#else
+        //$$ context.text(font, text, x, y, color, shadow);
+        //#endif
+    }
+
+    public static void vLine(GuiGraphics context, int x, int y, int height, int color) {
+        //#if MC<=12111
+        context.vLine(x, y, height, color);
+        //#else
+        //$$ context.verticalLine(x, y, height, color);
         //#endif
     }
 }

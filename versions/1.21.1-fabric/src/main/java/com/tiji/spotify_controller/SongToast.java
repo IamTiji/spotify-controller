@@ -1,6 +1,7 @@
 package com.tiji.spotify_controller;
 
 import com.tiji.spotify_controller.util.ImageWithColor;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -38,16 +39,20 @@ public class SongToast implements Toast {
     public Visibility render(GuiGraphics context, ToastComponent manager, long timePast) {
         Font textRenderer = Minecraft.getInstance().font;
 
-        context.fill(0, 0, TOAST_WIDTH, TOAST_HEIGHT, cover.color);
+        context.fill(0, 0, TOAST_WIDTH, TOAST_HEIGHT, fixIncapableColor(cover.color));
 
         int labelColor = cover.shouldUseDarkUI ? CommonColors.WHITE : CommonColors.BLACK;
-        context.drawString(textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
-        context.drawString(textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
+        SafeDrawer.drawString(context, textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
+        SafeDrawer.drawString(context, textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
 
-        context.blit(cover.image, 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT, IMAGE_WIDTH, TOAST_HEIGHT);
+        context.blit(cover.getImage(), 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT, IMAGE_WIDTH, TOAST_HEIGHT);
 
         return DISPLAY_DURATION_MS * manager.getNotificationDisplayTimeMultiplier() <= timePast
                 ? Visibility.HIDE
                 : Visibility.SHOW;
+    }
+
+    private static int fixIncapableColor(int color) {
+        return (color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0x000000FF) << 16);
     }
 }

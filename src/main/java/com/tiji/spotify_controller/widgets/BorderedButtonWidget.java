@@ -40,7 +40,7 @@ public class BorderedButtonWidget extends BorderlessButtonWidget {
             x += (width - labelWidth) / 2;
         }
 
-        context.drawString(client.font, label,
+        SafeDrawer.drawString(context, client.font, label,
                 x, getY() + LABEL_OFFSET + PADDING,
                 isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR,
                 false);

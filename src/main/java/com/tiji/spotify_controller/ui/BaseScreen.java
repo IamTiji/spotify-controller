@@ -10,7 +10,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class BaseScreen extends Screen {
+public class BaseScreen extends SafeAbstractScreen {
     protected float totalTime = 0f;
     protected int widgetsOffset = -100;
     protected static final int ANIMATION_AMOUNT = 100;
@@ -26,7 +26,7 @@ public class BaseScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         //#if MC<=12106
         super.renderBackground(context, mouseX, mouseY, delta);
         //#endif
@@ -58,7 +58,11 @@ public class BaseScreen extends Screen {
             }
         }
 
+        //#if MC<26100
         renderables.forEach(it -> it.render(context, mouseX, mouseY, delta));
+        //#else
+        //$$ renderables.forEach(it -> it.extractRenderState(context, mouseX, mouseY, delta));
+        //#endif
     }
 
     private float easeInOut(float t) {
@@ -66,10 +70,17 @@ public class BaseScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) return true;
+    public boolean safeKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyPressedSuper(keyCode, scanCode, modifiers)) return true;
 
-        if (Main.SETUP_KEY.matches(keyCode, scanCode)) {
+        boolean handled = Main.SETUP_KEY
+                //#if MC<=12108
+                .matches(keyCode, scanCode);
+                //#else
+                //$$ .matches(convertToKeyEvent(keyCode, scanCode, modifiers));
+                //#endif
+
+        if (handled) {
             assert minecraft != null;
             minecraft.setScreen(null);
             return true;

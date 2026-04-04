@@ -20,7 +20,12 @@ public abstract class SafeAbstractButton extends AbstractButton {
     public abstract void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta);
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+    //#if MC<=12111
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f)
+    //#else
+    //$$ protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
+    //#endif
+    {
         safeRender(guiGraphics, i, j, f);
     }
 }

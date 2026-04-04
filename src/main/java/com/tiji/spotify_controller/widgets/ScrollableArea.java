@@ -1,10 +1,8 @@
 package com.tiji.spotify_controller.widgets;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 //$$ import net.minecraft.client.input.MouseButtonEvent;
 //#endif
 
-public class ScrollableArea implements GuiEventListener, Renderable, NarratableEntry {
+public class ScrollableArea extends SafeAbstractWidget {
     private static final int SCROLLBAR_WIDTH = 4;
     private static final int SCROLL_SPEED = 25;
 
@@ -24,6 +22,7 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
     private int contentHeight;
 
     public ScrollableArea(int x, int y, int width, int height) {
+        super(x, y, width, height, Component.empty());
         this.x = x;
         this.y = y;
         this.width = width;
@@ -31,7 +30,7 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         float relativeScrollBarPos = scrollBarPos / contentHeight;
         int scrollBarSize          = (int) ((float) height / contentHeight * height);
         int scrollBarPos           = (int) ((height - scrollBarSize) * relativeScrollBarPos);
@@ -58,8 +57,8 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
         //#endif
 
         synchronized (widgets) {
-            for (Renderable widget : widgets) {
-                widget.render(context, mouseX + x, mouseY - offset - y, delta);
+            for (SafeAbstractWidget widget : widgets) {
+                widget.safeRender(context, mouseX - x, mouseY - offset - y, delta);
             }
         }
 
@@ -88,16 +87,17 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (SafeAbstractWidget widget : widgets) {
-            if (widget.mouseClicked(mouseX, mouseY - offset, button))
+            if (widget.mouseClicked(mouseX - x, mouseY - offset - y, button))
                 return true;
         }
         return false;
     }
     //#else
     //$$ @Override
-    //$$ public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubleClicked) {
+    //$$ public boolean mouseClicked(MouseButtonEvent event, boolean doubleClicked) {
+    //$$     MouseButtonEvent relativeEvent = new MouseButtonEvent(event.x() - x, event.y() - offset - y, event.buttonInfo());
     //$$     for (SafeAbstractWidget widget : widgets) {
-    //$$         if (widget.mouseClicked(mouseButtonEvent, doubleClicked))
+    //$$         if (widget.mouseClicked(relativeEvent, doubleClicked))
     //$$             return true;
     //$$     }
     //$$     return false;
@@ -132,7 +132,7 @@ public class ScrollableArea implements GuiEventListener, Renderable, NarratableE
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {}
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
 
     @Override
     public boolean isMouseOver(double x, double y) {

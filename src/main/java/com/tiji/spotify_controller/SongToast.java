@@ -50,12 +50,17 @@ public class SongToast implements Toast {
     }
 
     @Override
-    public void render(GuiGraphics context, Font textRenderer, long startTime) {
+    //#if MC<26100
+    public void render(GuiGraphics context, Font textRenderer, long startTime)
+    //#else
+    //$$ public void extractRenderState(GuiGraphicsExtractor context, Font textRenderer, long startTime)
+    //#endif
+    {
         context.fill(0, 0, TOAST_WIDTH, TOAST_HEIGHT, cover.color);
 
         int labelColor = cover.shouldUseDarkUI ? CommonColors.WHITE : CommonColors.BLACK;
-        context.drawString(textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
-        context.drawString(textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
+        SafeDrawer.drawString(context, textRenderer, title , IMAGE_WIDTH + MARGIN, TITLE_Y , labelColor, false);
+        SafeDrawer.drawString(context, textRenderer, artist, IMAGE_WIDTH + MARGIN, ARTIST_Y, labelColor, false);
 
         SafeDrawer.drawImage(context, cover.getImage(), 0, 0, 0, 0, IMAGE_WIDTH, TOAST_HEIGHT);
     }

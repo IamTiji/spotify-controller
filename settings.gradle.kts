@@ -8,7 +8,7 @@ pluginManagement {
 		gradlePluginPortal()
 	}
     plugins {
-        val egtVersion = "0.6.10" // should be whatever is displayed in above badge
+        val egtVersion = "0.7.0-alpha.4" // should be whatever is displayed in above badge
         id("gg.essential.multi-version.root") version egtVersion
         id("gg.essential.multi-version.api-validation") version egtVersion
     }
@@ -21,7 +21,12 @@ val versions = listOf(
     "1.21.5-fabric",
     "1.21.8-fabric",
     "1.21.9-fabric",
-    "1.21.11-fabric"
+    "1.21.11-fabric",
+    "26.1-fabric"
+)
+
+val noMappings = listOf(
+    "26.1-fabric"
 )
 
 versions.forEach { version ->
@@ -31,7 +36,8 @@ versions.forEach { version ->
         projectDir = file("versions/$version")
         // All sub-projects get configured by the same `build.gradle.kts` file, the string is relative to projectDir
         // You could use separate build files for each project, but usually that would just be duplicating lots of code
-        buildFileName = "../../build.gradle.kts"
+        buildFileName = if (noMappings.contains(version)) "../../build_new.gradle.kts" else "../../build.gradle.kts"
+
     }
 }
 

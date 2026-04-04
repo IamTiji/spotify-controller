@@ -8,6 +8,9 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+//#if MC>=12109
+//$$ import net.minecraft.client.input.KeyEvent;
+//#endif
 
 public class StringInputWidget extends EditBox implements ValueHolder {
     private final Component icon;
@@ -30,20 +33,27 @@ public class StringInputWidget extends EditBox implements ValueHolder {
     }
 
     @Override
-    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    //#if MC<26100
+    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta)
+    //#else
+    //$$ public void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta)
+    //#endif
+    {
         SafeDrawer.drawOutline(context, getX(), getY(), width, height, 0xFFFFFFFF);
 
         int y = (height - client.font.lineHeight) / 2 + getY();
-        context.drawString(client.font, icon, width - 18 + getX(), y+2, 0xFFFFFFFF, false);
+        SafeDrawer.drawString(context, client.font, icon, width - 18 + getX(), y+2, 0xFFFFFFFF, false);
 
         context.enableScissor(getX(), getY(), getX() + width - 18, getY() + height);
-        context.drawString(client.font, getValue(), getX() + 4, y+1, 0xFFFFFFFF, false);
+        SafeDrawer.drawString(context, client.font, getValue(), getX() + 4, y+1, 0xFFFFFFFF, false);
         context.disableScissor();
 
         long timePast = System.currentTimeMillis() - time;
         boolean shouldBlink = timePast % CURSOR_BLINK_DURATION < CURSOR_BLINK_DURATION / 2;
         if (shouldBlink && isFocused()) {
-            context.vLine(client.font.width(getValue()) + getX() + 4, getY() + 3, getY() + height - 5, 0xFFFFFFFF);
+            SafeDrawer.vLine(context, client.font.width(getValue().substring(0, getCursorPosition())) + getX() + 4, getY() + 3,
+                    getY() + height - 5,
+                    0xFFFFFFFF);
         }
 
         if (!didRunAction && timePast > MAX_TYPING_PAUSE) {
@@ -71,7 +81,13 @@ public class StringInputWidget extends EditBox implements ValueHolder {
     }
 
     @Override
+    //#if MC<=12108
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        super.keyPressed(keyCode, scanCode, modifiers);
+    //#else
+    //$$ public boolean keyPressed(KeyEvent event) {
+    //$$     super.keyPressed(event);
+    //#endif
         return isFocused();
     }
 }
