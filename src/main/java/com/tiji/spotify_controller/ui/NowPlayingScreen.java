@@ -8,7 +8,6 @@ import com.tiji.spotify_controller.util.RepeatMode;
 import com.tiji.spotify_controller.util.TextUtils;
 import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
 import com.tiji.spotify_controller.widgets.ProgressWidget;
-import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -32,8 +31,6 @@ public class NowPlayingScreen extends BaseScreen {
     private BorderlessButtonWidget repeatButton;
     private BorderlessButtonWidget shuffleButton;
 
-    private boolean isFirstInit = true;
-
     private static final Map<Component, Class<? extends SecondaryBaseScreen>> SUBSCREENS = Map.of(
             subscreenText(Icons.SEARCH, "ui.spotify_controller.subscreens.search"), SearchScreen.class,
             subscreenText(Icons.LYRICS, "ui.spotify_controller.subscreens.lyrics"), LyricScreen.class
@@ -55,13 +52,6 @@ public class NowPlayingScreen extends BaseScreen {
         super.init();
 
         Minecraft client = Minecraft.getInstance();
-
-        if (isFirstInit) {
-            GLFW.glfwSetCursorPos(client.getWindow().getWindow(), 0, 0);
-                    //IMAGE_SIZE + borderlessButtonWidget.BUTTON_SIZE * 2 * client.options.getGuiScale().getValue(),
-                    //PLAYBACK_CONTROL_Y * client.options.getGuiScale().getValue());
-            isFirstInit = false;
-        }
 
         // Buttons
         int x = MARGIN *2 + widgetsOffset + IMAGE_SIZE;
