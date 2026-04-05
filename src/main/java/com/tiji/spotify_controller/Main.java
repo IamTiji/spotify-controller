@@ -87,8 +87,6 @@ public class Main implements ClientModInitializer {
 				}
 			}
 			if (!isNotSetup() && tickCount % 10 == 0) {
-                if (!I18n.exists("ui.spotify_controller.unknown_artist")) return; // Locale isn't loaded yet
-                if (currentlyPlaying == null) currentlyPlaying = SongData.emptyData();
                 ImageUsageTracker.runGC();
 				if (nowPlayingScreen != null) {
 					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
@@ -109,6 +107,9 @@ public class Main implements ClientModInitializer {
 				}
 			}
 			tickCount++;
+
+            if (!I18n.exists("ui.spotify_controller.unknown_artist")) return; // Locale isn't loaded yet
+            if (currentlyPlaying == null) currentlyPlaying = SongData.emptyData();
 		});
 	}
 
