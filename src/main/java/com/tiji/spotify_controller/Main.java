@@ -69,7 +69,7 @@ public class Main implements ClientModInitializer {
 		} else {
 			SpotifyApi.refreshAccessToken();
 		}
-		ClientLifecycleEvents.CLIENT_STARTED.register((_) -> {
+		ClientLifecycleEvents.CLIENT_STARTED.register((unused) -> {
             isStarted = true;
             if (!isNotSetup()) {
                 SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
