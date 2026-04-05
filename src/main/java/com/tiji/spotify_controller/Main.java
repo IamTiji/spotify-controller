@@ -17,6 +17,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
@@ -37,21 +38,21 @@ public class Main implements ClientModInitializer {
 	public static int tickCount = 0;
 	public static NowPlayingScreen nowPlayingScreen = null;
 
-	public static SongData currentlyPlaying = SongData.emptyData();
-	public static PlaybackState playbackState = new PlaybackState();
+    public static SongData currentlyPlaying;
+    public static PlaybackState playbackState = new PlaybackState();
 
-	public static boolean isPremium = false;
+    public static boolean isPremium = false;
 
-	public static boolean isStarted = false;
+    public static boolean isStarted = false;
 
-	public void onInitializeClient(){
+    public void onInitializeClient(){
         FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
-            if (!
-                ResourceManagerHelper.registerBuiltinResourcePack(
-                        ResourceLocation.fromNamespaceAndPath(MOD_ID, "higher_res"),
-                        modContainer,
-                        ResourcePackActivationType.NORMAL)) Main.LOGGER.error("High Resolution RP failed load!");
-            }
+                    if (!
+                            ResourceManagerHelper.registerBuiltinResourcePack(
+                                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "higher_res"),
+                                    modContainer,
+                                    ResourcePackActivationType.NORMAL)) Main.LOGGER.error("High Resolution RP failed load!");
+                }
         );
 
         CONFIG = SpotifyControllerConfig.generate();
@@ -68,7 +69,7 @@ public class Main implements ClientModInitializer {
 		} else {
 			SpotifyApi.refreshAccessToken();
 		}
-		ClientLifecycleEvents.CLIENT_STARTED.register((client) -> {
+		ClientLifecycleEvents.CLIENT_STARTED.register((_) -> {
             isStarted = true;
             if (!isNotSetup()) {
                 SongDataExtractor.reloadData(true, () -> {}, () -> {}, () -> {});
@@ -85,7 +86,9 @@ public class Main implements ClientModInitializer {
 					client.setScreen(nowPlayingScreen);
 				}
 			}
-			if (!isNotSetup() && tickCount % 10 == 0){
+			if (!isNotSetup() && tickCount % 10 == 0) {
+                if (!I18n.exists("ui.spotify_controller.unknown_artist")) return; // Locale isn't loaded yet
+                if (currentlyPlaying == null) currentlyPlaying = SongData.emptyData();
                 ImageUsageTracker.runGC();
 				if (nowPlayingScreen != null) {
 					SongDataExtractor.reloadData(false, nowPlayingScreen::updateStatus, nowPlayingScreen::updateNowPlaying, () -> {
