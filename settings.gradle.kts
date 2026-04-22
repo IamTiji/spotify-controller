@@ -2,7 +2,7 @@ pluginManagement {
 	repositories {
 		maven("https://maven.fabricmc.net/")
 		mavenCentral()
-        maven("https://repo.essential.gg/repository/maven-public")
+        maven("https://repo.essential.gg/public")
         maven("https://maven.architectury.dev")
         maven("https://maven.minecraftforge.net")
 		gradlePluginPortal()
