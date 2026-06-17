@@ -54,7 +54,14 @@ public class CallbackInject {
             }
         }
 
-        if (!I18n.exists("ui.spotify_controller.unknown_artist")) return; // Locale isn't loaded yet
+        // Locale might not be loaded yet
+        String id = "ui.spotify_controller.unknown_artist";
+        //#if MC>=26200
+        //if (I18n.get(id) == id) return;
+        //#else
+        if (!I18n.exists(id)) return;
+        //#endif
+
         if (Main.currentlyPlaying == null) Main.currentlyPlaying = SongData.emptyData();
     }
 }

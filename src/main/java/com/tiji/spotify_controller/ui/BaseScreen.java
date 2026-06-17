@@ -3,6 +3,7 @@ package com.tiji.spotify_controller.ui;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
+import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -82,7 +83,7 @@ public class BaseScreen extends SafeAbstractScreen {
 
         if (handled) {
             assert minecraft != null;
-            minecraft.setScreen(null);
+            SafeScreenUtils.setScreen(minecraft, null);
             return true;
         }
         return false;

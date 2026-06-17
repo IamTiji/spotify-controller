@@ -44,6 +44,7 @@ preprocess {
     val fabric12109 = createNode("1.21.9-fabric", 12109, "yarn")
     val fabric12111 = createNode("1.21.11-fabric", 12111, "yarn")
     val fabric26100 = createNode("26.1-fabric", 26100, "yarn")
+    val fabric26200 = createNode("26.2-fabric", 26200, "yarn")
 
     // And then you need to tell the preprocessor which versions it should directly convert between.
     // This should form a directed graph with no cycles (i.e. a tree), which the preprocessor will then traverse to
@@ -60,6 +61,7 @@ preprocess {
     fabric12109.link(fabric12108)
     fabric12111.link(fabric12109)
     fabric26100.link(fabric12111, file("versions/post26.txt"))
+    fabric26200.link(fabric26100)
 }
 
 dependencies {
@@ -98,7 +100,8 @@ val versions = listOf(
     "1.21.8-fabric",
     "1.21.9-fabric",
     "1.21.11-fabric",
-    "26.1-fabric"
+    "26.1-fabric",
+    "26.2-fabric"
 )
 
 tasks.register("buildAll") {

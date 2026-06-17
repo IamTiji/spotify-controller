@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.InterpolatedTime;
 import com.tiji.spotify_controller.util.RequestManager;
+import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
@@ -277,7 +278,7 @@ public class SpotifyApi {
         String reason = data.get("error").getAsJsonObject().get("reason").getAsString();
 
         if (handledErrors.contains(reason)) {
-            Minecraft.getInstance().getToastManager().addToast(
+            SafeScreenUtils.getToastManager(Minecraft.getInstance()).addToast(
                     new SystemToast(new SystemToast.SystemToastId(), Component.empty(), Component.translatable("api.spotify_controller.error."+reason))
             );
             return true;

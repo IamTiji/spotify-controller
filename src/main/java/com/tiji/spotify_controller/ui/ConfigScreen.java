@@ -4,6 +4,7 @@ import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.SpotifyControllerConfig;
 import com.tiji.spotify_controller.WebGuideServer;
 import com.tiji.spotify_controller.api.SpotifyApi;
+import com.tiji.spotify_controller.util.SafeScreenUtils;
 import com.tiji.spotify_controller.widgets.BorderedButtonWidget;
 import com.tiji.spotify_controller.widgets.LabelWidget;
 import com.tiji.spotify_controller.widgets.ValueHolder;
@@ -126,6 +127,6 @@ public class ConfigScreen extends BaseScreen {
         }
         Main.CONFIG.writeToFile();
 
-        Minecraft.getInstance().setScreen(parent);
+        SafeScreenUtils.setScreen(Minecraft.getInstance(), parent);
     }
 }

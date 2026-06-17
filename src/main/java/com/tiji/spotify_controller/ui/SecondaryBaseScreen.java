@@ -4,6 +4,8 @@ import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import java.util.ArrayList;
+
+import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -71,7 +73,7 @@ public class SecondaryBaseScreen extends BaseScreen {
     @Override
     public void onClose() {
         assert minecraft != null;
-        minecraft.setScreen(Main.nowPlayingScreen);
+        SafeScreenUtils.setScreen(minecraft, Main.nowPlayingScreen);
     }
 
     @Override

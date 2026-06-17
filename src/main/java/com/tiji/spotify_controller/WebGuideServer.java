@@ -10,9 +10,12 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.file.Path;
+
+import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.minecraft.client.Minecraft;
 
 public class WebGuideServer {
+    public static final Minecraft MINECRAFT = Minecraft.getInstance();
     public static HttpServer server;
 
     static String getMIMEType(String filename) {
@@ -48,7 +51,7 @@ public class WebGuideServer {
             URI path = exchange.getRequestURI();
             String filepath;
             if (path.getPath().equals("/")) {
-                 filepath = switch (Minecraft.getInstance().getLanguageManager().getSelected()) {
+                 filepath = switch (MINECRAFT.getLanguageManager().getSelected()) {
                     case "ko_kr" -> "/guide/ko_kr.html";
                     default -> "/guide/en_us.html";
                 };
@@ -78,7 +81,7 @@ public class WebGuideServer {
 
             Main.LOGGER.info("Callback Received: {}", Code);
 
-            String filepath = switch (Minecraft.getInstance().getLanguageManager().getSelected()) {
+            String filepath = switch (MINECRAFT.getLanguageManager().getSelected()) {
                 case "ko_kr" -> "/allset/ko_kr.html";
                 default -> "/allset/en_us.html";
             };
@@ -101,7 +104,7 @@ public class WebGuideServer {
 
             SpotifyApi.convertAccessToken(Code);
 
-            Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(null));
+            MINECRAFT.execute(() -> SafeScreenUtils.setScreen(MINECRAFT, null));
 
             Main.LOGGER.info("Stopping Guide Server...");
             WebGuideServer.stop();

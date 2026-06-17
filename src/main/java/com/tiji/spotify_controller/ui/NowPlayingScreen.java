@@ -2,10 +2,7 @@ package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.SpotifyApi;
-import com.tiji.spotify_controller.util.SafeDrawer;
-import com.tiji.spotify_controller.util.ImageWithColor;
-import com.tiji.spotify_controller.util.RepeatMode;
-import com.tiji.spotify_controller.util.TextUtils;
+import com.tiji.spotify_controller.util.*;
 import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
 import com.tiji.spotify_controller.widgets.ProgressWidget;
 
@@ -120,8 +117,10 @@ public class NowPlayingScreen extends BaseScreen {
                             MARGIN + widgetsOffset, y,
                             () -> {
                                 try {
+                                    assert minecraft != null;
+
                                     SecondaryBaseScreen screen = entry.getValue().getDeclaredConstructor().newInstance();
-                                    client.setScreen(screen);
+                                    SafeScreenUtils.setScreen(minecraft, screen);
                                 } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                                          InvocationTargetException ignored) {}
                             }, false
@@ -209,7 +208,7 @@ public class NowPlayingScreen extends BaseScreen {
     public void updateStatus() {}
     public void updateNowPlaying() {
         if (minecraft == null) return;
-        if (minecraft.screen instanceof SecondaryBaseScreen subscreen) {
+        if (SafeScreenUtils.getScreen(minecraft) instanceof SecondaryBaseScreen subscreen) {
             subscreen.songChangeCallback();
         }
     }

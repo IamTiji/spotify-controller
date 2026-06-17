@@ -6,6 +6,7 @@ import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
 import com.tiji.spotify_controller.ui.NowPlayingScreen;
 import com.tiji.spotify_controller.ui.SetupScreen;
+import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -77,26 +78,27 @@ public class Main implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
             while (SETUP_KEY.consumeClick()) {
                 if (isNotSetup()) {
-                    client.setScreen(new SetupScreen());
+                    SafeScreenUtils.setScreen(client, new SetupScreen());
                 } else {
                     nowPlayingScreen = new NowPlayingScreen();
                     nowPlayingScreen.updateCoverImage();
                     nowPlayingScreen.updateNowPlaying();
-                    client.setScreen(nowPlayingScreen);
+                    SafeScreenUtils.setScreen(client, nowPlayingScreen);
                 }
             }
         });
 	}
 
     public static void showNewSongToast() {
-        new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title).show(Minecraft.getInstance().getToastManager());
+        new SongToast(currentlyPlaying.coverImage, currentlyPlaying.artist, currentlyPlaying.title)
+                .show(SafeScreenUtils.getToastManager(Minecraft.getInstance()));
     }
 
     public static boolean isNotSetup() {
 		return CONFIG.clientId().isEmpty() || CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
 	}
     public static void showNotAllowedToast() {
-        Minecraft.getInstance().getToastManager().addToast(
+        SafeScreenUtils.getToastManager(Minecraft.getInstance()).addToast(
                 new SystemToast(new SystemToast.SystemToastId(),
                         Component.translatable("ui.spotify_controller.not_allowed.title"),
                         Component.translatable("ui.spotify_controller.not_allowed.message"))

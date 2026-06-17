@@ -22,11 +22,13 @@ val versions = listOf(
     "1.21.8-fabric",
     "1.21.9-fabric",
     "1.21.11-fabric",
-    "26.1-fabric"
+    "26.1-fabric",
+    "26.2-fabric"
 )
 
 val noMappings = listOf(
-    "26.1-fabric"
+    "26.1-fabric",
+    "26.2-fabric"
 )
 
 versions.forEach { version ->
