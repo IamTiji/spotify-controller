@@ -256,12 +256,21 @@ public class SpotifyApi {
         );
     }
 
-    public static void addSongToQueue(String trackId) {
+    public static void addSongToQueue(String trackId, String name) {
         API.call("https://api.spotify.com/v1/me/player/queue?uri=spotify:track:" + trackId,
-                getAuthorizationCode(),
-                null,
-                unused -> {},
-                "POST"
+            getAuthorizationCode(),
+            null,
+            unused ->
+            {
+                Minecraft mc = Minecraft.getInstance();
+                mc.execute(() -> SafeScreenUtils.getToastManager(mc)
+                    .addToast(new SystemToast(
+                        new SystemToast.SystemToastId(),
+                        Component.literal(name),
+                        Component.translatable("ui.spotify_controller.queue_addition_ack")
+                    )));
+            },
+            "POST"
         );
     }
 
