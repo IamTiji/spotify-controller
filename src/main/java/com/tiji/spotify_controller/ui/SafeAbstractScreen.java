@@ -46,4 +46,9 @@ public abstract class SafeAbstractScreen extends Screen {
     //$$     return new KeyEvent(keyCode, scanCode, modifiers);
     //$$ }
     //#endif
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
 }
