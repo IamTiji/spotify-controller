@@ -21,7 +21,7 @@ public class WebGuideServer {
     static String getMIMEType(String filename) {
         String extension = filename.substring(filename.lastIndexOf('.') + 1);
         return switch (extension) {
-            case "html" -> "text/html";
+            case "html" -> "text/html; charset=utf-8";
             case "css" -> "text/css";
             case "png" -> "image/png";
             default -> "application/octet-stream";
