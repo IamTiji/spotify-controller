@@ -1,9 +1,14 @@
 package com.tiji.spotify_controller.util;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -65,25 +70,31 @@ public class TextUtils {
         }
     }
 
+    public static void discardCache() {
+        warpedTextCache.invalidateAll();
+    }
+
+    private record StringIntPair(String str, int int_) {}
+    private static final Cache<StringIntPair, String[]> warpedTextCache =
+        CacheBuilder.newBuilder()
+            .maximumSize(200)
+            .build();
     public static String[] warpText(String text, int maxWidth) {
+        try {
+            return warpedTextCache.get(new StringIntPair(text, maxWidth), () ->
+                cachelessWrapText(text, maxWidth));
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String[] cachelessWrapText(String text, int maxWidth) {
         text += " ";
 
-        StringBuilder sb = new StringBuilder();
-        StringBuilder textSoFar = new StringBuilder();
-        StringBuilder currentWord = new StringBuilder();
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            currentWord.append(c);
-            if (Character.isWhitespace(c)) {
-                if (textRenderer.width(textSoFar + currentWord.toString()) > maxWidth) {
-                    sb.append(textSoFar).append("\n");
-                    textSoFar.setLength(0);
-                }
-                textSoFar.append(currentWord);
-                currentWord.setLength(0);
-            }
-        }
-        sb.append(textSoFar);
-        return sb.toString().split("\n");
+        return textRenderer.getSplitter()
+            .splitLines(text, maxWidth, Style.EMPTY)
+            .stream()
+            .map(FormattedText::getString)
+            .toArray(String[]::new);
     }
 }
