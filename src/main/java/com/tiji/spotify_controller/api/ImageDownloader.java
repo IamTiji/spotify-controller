@@ -119,6 +119,7 @@ public class ImageDownloader {
     public static void startThreads() {
         for (int i = 0; i < Main.CONFIG.imageIoThreadCount(); i++) {
             Thread thread = new Thread(null, ImageDownloader::threadWorker, "Image-IO-" + i);
+            thread.setDaemon(true);
             thread.start();
         }
     }
