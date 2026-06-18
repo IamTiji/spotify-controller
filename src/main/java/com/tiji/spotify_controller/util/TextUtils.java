@@ -66,6 +66,8 @@ public class TextUtils {
     }
 
     public static String[] warpText(String text, int maxWidth) {
+        text += " ";
+
         StringBuilder sb = new StringBuilder();
         StringBuilder textSoFar = new StringBuilder();
         StringBuilder currentWord = new StringBuilder();
