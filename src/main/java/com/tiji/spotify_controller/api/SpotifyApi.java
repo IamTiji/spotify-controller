@@ -111,11 +111,10 @@ public class SpotifyApi {
         API.call("https://api.spotify.com/v1/me/player/seek?position_ms=" + position_ms,
                 getAuthorizationCode(),
                 null,
-                unused -> {},
+                RequestManager::putRequest,
                 "PUT"
         );
         Main.playbackState.progressMs = new InterpolatedTime(position_ms);
-        RequestManager.putRequest();
     }
 
     public static void playPause(boolean state) {
@@ -125,10 +124,13 @@ public class SpotifyApi {
         } else {
             uri = "https://api.spotify.com/v1/me/player/pause";
         }
-        API.call(uri, getAuthorizationCode(), null, unused -> {}, "PUT");
+        API.call(uri,
+                getAuthorizationCode(),
+                null,
+                RequestManager::putRequest,
+                "PUT");
         Main.playbackState.isPlaying = state;
         Main.playbackState.progressMs = InterpolatedTime.optionalProgression(Main.playbackState.progressMs.getInterpolatedTime(), state);
-        RequestManager.putRequest();
     }
 
     public static void nextTrack() {
@@ -136,8 +138,11 @@ public class SpotifyApi {
             Main.showNotAllowedToast();
             return;
         }
-        API.call("https://api.spotify.com/v1/me/player/next", getAuthorizationCode(), null, unused -> {}, "POST");
-        RequestManager.putRequest();
+        API.call("https://api.spotify.com/v1/me/player/next",
+                getAuthorizationCode(),
+                null,
+                RequestManager::putRequest,
+                "POST");
     }
 
     public static void previousTrack() {
@@ -145,8 +150,11 @@ public class SpotifyApi {
             Main.showNotAllowedToast();
             return;
         }
-        API.call("https://api.spotify.com/v1/me/player/previous", getAuthorizationCode(), null, unused -> {}, "POST");
-        RequestManager.putRequest();
+        API.call("https://api.spotify.com/v1/me/player/previous",
+                getAuthorizationCode(),
+                null,
+                RequestManager::putRequest,
+                "POST");
     }
 
     public static void getUserName(Consumer<String> consumer) {
@@ -171,11 +179,10 @@ public class SpotifyApi {
         API.call("https://api.spotify.com/v1/me/player/shuffle?state=" + (state ? "true" : "false"),
                 getAuthorizationCode(),
                 null,
-                unused -> {},
+                RequestManager::putRequest,
                 "PUT"
         );
         Main.playbackState.shuffle = state;
-        RequestManager.putRequest();
     }
 
     public static void setRepeat(String state) {
@@ -186,11 +193,10 @@ public class SpotifyApi {
         API.call("https://api.spotify.com/v1/me/player/repeat?state=" + state,
                 getAuthorizationCode(),
                 null,
-                unused -> {},
+                RequestManager::putRequest,
                 "PUT"
         );
         Main.playbackState.repeat = state;
-        RequestManager.putRequest();
     }
 
     private static boolean cachedLikeStatus;
