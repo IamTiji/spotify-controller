@@ -3,6 +3,13 @@ Control your spotify playback without alt-tabbing
 
 If you found bugs, please report to issue tracker on github!
 
+﻿### When reporting an issue...
+
+*Please make sure to:*
+ - **Be specific**, I don't mind title like " doesn't work", but you should explain it as much as possible in its inner text. Adding images to your issue also helps.
+ - **Be nice**, some people doesn't even write full sentences. I don't mind if you didn't follow other rules, but you must be respectful. 
+ - **Upload your logs**, it is completely impossible to figure out what went wrong even if you explain it really well.  
+
 ### Maintaince only
 I won't be adding new features to this mod. This does not mean that I will leave this mod broken if there is bugs, but just that there will not be any new feature. I will still try my best to help you when there is an issue, but feature requests will not be fulfilled. This is because I don't feel motovated to develop anymore with Spotify actively trying to kill this kind of programs. There is unstable features on Github that didn't make it to release, people who wants them can build them themselves.
 
