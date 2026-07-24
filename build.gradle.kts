@@ -1,7 +1,7 @@
 repositories {
 	mavenCentral()
 	gradlePluginPortal()
-	maven("https://maven.terraformersmc.com/")
+	maven("https://maven.terraformersmc.com/repository/maven-public/")
 	maven("https://maven.fabricmc.net/") { name = "Fabric" }
 	maven("https://maven.architectury.dev/") { name = "Architectury" }
 	maven("https://mvnrepository.com")
