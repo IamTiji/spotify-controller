@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.ui;
 
+import com.tiji.spotify_controller.DiagnosticData;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.SpotifyControllerConfig;
 import com.tiji.spotify_controller.WebGuideServer;
@@ -76,6 +77,11 @@ public class ConfigScreen extends BaseScreen {
 
         resetButton = new BorderedButtonWidget(resetConfirmStatus.text, MARGIN + widgetsOffset, y, this::onResetButtonPress, false, WIDTH);
         addRenderableWidget(resetButton);
+        y += resetButton.getHeight() + MARGIN*3;
+
+        BorderedButtonWidget dumpButton = new BorderedButtonWidget(Component.translatable("ui.spotify_controller.dump_diagnostic")
+                , MARGIN + widgetsOffset, y, DiagnosticData::dump, false, WIDTH);
+        addRenderableWidget(dumpButton);
         y += resetButton.getHeight() + MARGIN*3;
 
         for (Field field : SpotifyControllerConfig.class.getDeclaredFields()) {

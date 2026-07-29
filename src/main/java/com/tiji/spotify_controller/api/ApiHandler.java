@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.api;
 
+import com.tiji.spotify_controller.DiagnosticData;
 import com.tiji.spotify_controller.Main;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
@@ -90,21 +91,27 @@ public class ApiHandler {
                         Main.LOGGER.warn("Empty response");
                         return;
                     }
+
+                    String diagnosticString = format(stringHttpResponse);
+                    DiagnosticData.lastRequests.add(diagnosticString);
+
                     String responseBody = stringHttpResponse.body();
                     if (responseBody.isEmpty()) {
                         onSuccess.accept(null);
                         return;
                     }
+
                     if (stringHttpResponse.statusCode() == 429) {
                         long retryAfter = stringHttpResponse.headers().firstValueAsLong("Retry-After").orElse(Long.MAX_VALUE);
                         Main.LOGGER.error("Rate limit hit for: endpoint: {}, retryAfter: {}", endpoint, retryAfter);
                         rateLimited.put(endpoint, System.currentTimeMillis() + retryAfter * 1000);
                         return;
-                    }
-                    else if (stringHttpResponse.statusCode() >= 400) {
+                    } else if (stringHttpResponse.statusCode() >= 400) {
                         onError.accept(stringHttpResponse);
+                        DiagnosticData.lastFailedRequests.add(diagnosticString);
                         return;
                     }
+
                     onSuccess.accept(stringHttpResponse);
                 });
     }
@@ -117,10 +124,6 @@ public class ApiHandler {
         call(endpoint, Map.of("Authorization", authorization), ContentType, consumer, method, "");
     }
 
-    protected void call(String endpoint, Consumer<HttpResponse<String>> consumer, String method, String requestBody) {
-        call(endpoint, Map.of(), null, consumer, method, requestBody);
-    }
-
     protected void call(String endpoint,
                                Map<String, String> headers,
                                String ContentType,
@@ -128,5 +131,12 @@ public class ApiHandler {
                                String method,
                                String requestBody) {
         call(endpoint, headers, ContentType, onSuccess, result -> {}, method, requestBody);
+    }
+
+    protected static String format(HttpResponse<String> data) {
+        return "Request to " + data.request().method() + " " + data.uri() + "\n" +
+                "Returned: " + data.statusCode() + "\n" +
+                "Response headers" + data.headers().map().toString() +  "\n" +
+                "Response body" + data.body() + "\n";
     }
 }
