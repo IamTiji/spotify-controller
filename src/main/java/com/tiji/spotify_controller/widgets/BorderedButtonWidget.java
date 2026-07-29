@@ -19,6 +19,9 @@ public class BorderedButtonWidget extends BorderlessButtonWidget {
             width = client.font.width(innerText) + PADDING*2;
         }
 
+        setWidth(width);
+        setHeight(PADDING*2 + BUTTON_SIZE);
+
         needsCentering = false;
         labelWidth = -1;
     }
@@ -29,6 +32,9 @@ public class BorderedButtonWidget extends BorderlessButtonWidget {
         this.labelWidth = client.font.width(innerText);
 
         needsCentering = true;
+
+        setWidth(width);
+        setHeight(PADDING*2 + BUTTON_SIZE);
     }
 
     @Override
