@@ -9,9 +9,6 @@ If you found bugs, please report to issue tracker on github!
  - **Be nice**. I don't mind if you didn't follow other rules, but you must be respectful. 
  - **Upload your logs**, it is completely impossible to figure out what went wrong even if you explain it really well without the logs. 
 
-### Maintaince only
-I won't be adding new features to this mod. This does not mean that I will leave this mod broken if there is bugs, but just that there will not be any new feature. I will still try my best to help you when there is an issue, but feature requests will not be fulfilled. This is because I don't feel motovated to develop anymore with Spotify actively trying to kill this kind of programs. There is unstable features on Github that didn't make it to release, people who wants them can build them themselves.
-
 ### Spotify Developer Terms Update
 Starting from Feb 11, all new users needs to have Premium subscription. From March 9, all free account's connections are disbanded and won't work anymore. For people with premium, you won't be affected at all. [Read more here.](https://developer.spotify.com/blog/2026-02-06-update-on-developer-access-and-platform-security) Note that Spotify addons that makes you use premium features will not allow you to use this mod, as Spotify still treats you as free account user.  
 
