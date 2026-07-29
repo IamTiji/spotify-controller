@@ -33,7 +33,7 @@
   "ui.spotify_controller.config.target_brightness": "Target Brightness",
   "ui.spotify_controller.config.sample_size": "Sample size",
 
-  "key.spotify_controller.general": "Open Config / Controller",
+  "key.spotify_controller.general": "Open Spotify Controller",
 
   "modmenu.nameTranslation.spotify_controller": "Spotify Controller",
   "modmenu.descriptionTranslation.spotify_controller": "Control Spotify in-game",
