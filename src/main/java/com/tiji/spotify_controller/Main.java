@@ -20,20 +20,27 @@ import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//#if MC<=26200
+import org.lwjgl.glfw.GLFW;
+//#else
+//$$ import org.lwjgl.sdl.SDLScancode;
+//#endif
+
 public class Main implements ClientModInitializer {
-	public static final String            MOD_ID    = "spotify_controller";
-	public static final Logger            LOGGER    = LoggerFactory.getLogger(MOD_ID);
+    public static final String            MOD_ID    = "spotify_controller";
+    public static final Logger            LOGGER    = LoggerFactory.getLogger(MOD_ID);
     public static SpotifyControllerConfig CONFIG    = new SpotifyControllerConfig();
-	public static final KeyMapping        SETUP_KEY =
-			//#if MC<=12108
-			new KeyMapping("key.spotify_controller.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
-			//#else
-			//$$ new KeyMapping("key.spotify_controller.general", GLFW.GLFW_KEY_Z, KeyMapping.Category.MISC);
-			//#endif
+    public static final KeyMapping        SETUP_KEY =
+        //#if MC<=12108
+        new KeyMapping("key.spotify_controller.general", GLFW.GLFW_KEY_Z, "key.categories.misc");
+        //#elseif MC<=26200
+        //$$ new KeyMapping("key.spotify_controller.general", GLFW.GLFW_KEY_Z, KeyMapping.Category.MISC);
+        //#else
+        //$$ new KeyMapping("key.spotify_controller.general", SDLScancode.SDL_SCANCODE_Z, KeyMapping.Category.MISC);
+        //#endif
 
 	public static long lastUploadMs = 0;
     public static final int UPDATE_INTERVAL_MS = 5000;

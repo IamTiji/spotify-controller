@@ -25,7 +25,11 @@ public abstract class SafeAbstractScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        //#if MC<=26200
         return safeKeyPressed(event.key(), event.scancode(), event.modifiers());
+        //#else
+        //$$ return safeKeyPressed(event.key(), event.keycode(), event.modifiers());
+        //#endif
     }
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return super.keyPressed(new KeyEvent(keyCode, scanCode, modifiers));

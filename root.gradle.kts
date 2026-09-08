@@ -31,8 +31,6 @@ preprocess {
     // Here you first need to create a node per version you support and assign it an integer Minecraft version.
     // The mappings value is currently meaningless.
 
-    // Unique versions: 1.21.1, 1.21.3, 1.21.4, 1.21.5, 1.21.7, 1.21.9
-
     val fabric12101 = createNode("1.21.1-fabric", 12101, "yarn")
     //val fabric12102 = createNode("1.21.2-fabric", 12102, "yarn") // hotfixed version
     val fabric12103 = createNode("1.21.3-fabric", 12103, "yarn")
@@ -45,6 +43,7 @@ preprocess {
     val fabric12111 = createNode("1.21.11-fabric", 12111, "yarn")
     val fabric26100 = createNode("26.1-fabric", 26100, "yarn")
     val fabric26200 = createNode("26.2-fabric", 26200, "yarn")
+    val fabric26300 = createNode("26.3-fabric", 26300, "yarn")
 
     // And then you need to tell the preprocessor which versions it should directly convert between.
     // This should form a directed graph with no cycles (i.e. a tree), which the preprocessor will then traverse to
@@ -62,6 +61,7 @@ preprocess {
     fabric12111.link(fabric12109)
     fabric26100.link(fabric12111, file("versions/post26.txt"))
     fabric26200.link(fabric26100)
+    fabric26300.link(fabric26200)
 }
 
 dependencies {
@@ -101,7 +101,8 @@ val versions = listOf(
     "1.21.9-fabric",
     "1.21.11-fabric",
     "26.1-fabric",
-    "26.2-fabric"
+    "26.2-fabric",
+    "26.3-fabric"
 )
 
 tasks.register("buildAll") {
