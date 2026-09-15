@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.ui;
 
+import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.TextUtils;
 import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
@@ -8,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import org.jetbrains.annotations.NotNull;
 
 public class SetupScreen extends BaseScreen {
     private static final int MARGIN = 10;
@@ -21,12 +23,22 @@ public class SetupScreen extends BaseScreen {
     protected void init() {
         super.init();
 
-        addRenderableWidget(
-                new BorderlessButtonWidget(Icons.POPUP_OPEN.copy().append(Component.literal("http://127.0.0.1:25566").setStyle(LINK)),
-                        MARGIN + widgetsOffset, MARGIN*3 + font.lineHeight*3,
-                        () -> Util.getPlatform().openUri("http://127.0.0.1:25566"),
-                        false)
-        );
+        if (Main.isAwaitingAuth()) {
+            addRenderableWidget(
+                getButtonWidget("Login page", Main.CONFIG.constructLoginURL())
+            );
+        } else {
+            addRenderableWidget(
+                getButtonWidget("http://127.0.0.1:25566", "http://127.0.0.1:25566")
+            );
+        }
+    }
+
+    private @NotNull BorderlessButtonWidget getButtonWidget(String button, String url) {
+        return new BorderlessButtonWidget(Icons.POPUP_OPEN.copy().append(Component.literal(button).setStyle(LINK)),
+            MARGIN + widgetsOffset, MARGIN * 3 + font.lineHeight * 3,
+            () -> Util.getPlatform().openUri(url),
+            false);
     }
 
     @Override

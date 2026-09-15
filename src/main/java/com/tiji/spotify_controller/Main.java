@@ -110,6 +110,11 @@ public class Main implements ClientModInitializer {
     public static boolean isNotSetup() {
 		return CONFIG.clientId().isEmpty() || CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
 	}
+
+    public static boolean isAwaitingAuth() {
+        return CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
+    }
+
     public static void showNotAllowedToast() {
         SafeScreenUtils.getToastManager(Minecraft.getInstance()).addToast(
                 new SystemToast(SYSTEM_TOAST_ID,

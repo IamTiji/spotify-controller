@@ -39,5 +39,8 @@
   "ui.spotify_controller.queue_addition_ack": "가 재생목록에 추가돼었습니다!",
 
   "ui.spotify_controller.dump_diagnostic": "진단 정보 내보내기",
-  "ui.spotify_controller.dump_diagnostic.response": "진단 정보를 로그에 출력했습니다."
+  "ui.spotify_controller.dump_diagnostic.response": "진단 정보를 로그에 출력했습니다.",
+
+  "ui.spotify_controller.auth_expired": "인중 실패!",
+  "ui.spotify_controller.auth_expired.subtext": "스포티파이에 인증하는데 실패했습니다. 다시 로그인 해주세요."
 }

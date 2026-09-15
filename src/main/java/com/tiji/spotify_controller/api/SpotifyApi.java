@@ -289,12 +289,28 @@ public class SpotifyApi {
 
     private static final List<String> handledErrors = List.of("NO_ACTIVE_DEVICE", "PREMIUM_REQUIRED");
     protected static boolean handleError(JsonObject data) {
+        int code = data.get("error").getAsJsonObject().get("status").getAsInt();
+
+        if (code == 401) {
+            Main.CONFIG.invalidateAuth();
+            SafeScreenUtils.getToastManager(Minecraft.getInstance()).addToast(
+                new SystemToast(
+                    Main.SYSTEM_TOAST_ID,
+                    Component.translatable("ui.spotify_controller.auth_expired"),
+                    Component.translatable("ui.spotify_controller.auth_expired.subtext"))
+            );
+
+            return true;
+        }
+
         if (!data.get("error").getAsJsonObject().has("reason")) return false;
         String reason = data.get("error").getAsJsonObject().get("reason").getAsString();
 
         if (handledErrors.contains(reason)) {
             SafeScreenUtils.getToastManager(Minecraft.getInstance()).addToast(
-                    new SystemToast(new SystemToast.SystemToastId(), Component.empty(), Component.translatable("api.spotify_controller.error."+reason))
+                    new SystemToast(Main.SYSTEM_TOAST_ID,
+                        Component.empty(),
+                        Component.translatable("api.spotify_controller.error."+reason))
             );
             return true;
         } else {

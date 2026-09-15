@@ -120,11 +120,27 @@ public class SpotifyControllerConfig {
     public void writeToFile() {
         writeToFile(true);
     }
+
     public void resetConnection() {
         this.lastRefresh(0);
         this.clientId("");
         this.clientSecret("");
         this.authToken("");
         this.refreshToken("");
+    }
+
+    public void invalidateAuth() {
+        this.authToken("");
+        this.refreshToken("");
+    }
+
+    public String constructLoginURL() {
+        return "https://accounts.spotify.com/authorize?response_type=code&client_id=" +
+
+            this.clientId() +
+
+            "&redirect_uri=http://127.0.0.1:25566/callback&show_dialog=true&scope=user" +
+            "-read-playback-state%20user-modify-playback-state%20user-read-currently-playing" +
+            "%20user-read-private%20user-library-read%20user-library-modify"; // holy this thing is long
     }
 }
