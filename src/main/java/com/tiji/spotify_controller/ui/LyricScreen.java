@@ -21,7 +21,7 @@ public class LyricScreen extends SecondaryBaseScreen {
 
     @Override
     public void init() {
-        scrollableArea = new ScrollableArea(MARGIN, MARGIN, WIDTH, height - MARGIN*2 - INFO_HEIGHT);
+        scrollableArea = new ScrollableArea(MARGIN, MARGIN, WIDTH, height - MARGIN - INFO_HEIGHT);
         lyricWidget = new LyricWidget(Lyrics.empty(), 0, 0, WIDTH);
         scrollableArea.addWidget(lyricWidget);
         addRenderableWidget(scrollableArea);

@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.api;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,14 +37,22 @@ public class Lyrics {
             timestamps[i] = time;
         }
 
-        return new Lyrics(List.of(lines), List.of(timestamps));
+        int sizeOffset = lines[lines.length-1].isEmpty() ? 1 : 0;
+
+        return new Lyrics(
+            Arrays.asList(lines     ).subList(0, lines     .length - sizeOffset),
+            Arrays.asList(timestamps).subList(0, timestamps.length - sizeOffset));
     }
 
     public static Lyrics plain(String data) {
         data = data.strip();
         String[] lines = data.split(LINE_BREAK_REGEX);
 
-        return new Lyrics(List.of(lines), Collections.nCopies(lines.length, 0));
+        int sizeOffset = lines[lines.length-1].isEmpty() ? 1 : 0;
+
+        return new Lyrics(
+            Arrays.asList(lines).subList(0, lines.length - sizeOffset),
+            Collections.nCopies(lines.length - sizeOffset, 0));
     }
 
     public static Lyrics empty() {
