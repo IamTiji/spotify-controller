@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 public class SecondaryBaseScreen extends BaseScreen {
     private static final int IMAGE_SIZE = 30;
     private static final int MARGIN = 10;
-    private static final int TITLE_Y = 24;
-    private static final int ARTIST_Y = 9;
+    private static final int TITLE_Y = 26;
+    private static final int ARTIST_Y = 11;
 
     protected static final int INFO_HEIGHT = MARGIN*2 + IMAGE_SIZE;
 
