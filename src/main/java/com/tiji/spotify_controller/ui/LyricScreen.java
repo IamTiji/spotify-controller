@@ -68,10 +68,12 @@ public class LyricScreen extends SecondaryBaseScreen {
     @Override
     public void songChangeCallback() {
         isLoading = true;
+        failedMessage = null;
         scrollableArea.clearWidgets();
 
         LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
             isLoading = false;
+
             lyricWidget.setLyric(lyrics);
             scrollableArea.addWidget(lyricWidget);
             scrollableArea.checkHeight();
