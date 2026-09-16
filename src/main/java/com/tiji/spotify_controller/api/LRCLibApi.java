@@ -11,7 +11,20 @@ import java.util.function.Consumer;
 public class LRCLibApi {
     private static final ApiHandler API = new ApiHandler();
 
+    private static boolean didFail = false;
+    private static String lastError = null;
+    private static Lyrics lastLyrics = null;
+    private static int lastSong = 0;
+
     public static void getLyric(SongData songData, Consumer<Lyrics> callback, Consumer<String> onFail) {
+        if (lastSong == songData.hashCode()) {
+            if (didFail) {
+                onFail.accept(lastError);
+            } else {
+                callback.accept(lastLyrics);
+            }
+        }
+
         String songName   = URLEncoder.encode(songData.raw_title, StandardCharsets.UTF_8);
         String artistName = URLEncoder.encode(songData.artist   , StandardCharsets.UTF_8);
         String albumName  = URLEncoder.encode(songData.album    , StandardCharsets.UTF_8);
@@ -36,6 +49,9 @@ public class LRCLibApi {
                         return;
                     }
 
+                    didFail = false;
+                    lastLyrics = lyrics;
+                    lastSong = songData.hashCode();
                     callback.accept(lyrics);
                 },
                 stringHttpResponse -> {
@@ -43,6 +59,9 @@ public class LRCLibApi {
 
                     String error = response.get("message").getAsString();
 
+                    didFail = true;
+                    lastError = error;
+                    lastSong = songData.hashCode();
                     onFail.accept(error);
                 },
                 "GET",

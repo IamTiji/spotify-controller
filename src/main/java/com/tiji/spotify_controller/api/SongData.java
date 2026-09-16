@@ -3,6 +3,7 @@ package com.tiji.spotify_controller.api;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.Main;
 import java.net.URI;
+import java.util.Objects;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -29,6 +30,17 @@ public class SongData {
                 ", Id='" + Id + '\'' +'"' +
                 ", songURI=" + songURI +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SongData songData)) return false;
+        return Objects.equals(title, songData.title) && Objects.equals(Id, songData.Id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, Id);
     }
 
     public static SongData emptyData() {
