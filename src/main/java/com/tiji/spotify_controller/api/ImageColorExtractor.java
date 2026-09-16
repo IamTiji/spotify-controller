@@ -52,7 +52,7 @@ public class ImageColorExtractor {
         int g = (dominantColor >> 8) & 0xFF;
         int b = dominantColor & 0xFF;
         double brightness = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0;
-        return brightness < 0.5;
+        return brightness < 0.25;
     }
 
     private static HashMap<Integer, Integer> getColorFrequency(NativeImage image, int sampleSize) {
