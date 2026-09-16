@@ -73,6 +73,7 @@ public class LyricScreen extends SecondaryBaseScreen {
         LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
             isLoading = false;
             lyricWidget.setLyric(lyrics);
+            scrollableArea.addWidget(lyricWidget);
             scrollableArea.checkHeight();
         }, error -> failedMessage = error);
     }
