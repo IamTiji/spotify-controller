@@ -24,7 +24,7 @@ public class CallbackInject {
         if (Main.currentlyPlaying != null &&
                 Main.playbackState.progressMs.getInterpolatedTime() > Main.currentlyPlaying.duration) {
             if (!requestSent) {
-                RequestManager.putRequest(150);
+                RequestManager.putRequest(300);
                 requestSent = true;
             }
         } else {
