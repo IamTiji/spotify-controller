@@ -112,7 +112,7 @@ public class Main implements ClientModInitializer {
 	}
 
     public static boolean isAwaitingAuth() {
-        return CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty();
+        return (CONFIG.authToken().isEmpty() || CONFIG.refreshToken().isEmpty()) && !CONFIG.clientId().isEmpty();
     }
 
     public static void showNotAllowedToast() {
