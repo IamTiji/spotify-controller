@@ -35,7 +35,7 @@ public class ImageColorExtractor {
         int b =  color        & 0xFF;
         double brightness = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0;
 
-        if (brightness > 0.9) {
+        if (brightness > 0.7) {
             r = (int) (r * 0.7);
             g = (int) (g * 0.7);
             b = (int) (b * 0.7);
