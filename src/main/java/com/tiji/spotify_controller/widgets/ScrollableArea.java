@@ -123,6 +123,7 @@ public class ScrollableArea extends SafeAbstractWidget {
         synchronized (widgets) {
             widgets.clear();
             contentHeight = 0;
+            scrollBarPos = 0;
         }
     }
 
