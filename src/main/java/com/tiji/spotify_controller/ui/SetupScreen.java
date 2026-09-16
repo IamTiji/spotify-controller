@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.ui;
 
+import com.mojang.blaze3d.Blaze3D;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.TextUtils;
@@ -10,6 +11,8 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
+
+import java.net.URI;
 
 public class SetupScreen extends BaseScreen {
     private static final int MARGIN = 10;
@@ -37,7 +40,13 @@ public class SetupScreen extends BaseScreen {
     private @NotNull BorderlessButtonWidget getButtonWidget(String button, String url) {
         return new BorderlessButtonWidget(Icons.POPUP_OPEN.copy().append(Component.literal(button).setStyle(LINK)),
             MARGIN + widgetsOffset, MARGIN * 3 + font.lineHeight * 3,
-            () -> Util.getPlatform().openUri(url),
+            () -> {
+                //#if MC<=26200
+                Util.getPlatform().openUri(url);
+                //#else
+                //$$ Blaze3D.openUri(URI.create(url));
+                //#endif
+            },
             false);
     }
 
