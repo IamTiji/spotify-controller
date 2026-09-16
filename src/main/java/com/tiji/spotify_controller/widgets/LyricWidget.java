@@ -27,7 +27,19 @@ public class LyricWidget extends SafeAbstractWidget {
 
     public void setLyric(Lyrics lyric) {
         this.lyric = lyric;
-        setHeight(lyric.lines.size() * (font.lineHeight + LYRIC_MARGIN));
+        setHeight(countHeight());
+    }
+
+    private int countHeight() {
+        int y = 0;
+        for (int i = 0; i < lyric.lines.size(); i++) {
+            int lineCount = TextUtils.warpText(lyric.lines.get(i), getWidth() - 2 * LYRIC_MARGIN).length;
+            y += (font.lineHeight + LINE_MARGIN) * lineCount;
+
+            y += LYRIC_MARGIN - LINE_MARGIN;
+        }
+
+        return y;
     }
 
     @Override
