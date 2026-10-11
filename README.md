@@ -19,6 +19,7 @@ Starting from Feb 11, all new users needs to have Premium subscription. From Mar
 - Listen to previous song (again)
 - Seek to wanted position
 - Search for a song
+- View synced lyrics [(Thank you LRCLIB!)](https://lrclib.net/)
 
 ### Applied Picture
 
@@ -30,7 +31,6 @@ Follow [official wiki on creating app](https://developer.spotify.com/documentati
 
 ### Future plans
 
-- Ability to view lyrics
 - Ability to view queue
 - ~~Easier setup~~ *(Impossible since April 15, 2025, [see blog post from Spotify](https://developer.spotify.com/blog/2025-04-15-updating-the-criteria-for-web-api-extended-access))*
 - [#28: Volume control](https://github.com/IamTiji/spotify-controller/issues/28)
