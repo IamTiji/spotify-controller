@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.WebGuideServer;
 import com.tiji.spotify_controller.util.InterpolatedTime;
 import com.tiji.spotify_controller.util.RequestManager;
 import com.tiji.spotify_controller.util.SafeScreenUtils;
@@ -293,6 +294,7 @@ public class SpotifyApi {
 
         if (code == 401) {
             Main.CONFIG.invalidateAuth();
+            WebGuideServer.start();
             SafeScreenUtils.getToastManager(Minecraft.getInstance()).addToast(
                 new SystemToast(
                     Main.SYSTEM_TOAST_ID,
