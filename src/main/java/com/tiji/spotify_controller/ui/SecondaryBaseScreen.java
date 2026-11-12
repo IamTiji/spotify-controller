@@ -1,16 +1,16 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
-import java.util.ArrayList;
-
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 public class SecondaryBaseScreen extends BaseScreen {
     private static final int IMAGE_SIZE = 30;

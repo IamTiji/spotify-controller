@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 public class ImageColorExtractor {
     public static final float MAX_COLOR_DIST = 0.2f;
-    public static final float MAX_COLOR_DIST_SQR = MAX_COLOR_DIST * MAX_COLOR_DIST;
 
     public static int getDominantColor(NativeImage image) {
         HashMap<Integer, Integer> colorCount = getColorFrequency(image, Main.CONFIG.sampleSize());
@@ -143,9 +142,6 @@ public class ImageColorExtractor {
     }
 
     private static double calcWeightByArea(int x, int sampleSize) {
-//        double normalizedX = (double) x / (sampleSize * sampleSize);
-//        double t = Math.min(2*normalizedX*normalizedX*normalizedX,1);
-//        return t * t * (3.0f - 2.0f * t);
         return (double) x / (sampleSize * sampleSize) < 0.2 ? 0 : 1;
     }
 

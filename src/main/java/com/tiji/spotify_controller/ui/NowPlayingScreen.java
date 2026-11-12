@@ -5,13 +5,12 @@ import com.tiji.spotify_controller.api.SpotifyApi;
 import com.tiji.spotify_controller.util.*;
 import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
 import com.tiji.spotify_controller.widgets.ProgressWidget;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 public class NowPlayingScreen extends BaseScreen {
     private static final int MARGIN = 10;
@@ -47,8 +46,6 @@ public class NowPlayingScreen extends BaseScreen {
     @Override
     protected void init() {
         super.init();
-
-        Minecraft client = Minecraft.getInstance();
 
         // Buttons
         int x = MARGIN *2 + widgetsOffset + IMAGE_SIZE;
@@ -95,7 +92,7 @@ public class NowPlayingScreen extends BaseScreen {
         repeatButton = new BorderlessButtonWidget(
                 Icons.REPEAT,
                 x, y,
-                () -> SpotifyApi.setRepeat(RepeatMode.getNextMode(Main.playbackState.repeat)),
+                () -> SpotifyApi.setRepeat(Main.playbackState.repeat.getNextMode()),
                 true
         );
         addRenderableWidget(repeatButton); // Repeat
@@ -136,7 +133,7 @@ public class NowPlayingScreen extends BaseScreen {
 
         progressBar.setValue((float) Main.playbackState.getProgressNorm());
         playPauseButton.setLabel(Main.playbackState.isPlaying ? Icons.PAUSE : Icons.RESUME);
-        repeatButton.setLabel(RepeatMode.getAsText(Main.playbackState.repeat));
+        repeatButton.setLabel(Main.playbackState.repeat.getAsIcon());
         shuffleButton.setLabel(Main.playbackState.shuffle ? Icons.SHUFFLE_ON : Icons.SHUFFLE);
 
         // Playback info

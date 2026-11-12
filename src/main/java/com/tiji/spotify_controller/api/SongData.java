@@ -1,7 +1,7 @@
 package com.tiji.spotify_controller.api;
 
-import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.util.ImageWithColor;
 import java.net.URI;
 import java.util.Objects;
 

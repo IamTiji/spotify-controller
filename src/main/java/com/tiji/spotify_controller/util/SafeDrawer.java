@@ -6,7 +6,10 @@ package com.tiji.spotify_controller.util;
 import net.minecraft.client.renderer.RenderType;
 //#endif
 
-import com.mojang.blaze3d.systems.RenderSystem;
+//#if MC>=12102
+//$$ import com.mojang.blaze3d.systems.RenderSystem;
+//#endif
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

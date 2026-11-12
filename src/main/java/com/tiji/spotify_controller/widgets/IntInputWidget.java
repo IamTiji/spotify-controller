@@ -1,11 +1,17 @@
 package com.tiji.spotify_controller.widgets;
 
-import java.util.function.Consumer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 
+import java.util.function.Consumer;
+
 public class IntInputWidget extends StringInputWidget {
-    public IntInputWidget(Font textRenderer, int x, int y, int width, int height, Component text, Component icon, Consumer<String> action) {
+    public IntInputWidget(Font textRenderer,
+                          int x, int y,
+                          int width, int height,
+                          Component text,
+                          Component icon,
+                          Consumer<String> action) {
         super(textRenderer, x, y, width, height, text, icon, action);
     }
 

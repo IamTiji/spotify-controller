@@ -3,7 +3,6 @@ package com.tiji.spotify_controller.widgets;
 import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 

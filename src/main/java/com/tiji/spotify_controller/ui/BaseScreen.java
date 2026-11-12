@@ -1,8 +1,8 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.ImageWithColor;
+import com.tiji.spotify_controller.util.SafeDrawer;
 import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;

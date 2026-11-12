@@ -9,15 +9,16 @@ import com.tiji.spotify_controller.util.SafeScreenUtils;
 import com.tiji.spotify_controller.widgets.BorderedButtonWidget;
 import com.tiji.spotify_controller.widgets.LabelWidget;
 import com.tiji.spotify_controller.widgets.ValueHolder;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 public class ConfigScreen extends BaseScreen {
     private enum ResetConfirmStatus {

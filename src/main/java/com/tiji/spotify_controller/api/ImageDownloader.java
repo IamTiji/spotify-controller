@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.ImageWithColor;
-
-import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
 import static com.tiji.spotify_controller.api.SongDataExtractor.getId;
+
 public class ImageDownloader {
     private static final ArrayList<ResourceLocation> loadedCover = new ArrayList<>();
     private static final ArrayBlockingQueue<JsonObject> queue = new ArrayBlockingQueue<>(200);

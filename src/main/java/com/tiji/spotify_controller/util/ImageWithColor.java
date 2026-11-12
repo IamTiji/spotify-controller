@@ -2,8 +2,9 @@ package com.tiji.spotify_controller.util;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.tiji.spotify_controller.api.ImageColorExtractor;
-import java.util.HashMap;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.HashMap;
 
 public class ImageWithColor {
     private final ResourceLocation image;

@@ -1,13 +1,13 @@
 package com.tiji.spotify_controller.widgets;
 
-import java.util.function.Consumer;
-
 import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+
+import java.util.function.Consumer;
 //#if MC>=12109
 //$$ import net.minecraft.client.input.KeyEvent;
 //#endif

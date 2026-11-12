@@ -1,9 +1,10 @@
 package com.tiji.spotify_controller.widgets;
 
-import java.util.function.Consumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+
+import java.util.function.Consumer;
 
 public class ProgressWidget extends SafeAbstractWidget {
     private static final int h = 10;
