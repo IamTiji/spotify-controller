@@ -9,6 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+//#if MC<=12101
+//$$ import net.minecraft.util.profiling.ProfilerFiller;
+//#endif
+
 public class ReloadListener implements IdentifiableResourceReloadListener {
     @Override
     public ResourceLocation getFabricId() {

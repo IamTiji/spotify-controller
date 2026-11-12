@@ -6,7 +6,7 @@ package com.tiji.spotify_controller.util;
 import net.minecraft.client.renderer.RenderType;
 //#endif
 
-//#if MC>=12102
+//#if MC<=12102
 //$$ import com.mojang.blaze3d.systems.RenderSystem;
 //#endif
 
