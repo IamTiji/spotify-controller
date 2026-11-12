@@ -3,7 +3,7 @@ package com.tiji.spotify_controller.mixin;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
-import com.tiji.spotify_controller.api.SpotifyApi;
+import com.tiji.spotify_controller.api.spotify.SpotifyApi;
 import com.tiji.spotify_controller.util.ImageUsageTracker;
 import com.tiji.spotify_controller.util.RequestManager;
 import net.minecraft.Util;

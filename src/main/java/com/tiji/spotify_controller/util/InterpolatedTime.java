@@ -1,7 +1,9 @@
 package com.tiji.spotify_controller.util;
 
+import com.google.gson.annotations.JsonAdapter;
 import net.minecraft.Util;
 
+@JsonAdapter(InterpolatedTimeAdapter.class)
 public class InterpolatedTime {
     protected long interpolateStart;
     protected long startTime;

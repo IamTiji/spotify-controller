@@ -1,7 +1,7 @@
 package com.tiji.spotify_controller.ui;
 
 import com.tiji.spotify_controller.Main;
-import com.tiji.spotify_controller.api.SpotifyApi;
+import com.tiji.spotify_controller.api.spotify.SpotifyApi;
 import com.tiji.spotify_controller.util.*;
 import com.tiji.spotify_controller.widgets.BorderlessButtonWidget;
 import com.tiji.spotify_controller.widgets.ProgressWidget;

@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller.api;
 
+import com.google.gson.Gson;
 import com.tiji.spotify_controller.DiagnosticData;
 import com.tiji.spotify_controller.Main;
 import net.fabricmc.loader.api.FabricLoader;
@@ -43,8 +44,10 @@ public class ApiHandler {
     private static final String userAgent;
     private static final HttpClient client = HttpClient.newHttpClient();
 
+    public static final Gson GSON = new Gson();
+
     private final HashMap<String, Long> rateLimited = new HashMap<>();
-    protected void call(String endpoint,
+    public void call(String endpoint,
                                Map<String, String> headers,
                                String ContentType,
                                Consumer<HttpResponse<String>> onSuccess,
@@ -116,15 +119,18 @@ public class ApiHandler {
                 });
     }
 
-    protected void call(String endpoint, String authorization, Consumer<HttpResponse<String>> consumer, String method, String requestBody) {
+    @SuppressWarnings("SameParameterValue")
+    public void call(String endpoint, String authorization,
+                        Consumer<HttpResponse<String>> consumer, String method, String requestBody) {
         call(endpoint, Map.of("Authorization", authorization), null, consumer, method, requestBody);
     }
 
-    protected void call(String endpoint, String authorization, String ContentType, Consumer<HttpResponse<String>> consumer, String method) {
+    public void call(String endpoint, String authorization, String ContentType,
+                        Consumer<HttpResponse<String>> consumer, String method) {
         call(endpoint, Map.of("Authorization", authorization), ContentType, consumer, method, "");
     }
 
-    protected void call(String endpoint,
+    public void call(String endpoint,
                                Map<String, String> headers,
                                String ContentType,
                                Consumer<HttpResponse<String>> onSuccess,

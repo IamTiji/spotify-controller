@@ -1,16 +1,17 @@
-package com.tiji.spotify_controller.api;
+package com.tiji.spotify_controller.api.spotify;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.WebGuideServer;
+import com.tiji.spotify_controller.api.ApiHandler;
+import com.tiji.spotify_controller.api.SongDataExtractor;
 import com.tiji.spotify_controller.util.InterpolatedTime;
 import com.tiji.spotify_controller.util.RequestManager;
 import com.tiji.spotify_controller.util.SafeScreenUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.net.URLEncoder;
 import java.net.http.HttpResponse;
@@ -22,14 +23,14 @@ import java.util.function.Consumer;
 public class SpotifyApi {
     private static final ApiHandler API = new ApiHandler() {
         @Override
-        protected void call(String endpoint,
+        public void call(String endpoint,
                                    Map<String, String> headers,
                                    String ContentType,
                                    Consumer<HttpResponse<String>> onSuccess,
                                    String method,
                                    String requestBody) {
-            API.call(endpoint, headers, ContentType, onSuccess, result -> {
-                JsonObject errorData = new Gson().fromJson(result.body(), JsonObject.class);
+            super.call(endpoint, headers, ContentType, onSuccess, result -> {
+                JsonObject errorData = ApiHandler.GSON.fromJson(result.body(), JsonObject.class);
 
                 if (!handleError(errorData)) {
                     Main.LOGGER.error("Error response: {}", errorData);
@@ -52,7 +53,7 @@ public class SpotifyApi {
                 getAuthorizationHeader(),
                 "application/x-www-form-urlencoded",
                 body -> {
-                    JsonObject data = new Gson().fromJson(body.body(), JsonObject.class);
+                    JsonObject data = ApiHandler.GSON.fromJson(body.body(), JsonObject.class);
 
                     verifyToken(data);
 
@@ -81,7 +82,7 @@ public class SpotifyApi {
                 getAuthorizationHeader(),
                 "application/x-www-form-urlencoded",
                 body -> {
-                    JsonObject data = new Gson().fromJson(body.body(), JsonObject.class);
+                    JsonObject data = ApiHandler.GSON.fromJson(body.body(), JsonObject.class);
 
                     if (data.has("error")) {
                         Main.LOGGER.warn("Failed to refresh access token; Normally caused when developer app is deleted. {}: {}", data.get("error"), data.get("error_description"));
@@ -99,11 +100,15 @@ public class SpotifyApi {
                 }, "POST");
     }
 
-    public static void getNowPlayingTrack(Consumer<JsonObject> callback) {
+    public static void getNowPlayingTrack(Consumer<PlaybackState> callback) {
         API.call("https://api.spotify.com/v1/me/player",
                 getAuthorizationCode(),
                 null,
-                body -> callback.accept(new Gson().fromJson(body.body(), JsonObject.class)),
+                body -> {
+                    PlaybackState state = ApiHandler.GSON.fromJson(body.body(), PlaybackState.class);
+                    state.track.mcId = ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, state.track.id.toLowerCase());
+                    callback.accept(state);
+                },
                 "GET"
         );
     }
@@ -160,14 +165,14 @@ public class SpotifyApi {
 
     public static void getUserName(Consumer<String> consumer) {
         API.call("https://api.spotify.com/v1/me", getAuthorizationCode(), null, body -> {
-            String name = new Gson().fromJson(body.body(), JsonObject.class).get("display_name").getAsString();
+            String name = ApiHandler.GSON.fromJson(body.body(), JsonObject.class).get("display_name").getAsString();
             consumer.accept(name);
         }, "GET");
     }
 
     public static void getSubscription() {
         API.call("https://api.spotify.com/v1/me", getAuthorizationCode(), null, body -> {
-            String name = new Gson().fromJson(body.body(), JsonObject.class).get("product").getAsString();
+            String name = ApiHandler.GSON.fromJson(body.body(), JsonObject.class).get("product").getAsString();
             Main.isPremium = name.equals("premium");
         }, "GET");
     }
@@ -177,7 +182,7 @@ public class SpotifyApi {
             Main.showNotAllowedToast();
             return;
         }
-        API.call("https://api.spotify.com/v1/me/player/shuffle?state=" + (state ? "true" : "false"),
+        API.call("https://api.spotify.com/v1/me/player/shuffle?state=" + state,
                 getAuthorizationCode(),
                 null,
                 RequestManager::putRequest,
@@ -186,12 +191,12 @@ public class SpotifyApi {
         Main.playbackState.shuffle = state;
     }
 
-    public static void setRepeat(String state) {
+    public static void setRepeat(RepeatState state) {
         if (!Main.playbackState.canRepeat) {
             Main.showNotAllowedToast();
             return;
         }
-        API.call("https://api.spotify.com/v1/me/player/repeat?state=" + state,
+        API.call("https://api.spotify.com/v1/me/player/repeat?state=" + state.getName(),
                 getAuthorizationCode(),
                 null,
                 RequestManager::putRequest,
@@ -236,14 +241,12 @@ public class SpotifyApi {
         );
     }
 
-    public static void getSearch(String query, Consumer<JsonArray> consumer) {
+    public static void getSearch(String query, Consumer<SearchResult> consumer) {
         API.call("https://api.spotify.com/v1/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8) + "&type=track",
                 getAuthorizationCode(),
                 null,
                 body ->
-                        consumer.accept(new Gson().fromJson(body.body(), JsonObject.class)
-                            .getAsJsonObject("tracks")
-                            .getAsJsonArray("items")),
+                        consumer.accept(ApiHandler.GSON.fromJson(body.body(), SearchResult.class)),
                 "GET"
         );
     }
@@ -296,10 +299,10 @@ public class SpotifyApi {
             Main.CONFIG.invalidateAuth();
             WebGuideServer.start();
             SafeScreenUtils.getToastManager(Minecraft.getInstance()).addToast(
-                new SystemToast(
-                    Main.SYSTEM_TOAST_ID,
-                    Component.translatable("ui.spotify_controller.auth_expired"),
-                    Component.translatable("ui.spotify_controller.auth_expired.subtext"))
+                    new SystemToast(
+                            Main.SYSTEM_TOAST_ID,
+                            Component.translatable("ui.spotify_controller.auth_expired"),
+                            Component.translatable("ui.spotify_controller.auth_expired.subtext"))
             );
 
             return true;

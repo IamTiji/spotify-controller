@@ -1,9 +1,9 @@
 package com.tiji.spotify_controller;
 
-import com.tiji.spotify_controller.api.SpotifyApi;
 import com.tiji.spotify_controller.api.ImageDownloader;
 import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
+import com.tiji.spotify_controller.api.spotify.SpotifyApi;
 import com.tiji.spotify_controller.ui.NowPlayingScreen;
 import com.tiji.spotify_controller.ui.SetupScreen;
 import com.tiji.spotify_controller.util.SafeScreenUtils;

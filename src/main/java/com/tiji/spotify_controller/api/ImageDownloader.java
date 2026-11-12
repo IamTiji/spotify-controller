@@ -1,9 +1,8 @@
 package com.tiji.spotify_controller.api;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.api.spotify.TrackObject;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -15,8 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -24,39 +21,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 
-import static com.tiji.spotify_controller.api.SongDataExtractor.getId;
-
 public class ImageDownloader {
-    private static final ArrayList<ResourceLocation> loadedCover = new ArrayList<>();
-    private static final ArrayBlockingQueue<JsonObject> queue = new ArrayBlockingQueue<>(200);
-    private static final HashMap<JsonObject, ArrayList<Consumer<ImageWithColor>>> onComplete = new HashMap<>();
+    private static final ArrayList<TrackObject> loadedCover = new ArrayList<>();
+    private static final ArrayBlockingQueue<TrackObject> queue = new ArrayBlockingQueue<>(200);
+    private static final HashMap<TrackObject, ArrayList<Consumer<ImageWithColor>>> onComplete = new HashMap<>();
     public static final Minecraft client = Minecraft.getInstance();
 
-    private static ImageWithColor getAlbumCover(JsonObject trackObj) {
+    private static ImageWithColor getAlbumCover(TrackObject track) {
         try {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, getId(trackObj).toLowerCase());
+            ResourceLocation id = track.mcId;
 
-            int wantedSize = 100 * client.options.guiScale().get();
-            if (wantedSize == 0) wantedSize = Integer.MAX_VALUE;
-            int closest = Integer.MAX_VALUE;
-            JsonArray ImageList = trackObj.getAsJsonObject("album")
-                    .getAsJsonArray("images");
-            String closestUrl = ImageList.get(0)
-                    .getAsJsonObject().get("url").getAsString();
-
-            for (int i = 0; i < ImageList.size(); i++) {
-                int size = ImageList.get(i)
-                        .getAsJsonObject().get("height").getAsInt();
-                if (closest > size && size >= wantedSize) {
-                    closest = size;
-                    closestUrl = ImageList.get(i)
-                            .getAsJsonObject().get("url").getAsString();
-                }
-            }
-            InputStream albumCoverUrl = new URI(closestUrl).toURL().openStream();
+            InputStream albumCoverUrl = track.album.albumCover.openStream();
 
             // Spotify provides JPEG image that Minecraft cannot handle
-            // Convert to PNG
+            // Convert to PNG first
             BufferedImage jpegImage = ImageIO.read(albumCoverUrl);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ImageIO.write(jpegImage, "png", outputStream);
@@ -82,39 +60,34 @@ public class ImageDownloader {
             //$$ Thread.sleep(100); // Texture loading before 1.21.2 is really weird
             //#endif
 
-            loadedCover.add(id);
+            loadedCover.add(track);
             return new ImageWithColor(image, id);
         } catch (IOException e) {
-            Main.LOGGER.error("Failed to download album cover for {}: {}", getId(trackObj), e);
-            Main.LOGGER.error(trackObj.toString());
-        } catch (NullPointerException e) {
-            Main.LOGGER.error("Unexpected response from Spotify: {}\n{}", trackObj, e.getLocalizedMessage());
+            Main.LOGGER.error("Failed to download album cover for {}: {}", track.id, e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
         return new ImageWithColor(0xffffffff, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/nothing.png"));
     }
 
-    public static void addDownloadTask(JsonObject data, Consumer<ImageWithColor> callback) {
-        if (loadedCover.contains(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, getId(data).toLowerCase()))){
-            Main.LOGGER.debug("Cache hit for {}", getId(data));
+    public static void addDownloadTask(TrackObject track, Consumer<ImageWithColor> callback) {
+        if (loadedCover.contains(track)){
+            Main.LOGGER.debug("Cache hit for {}", track.id);
             CompletableFuture.runAsync(() ->
-                callback.accept(new ImageWithColor(ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, getId(data).toLowerCase())))
+                callback.accept(new ImageWithColor(track.mcId))
             );
             return;
         }
-        Main.LOGGER.debug("Adding download task lister for {}", getId(data));
-        if (onComplete.containsKey(data)) {
-            onComplete.get(data).add(callback);
+        Main.LOGGER.debug("Adding download task listener for {}", track.id);
+        if (onComplete.containsKey(track)) {
+            onComplete.get(track).add(callback);
             return;
         }
         ArrayList<Consumer<ImageWithColor>> callbacks = new ArrayList<>();
         callbacks.add(callback);
-        onComplete.put(data, callbacks);
-        queue.add(data);
-        Main.LOGGER.debug("Added download task for {} - Queue size: {}", getId(data), queue.size());
+        onComplete.put(track, callbacks);
+        queue.add(track);
+        Main.LOGGER.debug("Added download task for {} - Queue size: {}", track.id, queue.size());
     }
 
     public static void startThreads() {
@@ -128,13 +101,13 @@ public class ImageDownloader {
     private static void threadWorker(){
         while (!Thread.interrupted()) {
             try {
-                JsonObject task = queue.take();
+                TrackObject task = queue.take();
                 ImageWithColor coverId = getAlbumCover(task);
 
                 for (Consumer<ImageWithColor> callback : onComplete.remove(task)) {
                     callback.accept(coverId);
                 }
-                Main.LOGGER.debug("Finished downloading cover for {}", getId(task));
+                Main.LOGGER.debug("Finished downloading cover for {}", task.id);
             } catch (Exception e) {
                 StringBuilder sb = new StringBuilder();
                 for (StackTraceElement element : e.getStackTrace()) {
@@ -149,6 +122,6 @@ public class ImageDownloader {
     }
 
     public static void removeFromCache(ResourceLocation id) {
-        loadedCover.remove(id);
+        loadedCover.removeIf(track -> track.mcId.equals(id));
     }
 }

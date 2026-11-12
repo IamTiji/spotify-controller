@@ -1,9 +1,9 @@
 package com.tiji.spotify_controller.widgets;
 
-import com.google.gson.JsonObject;
-import com.tiji.spotify_controller.api.SpotifyApi;
 import com.tiji.spotify_controller.api.SongData;
 import com.tiji.spotify_controller.api.SongDataExtractor;
+import com.tiji.spotify_controller.api.spotify.SpotifyApi;
+import com.tiji.spotify_controller.api.spotify.TrackObject;
 import com.tiji.spotify_controller.ui.Icons;
 import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
@@ -29,7 +29,7 @@ public class SongListItem extends SafeAbstractWidget {
 
     private static final Minecraft client = Minecraft.getInstance();
 
-    public SongListItem(JsonObject data, int x, int y) {
+    public SongListItem(TrackObject data, int x, int y) {
         super(x, y, WIDTH, HEIGHT, Component.empty());
 
         song = SongDataExtractor.getDataFor(data, () -> {});
@@ -69,7 +69,7 @@ public class SongListItem extends SafeAbstractWidget {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        SpotifyApi.addSongToQueue(song.Id, "%s - %s".formatted(song.raw_title, song.main_artist));
+        SpotifyApi.addSongToQueue(song.id, "%s - %s".formatted(song.raw_title, song.main_artist));
         client.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 }

@@ -1,5 +1,6 @@
 package com.tiji.spotify_controller;
 
+import com.tiji.spotify_controller.api.spotify.RepeatState;
 import com.tiji.spotify_controller.util.InterpolatedTime;
 
 public class PlaybackState {
@@ -8,7 +9,7 @@ public class PlaybackState {
     public InterpolatedTime progressMs = InterpolatedTime.nonProgressing();
     public long durationMs = 0; // Reference time to calculate progressNorm
 
-    public String repeat = "off";
+    public RepeatState repeat = RepeatState.OFF;
     public boolean shuffle = false;
     public boolean isLiked = false;
 

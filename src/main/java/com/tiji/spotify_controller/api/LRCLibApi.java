@@ -35,7 +35,7 @@ public class LRCLibApi {
                 Map.of(),
                 null,
                 stringHttpResponse -> {
-                    JsonObject response = new Gson().fromJson(stringHttpResponse.body(), JsonObject.class);
+                    JsonObject response = ApiHandler.GSON.fromJson(stringHttpResponse.body(), JsonObject.class);
 
                     Lyrics lyrics;
                     try {

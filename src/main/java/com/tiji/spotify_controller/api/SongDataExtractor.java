@@ -1,90 +1,27 @@
 package com.tiji.spotify_controller.api;
 
-import com.google.gson.JsonObject;
 import com.tiji.spotify_controller.Main;
+import com.tiji.spotify_controller.api.spotify.SpotifyApi;
+import com.tiji.spotify_controller.api.spotify.TrackObject;
 import com.tiji.spotify_controller.ui.Icons;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import com.tiji.spotify_controller.util.InterpolatedTime;
 import net.minecraft.client.Minecraft;
-import org.jetbrains.annotations.Nullable;
-
-import java.net.URI;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.Map;
 
-// Quite dirty code
 public class SongDataExtractor {
-    public static String getName(JsonObject trackObj) {
-        return trackObj.get("name").getAsString();
-    }
+    public static String getFormattedTime(int time_ms) {
+        time_ms /= 1000;
 
-    public static String getArtist(JsonObject trackObj) {
-        StringBuilder artists = new StringBuilder();
-        for (var artist : trackObj.getAsJsonArray("artists")) {
-            artists.append(artist.getAsJsonObject().get("name").getAsString()).append(", ");
-        }
-        artists.setLength(artists.length() - 2); // Remove trailing comma and space
-        return artists.toString();
-    }
+        int minutes = time_ms / 60;
+        int seconds = time_ms % 60;
 
-    public static String getMainArtist(JsonObject trackObj) {
-        return trackObj.getAsJsonArray("artists").get(0).getAsJsonObject().get("name").getAsString();
-    }
-
-    public static String getAlbum(JsonObject trackObj) {
-        return trackObj.getAsJsonObject("album").get("name").getAsString();
-    }
-
-    public static String getId(JsonObject trackObj) {
-        return trackObj.get("id").getAsString();
-    }
-
-    public static URI getSpotifyLink(JsonObject trackObj) {
-        return URI.create(
-                trackObj.getAsJsonObject("external_urls").get("spotify").getAsString()
-        );
-    }
-
-    public static double getProgressNorm(JsonObject trackObj) {
-        return trackObj.get("progress_ms").getAsDouble()/
-                trackObj.getAsJsonObject("item")
-                        .get("duration_ms").getAsDouble();
-    }
-
-    public static int getProgressMs(JsonObject trackObj) {
-        return trackObj.get("progress_ms").getAsInt();
-    }
-
-    public static String getDurationLabel(JsonObject trackObj) {
-        int duration = trackObj.get("duration_ms").getAsInt();
-
-        duration /= 1000;
-
-        Integer minutes_duration = duration / 60;
-        Integer seconds_duration = duration % 60;
-
-        return String.format("%02d:%02d", minutes_duration, seconds_duration);
-    }
-
-    public static boolean isPlaying(JsonObject trackObj) {
-        return trackObj.get("is_playing").getAsBoolean();
-    }
-
-    public static int getMaxDuration(JsonObject trackObj) {
-        return trackObj.get("duration_ms").getAsInt();
-    }
-
-    public static boolean isExplicit(JsonObject trackObj) {
-        return trackObj.get("explicit").getAsBoolean();
-    }
-
-    public static boolean getShuffleState(JsonObject trackObj) {
-        return trackObj.get("shuffle_state").getAsBoolean();
-    }
-
-    public static String getRepeatState(JsonObject trackObj) {
-        return trackObj.get("repeat_state").getAsString();
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
     public static void reloadData(boolean forceFullReload, Runnable onNoUpdate, Runnable onDataUpdate, Runnable onImageLoad) {
@@ -98,28 +35,31 @@ public class SongDataExtractor {
                 Main.playbackState.canShuffle = false;
                 return;
             }
-            JsonObject song = data.getAsJsonObject("item");
-            boolean isSongDifferent = !getId(song).equals(Main.currentlyPlaying.Id);
 
-            Main.playbackState.isPlaying = isPlaying(data);
-            Main.playbackState.progressMs = InterpolatedTime.optionalProgression(getProgressMs(data), Main.playbackState.isPlaying);
-            Main.playbackState.durationMs = getMaxDuration(song);
-            Main.playbackState.repeat = getRepeatState(data);
-            Main.playbackState.shuffle = getShuffleState(data);
+            boolean isSongDifferent = !data.track.id.equals(Main.currentlyPlaying.id);
 
-            JsonObject disallows = data.getAsJsonObject("actions").getAsJsonObject("disallows");
-            Main.playbackState.canShuffle = !disallows.has("toggling_shuffle");
-            Main.playbackState.canRepeat = !(disallows.has("toggling_repeat_context") ||
-                                    disallows.has("toggling_repeat_track"));
-            Main.playbackState.canSkip = !disallows.has("skipping_next");
-            Main.playbackState.canGoBack = !disallows.has("skipping_prev");
-            Main.playbackState.canSeek = !disallows.has("seeking");
+            Main.playbackState.isPlaying = data.isPlaying;
+            Main.playbackState.progressMs = InterpolatedTime.optionalProgression(
+                    data.progress.getInterpolatedTime(),
+                    Main.playbackState.isPlaying);
+
+            Main.playbackState.durationMs = data.track.duration;
+            Main.playbackState.repeat = data.repeatState;
+            Main.playbackState.shuffle = data.shuffleState;
+
+            var allowedActions = data.allowedActions.getOrDefault("disallows", Map.of());
+            Main.playbackState.canShuffle = !allowedActions.containsKey("toggling_shuffle");
+            Main.playbackState.canRepeat = !(allowedActions.containsKey("toggling_repeat_context") ||
+                                    allowedActions.containsKey("toggling_repeat_track"));
+            Main.playbackState.canSkip = !allowedActions.containsKey("skipping_next");
+            Main.playbackState.canGoBack = !allowedActions.containsKey("skipping_prev");
+            Main.playbackState.canSeek = !allowedActions.containsKey("seeking");
 
             if (isSongDifferent || forceFullReload) {
-                Main.currentlyPlaying = getDataFor(song, onImageLoad);
+                Main.currentlyPlaying = getDataFor(data.track, onImageLoad);
             }
 
-            SpotifyApi.isSongLiked(Main.currentlyPlaying.Id, isLiked ->
+            SpotifyApi.isSongLiked(Main.currentlyPlaying.id, isLiked ->
                 Main.playbackState.isLiked = isLiked
             );
             if (isSongDifferent || forceFullReload) {
@@ -129,20 +69,24 @@ public class SongDataExtractor {
             }
         });
     }
-    public static SongData getDataFor(JsonObject data, @Nullable Runnable onImageLoad) {
+    public static SongData getDataFor(TrackObject data, @Nullable Runnable onImageLoad) {
         SongData song = new SongData();
 
-        song.raw_title = getName(data);
+        song.raw_title = data.name;
         song.title = Component.empty()
-                .append(isExplicit(data) ? Icons.EXPLICT : Component.literal(""))
+                .append(data.explicit ? Icons.EXPLICT : Component.literal(""))
                 .append(Component.literal(song.raw_title));
-        song.artist = getArtist(data);
-        song.main_artist = getMainArtist(data);
-        song.album = getAlbum(data);
-        song.durationLabel = getDurationLabel(data);
-        song.Id = getId(data);
-        song.duration = getMaxDuration(data);
-        song.songURI = getSpotifyLink(data);
+
+        song.artist = "";
+        Arrays.asList(data.artists).forEach(artist -> song.artist += artist.name + ", ");
+        song.artist = song.artist.substring(0, song.artist.length() - 2);
+
+        song.main_artist = data.artists[0].name;
+        song.album = data.album.name;
+        song.durationLabel = getFormattedTime(data.duration);
+        song.id = data.id;
+        song.duration = data.duration;
+        song.songURI = data.spotifyUrl;
 
         if (!song.coverImage.getImage().getPath().equals("ui/nothing.png")) {
             song.coverImage = new ImageWithColor(0xffffffff, ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, "ui/nothing.png"));

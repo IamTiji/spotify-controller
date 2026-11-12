@@ -3,16 +3,16 @@ package com.tiji.spotify_controller;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.tiji.spotify_controller.api.SpotifyApi;
+import com.tiji.spotify_controller.api.spotify.SpotifyApi;
+import com.tiji.spotify_controller.util.SafeScreenUtils;
+import net.minecraft.client.Minecraft;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.file.Path;
-
-import com.tiji.spotify_controller.util.SafeScreenUtils;
-import net.minecraft.client.Minecraft;
 
 public class WebGuideServer {
     public static final Minecraft MINECRAFT = Minecraft.getInstance();

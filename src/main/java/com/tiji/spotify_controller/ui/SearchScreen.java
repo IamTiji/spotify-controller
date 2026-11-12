@@ -1,8 +1,7 @@
 package com.tiji.spotify_controller.ui;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.tiji.spotify_controller.api.SpotifyApi;
+import com.tiji.spotify_controller.api.spotify.SpotifyApi;
+import com.tiji.spotify_controller.api.spotify.TrackObject;
 import com.tiji.spotify_controller.widgets.ScrollableArea;
 import com.tiji.spotify_controller.widgets.SongListItem;
 import com.tiji.spotify_controller.widgets.StringInputWidget;
@@ -42,9 +41,8 @@ public class SearchScreen extends SecondaryBaseScreen {
 
         SpotifyApi.getSearch(query, results -> {
                 int y = 0;
-                for (JsonElement result : results) {
-                    JsonObject jsonObject = result.getAsJsonObject();
-                    SongListItem item = new SongListItem(jsonObject, 0, y);
+                for (TrackObject result : results.tracks.items()) {
+                    SongListItem item = new SongListItem(result, 0, y);
                     scrollArea.addWidget(item);
 
                     y += SongListItem.HEIGHT + MARGIN;

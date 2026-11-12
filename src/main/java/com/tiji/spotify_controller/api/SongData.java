@@ -2,7 +2,7 @@ package com.tiji.spotify_controller.api;
 
 import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.util.ImageWithColor;
-import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 
 import net.minecraft.client.resources.language.I18n;
@@ -18,8 +18,8 @@ public class SongData {
     public String album;
     public String durationLabel;
     public int duration;
-    public String Id = "";
-    public URI songURI;
+    public String id = "";
+    public URL songURI;
 
     public String toString() {
         return "songData{" +
@@ -27,7 +27,7 @@ public class SongData {
                 ", artist='" + artist + '\'' +
                 ", coverImage=" + coverImage +
                 ", duration_label='" + durationLabel + '\'' +
-                ", Id='" + Id + '\'' +'"' +
+                ", id='" + id + '\'' +'"' +
                 ", songURI=" + songURI +
                 '}';
     }
@@ -35,12 +35,12 @@ public class SongData {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof SongData songData)) return false;
-        return Objects.equals(title, songData.title) && Objects.equals(Id, songData.Id);
+        return Objects.equals(title, songData.title) && Objects.equals(id, songData.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, Id);
+        return Objects.hash(title, id);
     }
 
     public static SongData emptyData() {
@@ -53,7 +53,7 @@ public class SongData {
         songData.album = "";
         songData.durationLabel = "00:00";
         songData.duration = 0;
-        songData.Id = "";
+        songData.id = "";
         songData.songURI = null;
 
         return songData;
