@@ -27,6 +27,9 @@ public class LyricWidget extends SafeAbstractWidget {
 
     public void setLyric(Lyrics lyric) {
         this.lyric = lyric;
+    }
+
+    public void updateHeight() {
         setHeight(countHeight());
     }
 

@@ -19,6 +19,8 @@ public class LyricScreen extends SecondaryBaseScreen {
     private LyricWidget lyricWidget;
     private ScrollableArea scrollableArea;
 
+    private boolean isDirty = false;
+
     @Override
     public void init() {
         scrollableArea = new ScrollableArea(MARGIN, MARGIN, WIDTH, height - MARGIN - INFO_HEIGHT);
@@ -28,16 +30,22 @@ public class LyricScreen extends SecondaryBaseScreen {
 
         LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
             isLoading = false;
+            isDirty = true;
             lyricWidget.setLyric(lyrics);
             scrollableArea.clearWidgets();
-            scrollableArea.checkHeight();
-            scrollableArea.addWidget(lyricWidget);
         }, error -> failedMessage = error);
     }
 
     @Override
     public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         super.safeRender(context, mouseX, mouseY, delta);
+
+        if (isDirty) {
+            lyricWidget.updateHeight();
+            scrollableArea.addWidget(lyricWidget);
+            scrollableArea.checkHeight();
+            isDirty = false;
+        }
 
         if (failedMessage != null) {
             bigText(context, "ui.spotify_controller.failed");
@@ -73,10 +81,9 @@ public class LyricScreen extends SecondaryBaseScreen {
 
         LRCLibApi.getLyric(Main.currentlyPlaying, lyrics -> {
             isLoading = false;
+            isDirty = true;
 
             lyricWidget.setLyric(lyrics);
-            scrollableArea.addWidget(lyricWidget);
-            scrollableArea.checkHeight();
         }, error -> failedMessage = error);
     }
 }
