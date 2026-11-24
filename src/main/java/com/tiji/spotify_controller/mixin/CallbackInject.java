@@ -57,7 +57,7 @@ public class CallbackInject {
         // Locale might not be loaded yet
         String id = "ui.spotify_controller.unknown_artist";
         //#if MC>=26200
-        //if (I18n.get(id) == id) return;
+        //$$ if (I18n.get(id).equals(id)) return;
         //#else
         if (!I18n.exists(id)) return;
         //#endif
