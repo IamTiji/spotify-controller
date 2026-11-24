@@ -3,12 +3,15 @@ package com.tiji.spotify_controller.api;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Lyrics {
     public final List<String> lines;
     public final List<Integer> timestamps;
 
     private static final String LINE_BREAK_REGEX = "(\\r\\n|\\r|\\n)";
+    private static final Pattern LRC_LINE_REGEX = Pattern.compile("\\[(?<hour>\\d{1,3}):(?<minute>\\d{1,3}).(?<second>\\d{1,3})] ?(?<content>.*)");
 
     private Lyrics(List<String> lines, List<Integer> timestamps) {
         this.lines = lines;
@@ -25,13 +28,15 @@ public class Lyrics {
         for (int i = 0; i < linesAndTimestamps.length; i++) {
             String line = linesAndTimestamps[i];
             if (line.charAt(0) == '\uFEFF') { line = line.substring(1); } // why bom not whitespace
-            line = line.strip() + " ";
+            Matcher match = LRC_LINE_REGEX.matcher(line);
+            if (!match.find()) throw new IllegalStateException("Failed to parse lyric");
 
-            int time     = Integer.parseInt(line.substring(1, 3)) * 60 * 1000;
-            time        += Integer.parseInt(line.substring(4, 6)) * 1000;
-            time        += Integer.parseInt(line.substring(7, 9)) * 10;
+            int time     = Integer.parseInt(match.group(1).strip()) * 60 * 1000;
+            time        += Integer.parseInt(match.group(2).strip()) * 1000;
+            time        += Integer.parseInt(String.format("%-3s", match.group(3).strip())
+                                                .replace(" ", "0"));
 
-            String text = line.substring(11).strip();
+            String text = match.group(4).strip();
 
             lines[i] = text;
             timestamps[i] = time;
