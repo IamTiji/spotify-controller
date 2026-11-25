@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -93,11 +94,15 @@ public class TextUtils {
         int length = textRenderer.width(text);
         int fitCount = length / maxWidth + 1;
         int prettySplitWidth = length / fitCount;
-        prettySplitWidth += 10; // Add some padding so that text don't wrap more than intended
+        List<FormattedText> splitText = null;
 
-        return textRenderer.getSplitter()
-            .splitLines(text, prettySplitWidth, Style.EMPTY)
-            .stream()
+        while (splitText == null || splitText.size() > fitCount) {
+            splitText = textRenderer.getSplitter()
+                    .splitLines(text, prettySplitWidth, Style.EMPTY);
+            prettySplitWidth += 10; // Add some padding so that text don't wrap more than intended
+        }
+
+        return splitText.stream()
             .map(FormattedText::getString)
             .toArray(String[]::new);
     }
