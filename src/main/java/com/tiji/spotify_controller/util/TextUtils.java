@@ -90,8 +90,13 @@ public class TextUtils {
     private static String[] cachelessWrapText(String text, int maxWidth) {
         text += " ";
 
+        int length = textRenderer.width(text);
+        int fitCount = length / maxWidth + 1;
+        int prettySplitWidth = length / fitCount;
+        prettySplitWidth += 10; // Add some padding so that text don't wrap more than intended
+
         return textRenderer.getSplitter()
-            .splitLines(text, maxWidth, Style.EMPTY)
+            .splitLines(text, prettySplitWidth, Style.EMPTY)
             .stream()
             .map(FormattedText::getString)
             .toArray(String[]::new);
