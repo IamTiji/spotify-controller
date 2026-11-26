@@ -63,9 +63,11 @@ public class SecondaryBaseScreen extends BaseScreen {
 
         context.enableScissor(0, 0, width, height - INFO_HEIGHT);
         //#if MC<26100
-        drawables.forEach(drawable -> drawable.render(context, mouseX, mouseY, delta));
+        drawables.forEach(it -> it.render(context, mouseX, mouseY, delta));
+        //#elseif MC<26400
+        //$$ drawables.forEach(it -> it.extractRenderState(context, mouseX, mouseY, delta));
         //#else
-        //$$ drawables.forEach(drawable -> drawable.extractRenderState(context, mouseX, mouseY, delta));
+        //$$ drawables.forEach(it -> it.extractRenderState(context));
         //#endif
         context.disableScissor();
     }

@@ -2,7 +2,9 @@ package com.tiji.spotify_controller.widgets;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 //#if MC>=12109
 //$$ import net.minecraft.client.input.MouseButtonEvent;
@@ -17,12 +19,18 @@ public abstract class SafeAbstractWidget extends AbstractWidget {
 
     @Override
     //#if MC<=12111
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f)
+    protected void renderWidget(GuiGraphics graphics, int i, int j, float f)
+    //#elseif MC<=26300
+    //$$ protected void extractWidgetRenderState(GuiGraphicsExtractor graphics, int i, int j, float f)
     //#else
-    //$$ protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
+    //$$ protected void extractWidgetRenderState(GuiGraphicsExtractor graphics)
     //#endif
     {
-        safeRender(guiGraphics, i, j, f);
+        //#if MC<=26300
+        safeRender(graphics, i, j, f);
+        //#else
+        //$$safeRender(graphics, graphics.mouseX(), graphics.mouseY(), graphics.partialTicks());
+        //#endif
     }
 
     //#if MC>=12109
@@ -41,4 +49,14 @@ public abstract class SafeAbstractWidget extends AbstractWidget {
     //$$     onRelease(event.x(), event.y());
     //$$ }
     //#endif
+
+    //#if MC<=26300
+    @Override
+    public @NotNull NarrationPriority narrationPriority() {
+        return NarrationPriority.NONE;
+    }
+    //#endif
+
+    @Override
+    protected void updateWidgetNarration(NarrationElementOutput output) {}
 }

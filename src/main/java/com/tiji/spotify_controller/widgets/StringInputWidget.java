@@ -33,10 +33,12 @@ public class StringInputWidget extends EditBox implements ValueHolder {
     }
 
     @Override
-    //#if MC<26100
-    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta)
+    //#if MC<=12111
+    protected void renderWidget(GuiGraphics context, int i, int j, float f)
+    //#elseif MC<=26300
+    //$$ protected void extractWidgetRenderState(GuiGraphicsExtractor context, int i, int j, float f)
     //#else
-    //$$ public void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta)
+    //$$ public void extractWidgetRenderState(GuiGraphicsExtractor context)
     //#endif
     {
         SafeDrawer.drawOutline(context, getX(), getY(), width, height, 0xFFFFFFFF);

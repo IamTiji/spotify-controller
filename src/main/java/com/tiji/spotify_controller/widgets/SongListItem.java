@@ -9,9 +9,7 @@ import com.tiji.spotify_controller.util.SafeDrawer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 
 public class SongListItem extends SafeAbstractWidget {
     SongData song;
@@ -70,6 +68,6 @@ public class SongListItem extends SafeAbstractWidget {
     @Override
     public void onClick(double mouseX, double mouseY) {
         SpotifyApi.addSongToQueue(song.id, "%s - %s".formatted(song.raw_title, song.main_artist));
-        client.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        playButtonClickSound(client.getSoundManager());
     }
 }

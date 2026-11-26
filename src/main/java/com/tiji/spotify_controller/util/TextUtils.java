@@ -43,7 +43,11 @@ public class TextUtils {
                 result.append(trimToWidth(asString, style, remainingWidth));
                 return Optional.of(new Object());
             }
+        //#if MC<=26300
         }, Style.EMPTY);
+        //#else
+        //$$ }, new Object(), Style.EMPTY);
+        //#endif
 
         return result.append("...");
     }
@@ -103,7 +107,13 @@ public class TextUtils {
         }
 
         return splitText.stream()
-            .map(FormattedText::getString)
-            .toArray(String[]::new);
+
+                //#if MC<=26300
+                .map(FormattedText::getString)
+                //#else
+                //$$ .map(line -> line.getString(Integer.MAX_VALUE))
+                //#endif
+
+                .toArray(String[]::new);
     }
 }

@@ -128,14 +128,6 @@ public class ScrollableArea extends SafeAbstractWidget {
     }
 
     @Override
-    public @NotNull NarrationPriority narrationPriority() {
-        return NarrationPriority.NONE;
-    }
-
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
-
-    @Override
     public boolean isMouseOver(double x, double y) {
         return x >= this.x && x < this.x + width && y >= this.y && y < this.y + height;
     }

@@ -61,8 +61,10 @@ public class BaseScreen extends SafeAbstractScreen {
 
         //#if MC<26100
         renderables.forEach(it -> it.render(context, mouseX, mouseY, delta));
-        //#else
+        //#elseif MC<26400
         //$$ renderables.forEach(it -> it.extractRenderState(context, mouseX, mouseY, delta));
+        //#else
+        //$$ renderables.forEach(it -> it.extractRenderState(context));
         //#endif
     }
 

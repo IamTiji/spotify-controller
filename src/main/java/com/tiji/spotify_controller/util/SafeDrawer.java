@@ -1,6 +1,8 @@
 package com.tiji.spotify_controller.util;
 
-//#if MC>=12107
+//#if MC>=26400
+//$$ import net.minecraft.client.gui.GuiPipeline;
+//#elseif MC>=12107
 //$$ import net.minecraft.client.renderer.RenderPipelines;
 //#else
 import net.minecraft.client.renderer.RenderType;
@@ -30,7 +32,9 @@ public class SafeDrawer {
                                  int textureHeight) {
         //#if MC>=12102
         context.blit(
-                //#if MC>=12107
+                //#if MC>=26400
+                //$$ GuiPipeline.TEXTURED,
+                //#elseif MC>=12107
                 //$$ RenderPipelines.GUI_TEXTURED,
                 //#else
                 RenderType::guiTextured,
@@ -65,7 +69,9 @@ public class SafeDrawer {
                                  int tint) {
         //#if MC>=12102
         context.blit(
-                //#if MC>=12106
+                //#if MC>=26400
+                //$$ GuiPipeline.TEXTURED,
+                //#elseif MC>=12107
                 //$$ RenderPipelines.GUI_TEXTURED,
                 //#else
                 RenderType::guiTextured,

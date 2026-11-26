@@ -21,11 +21,17 @@ public abstract class SafeAbstractButton extends AbstractButton {
 
     @Override
     //#if MC<=12111
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f)
+    //$$ protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f)
+    //#elseif MC<=26300
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
     //#else
-    //$$ protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f)
+    //$$ protected void extractContents(GuiGraphicsExtractor guiGraphics)
     //#endif
     {
+        //#if MC<=26300
         safeRender(guiGraphics, i, j, f);
+        //#else
+        //$$ safeRender(guiGraphics, guiGraphics.mouseX(), guiGraphics.mouseY(), guiGraphics.partialTicks());
+        //#endif
     }
 }

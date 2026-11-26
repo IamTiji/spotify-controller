@@ -5,7 +5,6 @@ import com.tiji.spotify_controller.Main;
 import com.tiji.spotify_controller.api.spotify.TrackObject;
 import com.tiji.spotify_controller.util.ImageWithColor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.imageio.ImageIO;
@@ -20,6 +19,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
+
+//#if MC<=26300
+import net.minecraft.client.renderer.texture.DynamicTexture;
+//#else
+//$$ import net.minecraft.client.renderer.texture.ExternalTextureProvider;
+//$$ import net.minecraft.client.renderer.texture.TextureResources;
+//#endif
 
 public class ImageDownloader {
     private static final ArrayList<TrackObject> loadedCover = new ArrayList<>();
@@ -44,13 +50,21 @@ public class ImageDownloader {
 
             NativeImage image = NativeImage.read(imageStream);
             client.execute(() -> {
+                //#if MC<=26300
+
                 //#if MC<=12104
                 //$$ DynamicTexture texture = new DynamicTexture(image);
-                //#else
+                //#elseif MC<=26300
                 DynamicTexture texture = new DynamicTexture(id::getPath, image);
                 //#endif
 
                 client.getTextureManager().register(id, texture);
+
+                //#else
+                //$$ TextureResources texture = TextureResources.from2dImage(id::getPath, image);
+                //$$ client.getTextureManager().registerProvider(id, new ExternalTextureProvider(texture));
+                //#endif
+
 
                 latch.countDown();
             });

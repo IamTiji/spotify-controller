@@ -31,10 +31,5 @@ public class LabelWidget extends SafeAbstractWidget {
     }
 
     @Override
-    public NarrationPriority narrationPriority() {
-        return NarrationPriority.NONE;
-    }
-
-    @Override
     public void updateWidgetNarration(NarrationElementOutput builder) {}
 }
