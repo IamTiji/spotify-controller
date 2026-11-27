@@ -13,6 +13,8 @@ public class Lyrics {
     private static final String LINE_BREAK_REGEX = "(\\r\\n|\\r|\\n)";
     private static final Pattern LRC_LINE_REGEX = Pattern.compile("\\[(?<hour>\\d{1,3}):(?<minute>\\d{1,3}).(?<second>\\d{1,3})] ?(?<content>.*)");
 
+    private static final String EMPTY_LINE_REPLACEMENT = "♪";
+
     private Lyrics(List<String> lines, List<Integer> timestamps) {
         this.lines = lines;
         this.timestamps = timestamps;
@@ -38,11 +40,13 @@ public class Lyrics {
 
             String text = match.group(4).strip();
 
+            if (text.isEmpty()) text = EMPTY_LINE_REPLACEMENT;
+
             lines[i] = text;
             timestamps[i] = time;
         }
 
-        int sizeOffset = lines[lines.length-1].isEmpty() ? 1 : 0;
+        int sizeOffset = lines[lines.length-1].equals(EMPTY_LINE_REPLACEMENT) ? 1 : 0;
 
         return new Lyrics(
             Arrays.asList(lines     ).subList(0, lines     .length - sizeOffset),
