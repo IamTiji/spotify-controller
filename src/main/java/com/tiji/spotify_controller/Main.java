@@ -56,15 +56,6 @@ public class Main implements ClientModInitializer {
     public static final SystemToast.SystemToastId SYSTEM_TOAST_ID = new SystemToast.SystemToastId();
 
     public void onInitializeClient(){
-        FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(modContainer -> {
-                    if (!
-                            ResourceManagerHelper.registerBuiltinResourcePack(
-                                    ResourceLocation.fromNamespaceAndPath(MOD_ID, "higher_res"),
-                                    modContainer,
-                                    ResourcePackActivationType.NORMAL)) Main.LOGGER.error("High Resolution RP failed load!");
-                }
-        );
-
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(
             new ReloadListener());
 
