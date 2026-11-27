@@ -62,8 +62,8 @@ preprocess {
     fabric12111.link(fabric12109)
     fabric26100.link(fabric12111, file("versions/post26.txt"))
     fabric26200.link(fabric26100)
-    fabric26300.link(fabric26100) // TODO: Revert this when FreeType dependency is fixed
-    fabric26400.link(fabric26100)
+    fabric26300.link(fabric26200)
+    fabric26400.link(fabric26300)
 }
 
 dependencies {
