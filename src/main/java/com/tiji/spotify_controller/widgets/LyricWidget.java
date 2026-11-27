@@ -9,6 +9,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
+//#if MC>=12109
+//$$ import net.minecraft.client.input.MouseButtonInfo;
+//#endif
+
 public class LyricWidget extends SafeAbstractWidget {
     private Lyrics lyric;
 
@@ -80,5 +84,14 @@ public class LyricWidget extends SafeAbstractWidget {
             if (!lyric.lines.getLast().isBlank()) y += font.lineHeight;
             setHeight(y);
         }
+    }
+
+    @Override
+    //#if MC<12109
+    protected boolean isValidClickButton(int button) {
+    //#else
+    //$$ protected boolean isValidClickButton(MouseButtonInfo event) {
+    //#endif
+        return false; // Remove annoying button noise
     }
 }
