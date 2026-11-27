@@ -14,7 +14,7 @@ plugins {
     // Advanced users may use multiple (potentially independent) multi-version trees in different sub-projects.
     // This is currently equivalent to applying `com.replaymod.preprocess-root`.
 
-    id("gg.essential.multi-version.root") version "0.7.0-alpha.4"
+    id("gg.essential.multi-version.root") version "0.7.4"
     id("gg.essential.loom") version "1.7.35"
     id("idea")
 }

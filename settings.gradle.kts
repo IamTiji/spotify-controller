@@ -8,7 +8,7 @@ pluginManagement {
 		gradlePluginPortal()
 	}
     plugins {
-        val egtVersion = "0.7.0-alpha.4" // should be whatever is displayed in above badge
+        val egtVersion = "0.7.4" // should be whatever is displayed in above badge
         id("gg.essential.multi-version.root") version egtVersion
         id("gg.essential.multi-version.api-validation") version egtVersion
     }
