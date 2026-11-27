@@ -34,9 +34,9 @@ public class StringInputWidget extends EditBox implements ValueHolder {
 
     @Override
     //#if MC<=12111
-    protected void renderWidget(GuiGraphics context, int i, int j, float f)
+    public void renderWidget(GuiGraphics context, int i, int j, float f)
     //#elseif MC<=26300
-    //$$ protected void extractWidgetRenderState(GuiGraphicsExtractor context, int i, int j, float f)
+    //$$ public void extractWidgetRenderState(GuiGraphicsExtractor context, int i, int j, float f)
     //#else
     //$$ public void extractWidgetRenderState(GuiGraphicsExtractor context)
     //#endif

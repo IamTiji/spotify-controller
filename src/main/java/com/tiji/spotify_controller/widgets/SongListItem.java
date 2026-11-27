@@ -68,6 +68,6 @@ public class SongListItem extends SafeAbstractWidget {
     @Override
     public void onClick(double mouseX, double mouseY) {
         SpotifyApi.addSongToQueue(song.id, "%s - %s".formatted(song.raw_title, song.main_artist));
-        playButtonClickSound(client.getSoundManager());
+        playDownSound(client.getSoundManager());
     }
 }
