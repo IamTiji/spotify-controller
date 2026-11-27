@@ -69,7 +69,4 @@ public class ProgressWidget extends SafeAbstractWidget {
 
         this.value = Math.clamp(value, 0f, 1f);
     }
-
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput builder) {}
 }

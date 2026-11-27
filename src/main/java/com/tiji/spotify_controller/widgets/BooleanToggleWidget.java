@@ -45,9 +45,6 @@ public class BooleanToggleWidget extends SafeAbstractWidget implements ValueHold
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput builder) {}
-
-    @Override
     public void onClick(double mouseX, double mouseY) {
         if (isHovered(mouseX, mouseY)) {
             state = !state;

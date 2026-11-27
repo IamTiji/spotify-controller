@@ -36,9 +36,6 @@ public class SongListItem extends SafeAbstractWidget {
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
-
-    @Override
     public void safeRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
         boolean isHovered = mouseX >= x && mouseY >= y && mouseX < x + WIDTH && mouseY < y + HEIGHT;
 

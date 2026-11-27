@@ -36,9 +36,6 @@ public class BorderlessButtonWidget extends SafeAbstractButton {
         SafeDrawer.drawString(context, client.font, label, getX(), getY() + LABEL_OFFSET, isHovered(mouseX, mouseY) ? HOVERED_COLOR : NORMAL_COLOR, false);
     }
 
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput builder) {}
-
     private boolean isHovered(int mouseX, int mouseY) {
         return mouseX >= getX() && mouseX <= getX() + width && mouseY >= getY() && mouseY <= getY() + BUTTON_SIZE;
     }

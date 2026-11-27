@@ -7,7 +7,6 @@ import com.tiji.spotify_controller.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 
 public class LyricWidget extends SafeAbstractWidget {
@@ -21,9 +20,6 @@ public class LyricWidget extends SafeAbstractWidget {
         super(x, y, width, 0, Component.empty());
         setLyric(lyrics);
     }
-
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
 
     public void setLyric(Lyrics lyric) {
         this.lyric = lyric;
