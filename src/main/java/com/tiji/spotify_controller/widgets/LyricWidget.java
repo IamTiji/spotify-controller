@@ -46,6 +46,7 @@ public class LyricWidget extends SafeAbstractWidget {
 
             y += LYRIC_MARGIN - LINE_MARGIN;
         }
+        y -= LYRIC_MARGIN;
 
         return y;
     }
