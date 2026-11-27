@@ -18,6 +18,8 @@ public class SearchScreen extends SecondaryBaseScreen {
 
     private ScrollableArea scrollArea;
 
+    private String waitingQuery;
+
     @Override
     protected void init() {
         super.init();
@@ -39,14 +41,17 @@ public class SearchScreen extends SecondaryBaseScreen {
 
         scrollArea.clearWidgets();
 
+        waitingQuery = query;
         SpotifyApi.getSearch(query, results -> {
-                int y = 0;
-                for (TrackObject result : results.tracks.items()) {
-                    SongListItem item = new SongListItem(result, 0, y);
-                    scrollArea.addWidget(item);
+            if (!waitingQuery.equals(query)) return;
 
-                    y += SongListItem.HEIGHT + MARGIN;
-                }
+            int y = 0;
+            for (TrackObject result : results.tracks.items()) {
+                SongListItem item = new SongListItem(result, 0, y);
+
+                scrollArea.addWidget(item);
+                y += SongListItem.HEIGHT + MARGIN;
+            }
         });
     }
 
