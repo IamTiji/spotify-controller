@@ -10,7 +10,7 @@ import java.util.ArrayList;
 //#endif
 
 public class ScrollableArea extends SafeAbstractWidget {
-    private static final int SCROLLBAR_WIDTH = 4;
+    private static final int SCROLLBAR_WIDTH = 3;
     private static final int SCROLL_SPEED = 25;
 
     private final int width, height, x, y;
