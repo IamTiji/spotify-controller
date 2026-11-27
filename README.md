@@ -1,4 +1,11 @@
 # Spotify Controller
+
+![Modrinth Downloads](https://img.shields.io/modrinth/dt/spotify-controller?style=flat-square&logo=modrinth)
+![GitHub Commits](https://img.shields.io/github/commit-activity/w/IamTiji/spotify-controller?style=flat-square&logo=github)
+![GitHub Repo stars](https://img.shields.io/github/stars/IamTiji/spotify-controller?style=flat-square&logo=github)
+![GitHub Release](https://img.shields.io/github/v/release/IamTiji/spotify-controller?style=flat-square)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/IamTiji/spotify-controller/build.yml?style=flat-square)
+
 Control your spotify playback without alt-tabbing
 
 If you found bugs, please report to issue tracker on github!
