@@ -6,9 +6,15 @@
 ![GitHub Release](https://img.shields.io/github/v/release/IamTiji/spotify-controller?style=flat-square)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/IamTiji/spotify-controller/build.yml?style=flat-square)
 
-Control your spotify playback without alt-tabbing
+Control your Spotify playback without alt-tabbing inside Minecraft. You need Spotify Premium for this mod to be functional.
 
-If you found bugs, please report to issue tracker on github!
+If you found bugs, please report to issue tracker on GitHub!
+
+### Requirements
+- Minecraft 1.21 - 26.3
+- Fabric + Fabric API
+- Spotify Premium
+- Non-headless build of JRE
 
 ### When reporting an issue...
 *Please make sure to:*
