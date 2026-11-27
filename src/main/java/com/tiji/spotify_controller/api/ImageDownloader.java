@@ -37,11 +37,11 @@ public class ImageDownloader {
         try {
             ResourceLocation id = track.mcId;
 
-            InputStream albumCoverUrl = track.album.albumCover.openStream();
+            InputStream albumCoverIS = track.album.albumCover.openStream();
 
             // Spotify provides JPEG image that Minecraft cannot handle
             // Convert to PNG first
-            BufferedImage jpegImage = ImageIO.read(albumCoverUrl);
+            BufferedImage jpegImage = ImageIO.read(albumCoverIS);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ImageIO.write(jpegImage, "png", outputStream);
             ByteArrayInputStream imageStream = new ByteArrayInputStream(outputStream.toByteArray());
@@ -73,6 +73,9 @@ public class ImageDownloader {
             //#if MC<=12101
             //$$ Thread.sleep(100); // Texture loading before 1.21.2 is really weird
             //#endif
+
+            imageStream.close();
+            albumCoverIS.close();
 
             loadedCover.add(track);
             return new ImageWithColor(image, id);
