@@ -9,15 +9,17 @@ import java.util.regex.Pattern;
 public class Lyrics {
     public final List<String> lines;
     public final List<Integer> timestamps;
+    public final boolean isLineSynced;
 
     private static final String LINE_BREAK_REGEX = "(\\r\\n|\\r|\\n)";
     private static final Pattern LRC_LINE_REGEX = Pattern.compile("\\[(?<hour>\\d{1,3}):(?<minute>\\d{1,3}).(?<second>\\d{1,3})] ?(?<content>.*)");
 
     private static final String EMPTY_LINE_REPLACEMENT = "♪";
 
-    private Lyrics(List<String> lines, List<Integer> timestamps) {
+    private Lyrics(List<String> lines, List<Integer> timestamps, boolean isLineSynced) {
         this.lines = lines;
         this.timestamps = timestamps;
+        this.isLineSynced = isLineSynced;
     }
 
     public static Lyrics synced(String data) {
@@ -50,7 +52,9 @@ public class Lyrics {
 
         return new Lyrics(
             Arrays.asList(lines     ).subList(0, lines     .length - sizeOffset),
-            Arrays.asList(timestamps).subList(0, timestamps.length - sizeOffset));
+            Arrays.asList(timestamps).subList(0, timestamps.length - sizeOffset),
+            true
+        );
     }
 
     public static Lyrics plain(String data) {
@@ -61,10 +65,12 @@ public class Lyrics {
 
         return new Lyrics(
             Arrays.asList(lines).subList(0, lines.length - sizeOffset),
-            Collections.nCopies(lines.length - sizeOffset, 0));
+            Collections.nCopies(lines.length - sizeOffset, 0),
+            false
+        );
     }
 
     public static Lyrics empty() {
-        return new Lyrics(List.of(), List.of());
+        return new Lyrics(List.of(), List.of(), false);
     }
 }

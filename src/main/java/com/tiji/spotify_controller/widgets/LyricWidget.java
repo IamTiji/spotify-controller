@@ -56,18 +56,21 @@ public class LyricWidget extends SafeAbstractWidget {
         boolean isUpcoming = false;
         boolean isUpcomingOrCurrent = false;
         for (int i = 0; i < lyric.lines.size(); i++) {
-            long time = Main.playbackState.progressMs.getInterpolatedTime();
-            if (lyric.timestamps.get(i) >= time){
-                isUpcoming = true;
-            } else if (lyric.timestamps.size() <= i + 1 || lyric.timestamps.get(i + 1) >= time) {
-                isUpcomingOrCurrent = true;
-            }
-
             int lineColor;
+            if (lyric.isLineSynced) {
+                long time = Main.playbackState.progressMs.getInterpolatedTime();
+                if (lyric.timestamps.get(i) >= time) {
+                    isUpcoming = true;
+                } else if (lyric.timestamps.size() <= i + 1 || lyric.timestamps.get(i + 1) >= time) {
+                    isUpcomingOrCurrent = true;
+                }
 
-            if (!isUpcoming && isUpcomingOrCurrent) lineColor = CURRENT_COLOR;
-            else if (isUpcoming) lineColor = UPCOMING_COLOR;
-            else lineColor = PAST_COLOR;
+                if (!isUpcoming && isUpcomingOrCurrent) lineColor = CURRENT_COLOR;
+                else if (isUpcoming) lineColor = UPCOMING_COLOR;
+                else lineColor = PAST_COLOR;
+            } else {
+                lineColor = CURRENT_COLOR;
+            }
 
             String[] lines = TextUtils.warpText(lyric.lines.get(i), getWidth() - 2 * LYRIC_MARGIN);
             for (String line : lines) {
