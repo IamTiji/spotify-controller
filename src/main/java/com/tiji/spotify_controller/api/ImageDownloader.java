@@ -35,7 +35,7 @@ public class ImageDownloader {
 
     private static ImageWithColor getAlbumCover(TrackObject track) {
         try {
-            ResourceLocation id = track.mcId;
+            ResourceLocation id = track.getMcId();
 
             InputStream albumCoverIS = track.album.albumCover.openStream();
 
@@ -91,7 +91,7 @@ public class ImageDownloader {
         if (loadedCover.contains(track)){
             Main.LOGGER.debug("Cache hit for {}", track.id);
             CompletableFuture.runAsync(() ->
-                callback.accept(new ImageWithColor(track.mcId))
+                callback.accept(new ImageWithColor(track.getMcId()))
             );
             return;
         }
@@ -139,6 +139,6 @@ public class ImageDownloader {
     }
 
     public static void removeFromCache(ResourceLocation id) {
-        loadedCover.removeIf(track -> track.mcId.equals(id));
+        loadedCover.removeIf(track -> track.getMcId().equals(id));
     }
 }

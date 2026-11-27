@@ -2,6 +2,7 @@ package com.tiji.spotify_controller.api.spotify;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.tiji.spotify_controller.Main;
 import net.minecraft.resources.ResourceLocation;
 
 import java.net.URL;
@@ -18,7 +19,6 @@ public class TrackObject {
     public @SerializedName("explicit") boolean explicit;
 
     public @SerializedName("id") String id;
-    public transient ResourceLocation mcId;
 
     @Override
     public boolean equals(Object o) {
@@ -30,5 +30,9 @@ public class TrackObject {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public ResourceLocation getMcId() {
+        return ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, id.toLowerCase());
     }
 }

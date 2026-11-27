@@ -106,7 +106,6 @@ public class SpotifyApi {
                 null,
                 body -> {
                     PlaybackState state = ApiHandler.GSON.fromJson(body.body(), PlaybackState.class);
-                    state.track.mcId = ResourceLocation.fromNamespaceAndPath(Main.MOD_ID, state.track.id.toLowerCase());
                     callback.accept(state);
                 },
                 "GET"
